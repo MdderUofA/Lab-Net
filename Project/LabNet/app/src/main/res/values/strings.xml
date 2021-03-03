@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Lab-Net</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="email">Email</string>
+    <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
+    <string name="sign_up">Sign-Up</string>
+    <string name="lab_net">Lab-Net</string>
+    <string name="this_app_is_designed_to_let_users_create_experiments_and_trials">This App is designed to let Users create experiments and trials.</string>
+    <string name="mainpagebackgroud">MainPageBackgroud</string>
+</resources>
