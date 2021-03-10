@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "186890708012",
+    "project_id": "lab-net-301",
+    "storage_bucket": "lab-net-301.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186890708012:android:31437feee2b80e2ec31d89",
+        "android_client_info": {
+          "package_name": "com.example.lab_net"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "186890708012-gtvv27jp7oc21uvku8iija9s7n07278t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIWHSJv4jnuin235AMAUpZDUQclGBdhbo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "186890708012-gtvv27jp7oc21uvku8iija9s7n07278t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

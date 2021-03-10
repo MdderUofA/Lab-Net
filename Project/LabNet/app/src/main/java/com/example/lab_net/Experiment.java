@@ -8,7 +8,7 @@ public class Experiment {
     String description;
     String region;
     int minTrials;
-    ArrayList<Trial> trials; // aggregation with Trial
+    ArrayList<Trial> trials;// aggregation with Trial
    // ArrayList<Question> questions; // aggregate with Question
     //qrCode QR; // aggregate with QR
 
@@ -18,6 +18,7 @@ public class Experiment {
         this.description = description;
         this.region = region;
         this.minTrials = minTrials;
+        trials = new ArrayList<>();
     }
 
     public String getExperimentId() {
