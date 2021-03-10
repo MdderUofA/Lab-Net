@@ -1,10 +1,15 @@
 package com.example.lab_net;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +24,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 //import com.google.firebase.database.ValueEventListener;
 
-public class UserProfile extends AppCompatActivity {
+public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
 //    private FirebaseUser user;
 //    private DatabaseReference ref;
@@ -27,10 +32,22 @@ public class UserProfile extends AppCompatActivity {
     private User user;
     //private FirebaseFirestore db;
 
+    private ImageButton editUser;
+    private Button browse, addExp, qrCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+
+        editUser = (ImageButton) findViewById(R.id.editUserInfo);
+        editUser.setOnClickListener(this);
+        browse = (Button) findViewById(R.id.browseButton);
+        browse.setOnClickListener(this);
+        addExp = (Button) findViewById(R.id.addExpButton);
+        addExp.setOnClickListener(this);
+        qrCode = (Button) findViewById(R.id.qrButton);
+        qrCode.setOnClickListener(this);
 
 //        user = FirebaseAuth.getInstance().getCurrentUser();
 //        ref = FirebaseDatabase.getInstance().getReference("Users");
@@ -73,6 +90,87 @@ public class UserProfile extends AppCompatActivity {
 //            }
 //        });
 
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.editUserInfo:
+                editUserDialog();
+                break;
+            case R.id.browseButton:
+                //TODO
+                //startActivity(new Intent());
+                //should lead to 'search for experiments' activity
+                break;
+            case R.id.addExpButton:
+                addExpDialog();
+                break;
+            case R.id.qrButton:
+                //TODO
+                //startActivity(new Intent());
+                //should it just lead to camera/scanner?
+                break;
+
+        }
+    }
+
+
+    private void editUserDialog() {
+        AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(UserProfile.this);
+        View settingsView = getLayoutInflater().inflate(R.layout.edit_user_dialog,null);
+
+        EditText setFirstName = (EditText) settingsView.findViewById(R.id.editTextFirstName);
+        EditText setLastName = (EditText) settingsView.findViewById(R.id.editTextLastName);
+        EditText setEmail = (EditText) settingsView.findViewById(R.id.editTextEmail);
+        EditText setPhone = (EditText) settingsView.findViewById(R.id.editTextSettingsPhone);
+        Button update = (Button) settingsView.findViewById(R.id.updateButton);
+        Button deleteProfile = (Button) settingsView.findViewById(R.id.deleteUserButton);
+
+        settingsBuilder.setView(settingsView);
+        AlertDialog setDialog = settingsBuilder.create();
+        setDialog.setCanceledOnTouchOutside(true);
+
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO update user Info
+            }
+        });
+
+        deleteProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO delete user
+            }
+        });
+
+        setDialog.show();
+    }
+
+    private void addExpDialog() {
+        AlertDialog.Builder addBuilder = new AlertDialog.Builder(UserProfile.this);
+        View addView = getLayoutInflater().inflate(R.layout.add_exp_dialog,null);
+
+        EditText expTitle = (EditText) addView.findViewById(R.id.addExpTitle);
+        EditText expDescription = (EditText) addView.findViewById(R.id.addExpDescription);
+        EditText expRegion = (EditText) addView.findViewById(R.id.addExpRegion);
+        Button create = (Button) addView.findViewById(R.id.createButton);
+
+        addBuilder.setView(addView);
+        AlertDialog addDialog = addBuilder.create();
+        addDialog.setCanceledOnTouchOutside(true);
+
+        create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO create experiment
+                // lead to experiment activity
+            }
+        });
+
+        addDialog.show();
 
     }
 }
