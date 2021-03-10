@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Experiment {
     String experimentId;
+    String title;
     String description;
     String region;
     int minTrials;
@@ -11,8 +12,9 @@ public class Experiment {
    // ArrayList<Question> questions; // aggregate with Question
     //qrCode QR; // aggregate with QR
 
-    public Experiment(String experimentId, String description, String region, int minTrials) {
+    public Experiment(String experimentId, String title, String description, String region, int minTrials) {
         this.experimentId = experimentId;
+        this.title = title;
         this.description = description;
         this.region = region;
         this.minTrials = minTrials;
@@ -24,6 +26,14 @@ public class Experiment {
 
     public void setExperimentId(String experimentId) {
         this.experimentId = experimentId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

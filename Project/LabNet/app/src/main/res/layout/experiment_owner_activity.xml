@@ -6,16 +6,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/experimentTitle"
+        android:layout_width="265dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/experiment_title"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.171"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/experimentDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:textSize="30sp"
+        android:layout_marginTop="124dp"
         android:text="@string/experiment_description"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintHorizontal_bias="0.102"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,10 +33,10 @@
         android:id="@+id/experimentRegion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="124dp"
+        android:layout_marginTop="160dp"
         android:text="@string/experiment_region"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.116"
+        app:layout_constraintHorizontal_bias="0.096"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,8 +44,6 @@
         android:id="@+id/trialsLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="200dp"
         android:text="@string/trials_label"
         android:textSize="20sp"
@@ -60,7 +68,7 @@
         android:id="@+id/statisticsButton"
         android:layout_width="170dp"
         android:layout_height="44dp"
-        android:layout_marginTop="324dp"
+        android:layout_marginTop="268dp"
         android:text="@string/statistics_button"
         app:backgroundTint="#009688"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,11 +80,11 @@
         android:id="@+id/graphsButton"
         android:layout_width="170dp"
         android:layout_height="44dp"
-        android:layout_marginTop="324dp"
+        android:layout_marginTop="268dp"
         android:text="@string/graphs_button"
         app:backgroundTint="#009688"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.933"
+        app:layout_constraintHorizontal_bias="0.898"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -84,7 +92,7 @@
         android:id="@+id/subscribedUsersLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="392dp"
+        android:layout_marginTop="364dp"
         android:text="@string/subscribedUsers_label"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,11 +104,11 @@
         android:id="@+id/subscribedUsersBrowseButton"
         android:layout_width="136dp"
         android:layout_height="42dp"
-        android:layout_marginTop="392dp"
+        android:layout_marginTop="352dp"
         android:text="@string/browse_button"
         app:backgroundTint="#03A9F4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.912"
+        app:layout_constraintHorizontal_bias="0.911"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -175,22 +183,4 @@
         app:layout_constraintHorizontal_bias="0.096"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"></LinearLayout>
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="84dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addremoveTrialsButton" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
