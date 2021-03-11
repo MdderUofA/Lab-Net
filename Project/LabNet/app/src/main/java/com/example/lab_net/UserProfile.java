@@ -19,9 +19,12 @@ import android.widget.Toast;
 //import com.google.firebase.database.DatabaseError;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.model.Document;
 //import com.google.firebase.database.ValueEventListener;
 
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
@@ -30,7 +33,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 //    private DatabaseReference ref;
 //    private String userID;
     private User user;
-    //private FirebaseFirestore db;
+    private FirebaseFirestore db;
 
     private ImageButton editUser;
     private Button browse, addExp, qrCode;
@@ -39,6 +42,16 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+
+        db = FirebaseFirestore.getInstance();
+        Intent intent = getIntent();
+        user = (User) intent.getSerializableExtra("User");
+
+        final TextView usernameTextView = (TextView) findViewById(R.id.username);
+        final TextView firstNameTextView = (TextView) findViewById(R.id.firstName);
+        final TextView lastNameTextView = (TextView) findViewById(R.id.lastName);
+        final TextView emailTextView = (TextView) findViewById(R.id.email);
+        final TextView phoneTextView = (TextView) findViewById(R.id.phone);
 
         editUser = (ImageButton) findViewById(R.id.editUserInfo);
         editUser.setOnClickListener(this);
@@ -52,14 +65,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 //        user = FirebaseAuth.getInstance().getCurrentUser();
 //        ref = FirebaseDatabase.getInstance().getReference("Users");
 //        userID = user.getUid();
-        Intent intent = getIntent();
-        user = (User) intent.getSerializableExtra("User");
-
-        final TextView usernameTextView = (TextView) findViewById(R.id.username);
-        final TextView firstNameTextView = (TextView) findViewById(R.id.firstName);
-        final TextView lastNameTextView = (TextView) findViewById(R.id.lastName);
-        final TextView emailTextView = (TextView) findViewById(R.id.email);
-        final TextView phoneTextView = (TextView) findViewById(R.id.phone);
 
         usernameTextView.setText(user.getUserId());
         firstNameTextView.setText(user.getFirstName());
@@ -132,10 +137,41 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         AlertDialog setDialog = settingsBuilder.create();
         setDialog.setCanceledOnTouchOutside(true);
 
+        setFirstName.setText(user.getFirstName());
+        setLastName.setText(user.getLastName());
+        setEmail.setText(user.getEmail());
+        setPhone.setText(user.getPhone());
+
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO update user Info
+                DocumentReference updateDoc = db.collection("UserProfile").document(user.getUserId());
+                String updatedFirst = setFirstName.getText().toString();
+                String updatedLast = setLastName.getText().toString();
+                String updatedEmail = setEmail.getText().toString();
+                String updatedPhone = setPhone.getText().toString();
+
+                user.setFirstName(updatedFirst);
+                user.setLastName(updatedLast);
+                user.setEmail(updatedEmail);
+                user.setPhone(updatedPhone);
+
+                updateDoc.update(
+                        "email", updatedEmail,
+                        "firstName", updatedFirst,
+                        "lastName", updatedLast,
+                        "phone", updatedPhone
+                ).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "Changes Saved", Toast.LENGTH_LONG).show();
+                            setDialog.dismiss();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
             }
         });
 
