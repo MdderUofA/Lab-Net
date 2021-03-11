@@ -1,5 +1,7 @@
+/*
 package com.example.lab_net;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -12,9 +14,17 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class experimentEditPopUpActivity extends Activity {
 
+    FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +48,7 @@ public class experimentEditPopUpActivity extends Activity {
         String title = intent.getStringExtra("title");
         String description = intent.getStringExtra("description");
         String region = intent.getStringExtra("region");
+        String experimentId = intent.getStringExtra("experimentId");
 
         EditText editText = findViewById(R.id.editTitle);
         editText.setText(title);
@@ -54,10 +65,28 @@ public class experimentEditPopUpActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent sendIntent = new Intent(getApplicationContext(), ExperimentActivity.class);
+                db = FirebaseFirestore.getInstance();
+                DocumentReference noteRef = db.collection("Experiments")
+                        .document(experimentId);
+                noteRef.update(
+                        "Title", editText.getText(),
+                         "Description", editText1.getText(), "Region", editText2.getText()
+                ).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Toast.makeText(getApplicationContext(), "Changed", Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                });
                 startActivity(sendIntent);
 
             }
         });
 
     }
-}
+}*/
