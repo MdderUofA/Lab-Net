@@ -66,6 +66,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 //        ref = FirebaseDatabase.getInstance().getReference("Users");
 //        userID = user.getUid();
 
+
+
+
         usernameTextView.setText(user.getUserId());
         firstNameTextView.setText(user.getFirstName());
         lastNameTextView.setText(user.getLastName());
