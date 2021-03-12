@@ -170,6 +170,17 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Changes Saved", Toast.LENGTH_LONG).show();
                             setDialog.dismiss();
+                            final TextView usernameTextView = (TextView) findViewById(R.id.username);
+                            final TextView firstNameTextView = (TextView) findViewById(R.id.firstName);
+                            final TextView lastNameTextView = (TextView) findViewById(R.id.lastName);
+                            final TextView emailTextView = (TextView) findViewById(R.id.email);
+                            final TextView phoneTextView = (TextView) findViewById(R.id.phone);
+
+                            usernameTextView.setText(user.getUserId());
+                            firstNameTextView.setText(user.getFirstName());
+                            lastNameTextView.setText(user.getLastName());
+                            emailTextView.setText(user.getEmail());
+                            phoneTextView.setText(user.getPhone());
                         } else {
                             Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
                         }
