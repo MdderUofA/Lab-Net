@@ -192,7 +192,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         deleteProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO delete user
+                CollectionReference collectionReference = db.collection("UserProfile");
+                collectionReference.document(user.getUserId()).delete();
+                Intent intent1 = new Intent(UserProfile.this, Homepage.class);
+                startActivity(intent1);
+                //Delete from the list of users/usermanager
             }
         });
 
