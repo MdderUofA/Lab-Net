@@ -35,10 +35,12 @@ public class CustomTrialList extends ArrayAdapter<Trial> {
         }
 
         Trial trial = trials.get(position);
-
+        TextView titleText = view.findViewById(R.id.title_text);
         TextView resultText = view.findViewById(R.id.result_text);
 
-        resultText.setText(trial.getResult());
+        titleText.setText(trial.getTitle());
+        resultText.setText(" "+trial.getResult());
+
 
         return view;
 
