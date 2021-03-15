@@ -5,7 +5,7 @@ public class BinomialTrial extends Trial{
     private int fail;
 
 
-    public BinomialTrial(String id, String title, int result) {
+    public BinomialTrial(String id, String title, Long result) {
         super(id, title, result);
     }
 }

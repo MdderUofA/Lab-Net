@@ -12,7 +12,7 @@
         android:layout_height="44dp"
         android:layout_marginTop="28dp"
         android:text="@string/experiment_title"
-        android:textSize="28sp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.171"
         app:layout_constraintStart_toStartOf="parent"
@@ -140,17 +140,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/editExperimentButton"
-        android:layout_width="wrap_content"
-        android:layout_height="42dp"
-        android:layout_marginTop="92dp"
-        android:text="@string/edit_button"
-        app:backgroundTint="#03A9F4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.801"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/publishExperimentButton"
@@ -248,4 +237,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/editExperimentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="76dp"
+        android:layout_marginRight="76dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/experimentTitle"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
 </androidx.constraintlayout.widget.ConstraintLayout>

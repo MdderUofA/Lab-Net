@@ -3,9 +3,9 @@ package com.example.lab_net;
 public class Trial {
     private String id;
     private String title;
-    private int result;
+    private Long result;
 
-    public Trial(String id, String title, int result) {
+    public Trial(String id, String title, Long result) {
         this.id = id;
         this.title = title;
         this.result = result;
@@ -19,11 +19,11 @@ public class Trial {
         this.id = id;
     }
 
-    public int getResult() {
+    public Long getResult() {
         return result;
     }
 
-    public void setResult(int result) {
+    public void setResult(Long result) {
         this.result = result;
     }
 

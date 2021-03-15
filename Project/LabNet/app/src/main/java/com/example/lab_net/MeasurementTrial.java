@@ -4,7 +4,7 @@ public class MeasurementTrial extends Trial{
     private double measurement;
 
 
-    public MeasurementTrial(String id, String title, int result) {
+    public MeasurementTrial(String id, String title, Long result) {
         super(id, title, result);
     }
 }
