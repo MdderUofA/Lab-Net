@@ -413,6 +413,9 @@ public class ExperimentActivity extends AppCompatActivity {
     Button add_trial_button;
     ImageButton edit_experiment_button;
 
+    //stats
+    Button statistics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -491,6 +494,16 @@ public class ExperimentActivity extends AppCompatActivity {
                 addTrial();
             }
         });
+
+        statistics = (Button) findViewById(R.id.statisticsButton);
+        statistics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Statistics.class);
+                intent.putExtra("trialList", trialDataList);
+            }
+        });
+
 
     }
 
