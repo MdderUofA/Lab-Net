@@ -3,22 +3,10 @@ package com.example.lab_net;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,17 +30,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
-import java.util.Locale;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.media.CamcorderProfile.get;
 
 
@@ -409,6 +389,7 @@ public class ExperimentActivity extends AppCompatActivity {
     // Experiment
     Experiment experiment;
     String experimentId, experimentTitle, experimentDescription, experimentRegion;
+
     FirebaseFirestore db;
     Button add_trial_button;
     ImageButton edit_experiment_button;
@@ -416,11 +397,13 @@ public class ExperimentActivity extends AppCompatActivity {
     //stats
     Button statistics;
 
+    Button questionButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.experiment_owner_activity);
-
+        experimentId = "NqsWogfL0gYCSYXzt40J";
 
         trialList = (ListView) findViewById(R.id.trial_list);
         trialDataList = new ArrayList<>();
@@ -461,6 +444,7 @@ public class ExperimentActivity extends AppCompatActivity {
         experiment_region = findViewById(R.id.experimentRegion);
 
         DocumentReference documentReference = db.collection("Experiments").document( "NqsWogfL0gYCSYXzt40J");
+
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -479,6 +463,9 @@ public class ExperimentActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
         edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
         edit_experiment_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -501,6 +488,16 @@ public class ExperimentActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), Statistics.class);
                 intent.putExtra("trialList", trialDataList);
+            }
+        });
+
+        questionButton = (Button) findViewById(R.id.questionAnswerBrowseButton);
+        questionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), Questions.class);
+                i.putExtra("experimentID", experimentId);
+                startActivity(i);
             }
         });
 
@@ -575,8 +572,8 @@ public class ExperimentActivity extends AppCompatActivity {
             setDialog.setCanceledOnTouchOutside(true);
             setDialog.show();
 
-            addTrialButton = (Button) settingsView.findViewById(R.id.addTrial);
-            addTrialTitle = (EditText) settingsView.findViewById(R.id.addTitle);
+            addTrialButton = (Button) settingsView.findViewById(R.id.addButtonQuestion);
+            addTrialTitle = (EditText) settingsView.findViewById(R.id.addQuestion);
             addTrialResult = (EditText) settingsView.findViewById(R.id.addResult);
 
             final CollectionReference collectionReference = db.collection("Trials");
