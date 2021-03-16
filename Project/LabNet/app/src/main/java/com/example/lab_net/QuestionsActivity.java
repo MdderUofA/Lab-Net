@@ -27,6 +27,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class QuestionsActivity extends AppCompatActivity {
@@ -53,9 +55,34 @@ public class QuestionsActivity extends AppCompatActivity {
 
         questionsDataList = new ArrayList<>();
         questionAdapter = new CustomQuestionList(this, questionsDataList);
+
+        // sorting questionDataList
+
+
         questionList.setAdapter(questionAdapter);
 
+        CollectionReference collectionReference = db.collection("Questions");
+
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                questionsDataList.clear();
+                for(QueryDocumentSnapshot doc : value){
+                    String questionId = doc.getId();
+                    String experimentId = doc.getData().get("experiemntID").toString();
+                    if(experimentId == experimentID) {
+                        String questionText = (String) doc.getData().get("questionText");
+                        questionsDataList.add(new Question(questionId, questionText));
+                        questionAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+
+
         getQuestions();
+
+
         /*db.collection("Questions")
                 .whereEqualTo("experimentID", experimentID)
                 .get()
@@ -124,20 +151,9 @@ public class QuestionsActivity extends AppCompatActivity {
 
             }
         });
-        CollectionReference collectionReference = db.collection("Questions");
 
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                questionsDataList.clear();
-                for(QueryDocumentSnapshot doc : value){
-                    String questionId = doc.getId();
-                    String questionText = (String) doc.getData().get("questionText");
-                    questionsDataList.add(new Question(questionId, questionText));
-                }
-                questionAdapter.notifyDataSetChanged();
-            }
-        });
+
+
     }
 
     public void getQuestions() {
@@ -153,11 +169,15 @@ public class QuestionsActivity extends AppCompatActivity {
                                 String questionId = document.getId();
                                 String questionText = document.getData().get("questionText").toString();
                                 questionsDataList.add(new Question(questionId,questionText));
+                                //Collections.sort("questionsDataList);
+                                questionAdapter.notifyDataSetChanged();
+
                             }
-                            questionAdapter.notifyDataSetChanged();
                         }
                     }
+
                 });
+
     }
 
 }
