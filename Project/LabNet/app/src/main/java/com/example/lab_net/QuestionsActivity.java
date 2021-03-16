@@ -23,6 +23,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -82,25 +83,6 @@ public class QuestionsActivity extends AppCompatActivity {
 
         getQuestions();
 
-
-        /*db.collection("Questions")
-                .whereEqualTo("experimentID", experimentID)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            questionsDataList.clear();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String questionId = document.getId();
-                                String questionText = document.getData().get("questionText").toString();
-                                questionsDataList.add(new Question(questionId,questionText));
-                            }
-                            questionAdapter.notifyDataSetChanged();
-                        }
-                    }
-                });*/
-
         addQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +113,6 @@ public class QuestionsActivity extends AppCompatActivity {
                                     public void onSuccess(Void aVoid) {
                                         Log.d(TAG, "Question added");
                                         setDialog.dismiss();
-                                        getQuestions();
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -143,16 +124,9 @@ public class QuestionsActivity extends AppCompatActivity {
                                 });
                     }
                 });
-
                 setDialog.show();
-
-
-
-
             }
         });
-
-
 
     }
 
