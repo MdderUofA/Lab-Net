@@ -403,7 +403,7 @@ public class ExperimentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.experiment_owner_activity);
-        experimentId = "NqsWogfL0gYCSYXzt40J";
+        experimentId = "1234";
 
         trialList = (ListView) findViewById(R.id.trial_list);
         trialDataList = new ArrayList<>();
