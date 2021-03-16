@@ -7,9 +7,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,14 +33,12 @@ import com.google.firebase.firestore.model.Document;
 
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
-//    private FirebaseUser user;
-//    private DatabaseReference ref;
-//    private String userID;
     private User user;
     private FirebaseFirestore db;
 
     private ImageButton editUser;
     private Button browse, addExp, qrCode;
+    private ListView subExpListView, myExpListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         final TextView emailTextView = (TextView) findViewById(R.id.email);
         final TextView phoneTextView = (TextView) findViewById(R.id.phone);
 
+        usernameTextView.setText(user.getUserId());
+        firstNameTextView.setText(user.getFirstName());
+        lastNameTextView.setText(user.getLastName());
+        emailTextView.setText(user.getEmail());
+        phoneTextView.setText(user.getPhone());
+
         editUser = (ImageButton) findViewById(R.id.editUserInfo);
         editUser.setOnClickListener(this);
         browse = (Button) findViewById(R.id.browseButton);
@@ -62,41 +70,14 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         qrCode = (Button) findViewById(R.id.qrButton);
         qrCode.setOnClickListener(this);
 
-//        user = FirebaseAuth.getInstance().getCurrentUser();
-//        ref = FirebaseDatabase.getInstance().getReference("Users");
-//        userID = user.getUid();
+        subExpView();
+        myExpView();
 
 
 
 
-        usernameTextView.setText(user.getUserId());
-        firstNameTextView.setText(user.getFirstName());
-        lastNameTextView.setText(user.getLastName());
-        emailTextView.setText(user.getEmail());
-        phoneTextView.setText(user.getPhone());
 
-//        ref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                User userProfile = snapshot.getValue(User.class);
-//
-//                if (userProfile != null){
-//                    String username = userID;
-//
-//                    usernameTextView.setText(username);
-//                    firstNameTextView.setText(userProfile.firstName);
-//                    lastNameTextView.setText(userProfile.lastName);
-//                    emailTextView.setText(userProfile.email);
-//                    phoneTextView.setText(userProfile.phone);
-//
-//                }
-//            }
 
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Toast.makeText(UserProfile.this, "Error displaying profile", Toast.LENGTH_LONG).show();
-//            }
-//        });
 
 
     }
@@ -123,7 +104,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         }
     }
-
 
     private void editUserDialog() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(UserProfile.this);
@@ -194,9 +174,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             public void onClick(View v) {
                 CollectionReference collectionReference = db.collection("UserProfile");
                 collectionReference.document(user.getUserId()).delete();
-                Intent intent1 = new Intent(UserProfile.this, Homepage.class);
+                Intent intent1 = new Intent(UserProfile.this, Signup.class);
                 startActivity(intent1);
-                //Delete from the list of users/usermanager
+                //Delete from the list of users/user manager
             }
         });
 
@@ -226,5 +206,57 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         addDialog.show();
 
+    }
+
+    private void subExpView() {
+        subExpListView = findViewById(R.id.subExpListView);
+
+        String[] test1 = new String[]{
+                "Exp1", "Exp2", "Exp3", "Exp4", "Exp5", "Exp6", "Exp7", "Exp8", "Exp9"
+        };
+
+        ArrayAdapter<String> subExpAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, test1);
+        subExpListView.setAdapter(subExpAdapter);
+
+        subExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO
+//                if (position == 0){
+//                    Intent intent = new Intent(view.getContext(), Exp1.class);
+//                    startActivity(intent);
+//                }
+//                if (position == 1){
+//                    Intent intent = new Intent(view.getContext(), Exp2.class);
+//                    startActivity(intent);
+//                }
+            }
+        });
+    }
+
+    private void myExpView (){
+        myExpListView = findViewById(R.id.myExpListView);
+
+        String[] test2 = new String[]{
+                "My1", "My2", "My3", "My3", "My4", "My5", "My6", "My7", "My8", "My9"
+        };
+
+        ArrayAdapter<String> myExpAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, test2);
+        myExpListView.setAdapter(myExpAdapter);
+
+        myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO
+//                if (position == 0){
+//                    Intent intent = new Intent(view.getContext(), My1.class);
+//                    startActivity(intent);
+//                }
+//                if (position == 1){
+//                    Intent intent = new Intent(view.getContext(), My2.class);
+//                    startActivity(intent);
+//                }
+            }
+        });
     }
 }
