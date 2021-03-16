@@ -70,7 +70,7 @@ public class QuestionsActivity extends AppCompatActivity {
                 for(QueryDocumentSnapshot doc : value){
                     String questionId = doc.getId();
                     String experimentId = doc.getData().get("experimentID").toString();
-                    if(experimentId == experimentID) {
+                    if(experimentId.equals(experimentID)) {
                         String questionText = (String) doc.getData().get("questionText");
                         questionsDataList.add(new Question(questionId, questionText));
                         questionAdapter.notifyDataSetChanged();
