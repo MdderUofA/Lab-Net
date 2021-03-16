@@ -1,6 +1,7 @@
 package com.example.lab_net;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -18,7 +19,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -114,6 +118,21 @@ public class QuestionsActivity extends AppCompatActivity {
                 });
 
                 setDialog.show();
+
+                CollectionReference collectionReference = db.collection("Questions");
+
+                collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        questionsDataList.clear();
+                        for(QueryDocumentSnapshot doc : value){
+                            String questionId = doc.getId();
+                            String questionText = (String) doc.getData().get("questionText");
+                            questionsDataList.add(new Question(questionId, questionText));
+                        }
+                        questionAdapter.notifyDataSetChanged();
+                    }
+                });
 
 
             }
