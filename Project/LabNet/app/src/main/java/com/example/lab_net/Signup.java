@@ -137,13 +137,13 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
 
 
-        //TODO add password ??
+        //TODO add deviceID
         Map<String,Object> dataSet= new HashMap<>();
         dataSet.put("email",email);
         dataSet.put("firstName",firstName);
         dataSet.put("lastName",lastName);
         dataSet.put("phone",phone);
-        dataSet.put("deviceID", deviceID);
+//        dataSet.put("deviceID", deviceID);
 
         userId = collectionReference.document().getId();
         collectionReference.document(userId).set(dataSet)
