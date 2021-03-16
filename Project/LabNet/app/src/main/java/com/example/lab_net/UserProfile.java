@@ -131,8 +131,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         }
     }
-
-
+    //editUserDialog
     private void editUserDialog() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(UserProfile.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_user_dialog,null);
