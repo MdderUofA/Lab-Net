@@ -80,9 +80,7 @@ public class QuestionsActivity extends AppCompatActivity {
         });
 
 
-/*
         getQuestions();
-*/
 
 
         /*db.collection("Questions")
@@ -133,9 +131,7 @@ public class QuestionsActivity extends AppCompatActivity {
                                     public void onSuccess(Void aVoid) {
                                         Log.d(TAG, "Question added");
                                         setDialog.dismiss();
-/*
                                         getQuestions();
-*/
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -160,7 +156,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
     }
 
-/*    public void getQuestions() {
+    public void getQuestions() {
         db.collection("Questions")
                 .whereEqualTo("experimentID", experimentID)
                 .get()
@@ -182,6 +178,6 @@ public class QuestionsActivity extends AppCompatActivity {
 
                 });
 
-    }*/
+    }
 
 }
