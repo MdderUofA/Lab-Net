@@ -12,12 +12,11 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class CustomTrialList extends ArrayAdapter<Trial> {
-
-    private ArrayList<Trial> trials;
+public class CustomBinomialTrialList extends ArrayAdapter<BinomialTrial> {
+    private ArrayList<BinomialTrial> trials;
     private Context context;
 
-    public CustomTrialList(Context context, ArrayList<Trial> trials){
+    public CustomBinomialTrialList(Context context, ArrayList<BinomialTrial> trials){
         super(context,0, trials);
         this.trials = trials;
         this.context = context;
@@ -31,14 +30,17 @@ public class CustomTrialList extends ArrayAdapter<Trial> {
         View view = convertView;
 
         if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
+            view = LayoutInflater.from(context).inflate(R.layout.content_binomial_trial, parent,false);
         }
 
-        Trial trial = trials.get(position);
-        TextView titleText = view.findViewById(R.id.title_text);
-        TextView resultText = view.findViewById(R.id.result_text);
+        BinomialTrial trial = trials.get(position);
+        TextView titleText = view.findViewById(R.id.title);
+        TextView pass = view.findViewById(R.id.pass);
+        TextView fail = view.findViewById(R.id.fail);
 
         titleText.setText(trial.getTitle());
+        pass.setText(""+trial.getPass());
+        fail.setText(""+trial.getFail());
 
 
         return view;

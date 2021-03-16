@@ -4,7 +4,16 @@ public class MeasurementTrial extends Trial{
     private double measurement;
 
 
-    public MeasurementTrial(String id, String title, Long result) {
-        super(id, title, result);
+    public MeasurementTrial(String id, String title, double measurement) {
+        super(id, title);
+        this.measurement = measurement;
+    }
+
+    public double getMeasurement() {
+        return measurement;
+    }
+
+    public void setMeasurement(double measurement) {
+        this.measurement = measurement;
     }
 }

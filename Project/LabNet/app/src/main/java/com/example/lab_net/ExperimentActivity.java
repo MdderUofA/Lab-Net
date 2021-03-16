@@ -423,7 +423,7 @@ public class ExperimentActivity extends AppCompatActivity {
                                 trialId = document.getId();
                                 trialTitle = document.getData().get("Title").toString();
                                 resultLong = (Long) document.getData().get("Result");
-                                trialDataList.add(new Trial(trialId, trialTitle, resultLong));
+                                trialDataList.add(new Trial(trialId, trialTitle));
                             }
                             trialArrayAdapter.notifyDataSetChanged();
                         }
@@ -495,7 +495,8 @@ public class ExperimentActivity extends AppCompatActivity {
         questionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), Questions.class);
+                Intent i = new Intent(getApplicationContext(), QuestionsActivity.class);
+                i.putExtra("check","OwnerActivity");
                 i.putExtra("experimentID", experimentId);
                 startActivity(i);
             }
@@ -623,7 +624,7 @@ public class ExperimentActivity extends AppCompatActivity {
                         String trialId = doc.getId();
                         String trialTitle = (String) doc.getData().get("Title");
                         Long trialResult = (Long) doc.getData().get("Result");
-                        trialDataList.add(new Trial(trialId, trialTitle, trialResult));
+                        trialDataList.add(new Trial(trialId, trialTitle));
                     }
                     trialArrayAdapter.notifyDataSetChanged();
                 }

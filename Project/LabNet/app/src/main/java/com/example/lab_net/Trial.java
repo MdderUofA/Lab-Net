@@ -3,12 +3,10 @@ package com.example.lab_net;
 public class Trial {
     private String id;
     private String title;
-    private Long result;
 
-    public Trial(String id, String title, Long result) {
+    public Trial(String id, String title) {
         this.id = id;
         this.title = title;
-        this.result = result;
     }
 
     public String getId() {
@@ -17,14 +15,6 @@ public class Trial {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Long getResult() {
-        return result;
-    }
-
-    public void setResult(Long result) {
-        this.result = result;
     }
 
     public String getTitle() {

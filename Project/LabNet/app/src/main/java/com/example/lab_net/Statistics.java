@@ -36,12 +36,12 @@ public class Statistics extends AppCompatActivity {
         ArrayList<Trial> trials = (ArrayList<Trial>) getIntent().getSerializableExtra("trialList");
         ArrayList<Long> results = new ArrayList<>();
 
-        for(int i = 0; i < trials.size(); i++){
+        /*for(int i = 0; i < trials.size(); i++){
             Trial trial = trials.get(0);
             Long result = trial.getResult();
             results.add(result);
             sum = sum + result;
-        }
+        }*/
 
         mean = (sum/(trials.size()));
         setDialog.show();

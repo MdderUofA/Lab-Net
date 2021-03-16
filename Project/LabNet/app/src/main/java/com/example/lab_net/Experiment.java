@@ -9,17 +9,19 @@ public class Experiment {
     String region;
     String owner;
     int minTrials;
+    String trialType;
     ArrayList<Trial> trials;// aggregation with Trial
    // ArrayList<Question> questions; // aggregate with Question
     //qrCode QR; // aggregate with QR
 
-    public Experiment(String experimentId, String title, String description, String owner, String region, int minTrials) {
+    public Experiment(String experimentId, String title, String description, String owner, String region, int minTrials, String trialType) {
         this.experimentId = experimentId;
         this.title = title;
         this.description = description;
         this.region = region;
         this.owner = owner;
         this.minTrials = minTrials;
+        this.trialType = trialType;
         trials = new ArrayList<>();
     }
 

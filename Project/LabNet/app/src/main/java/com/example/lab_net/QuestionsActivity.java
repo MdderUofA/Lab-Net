@@ -12,18 +12,27 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Questions extends AppCompatActivity {
+public class QuestionsActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     final String TAG = "sample";
+    private ArrayList<Question> questionsDataList;
+    private ArrayAdapter<Question> questionAdapter;
+    private ListView questionList;
+    private String experimentID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +41,39 @@ public class Questions extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        String experimentID = getIntent().getStringExtra("experimentID");
-
-        ArrayList<String> questionList = new ArrayList<String>();
-        ArrayAdapter<String> questionAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, questionList);
+        experimentID = getIntent().getStringExtra("experimentID");
+        String check = getIntent().getStringExtra("check");
 
         Button addQuestion = findViewById(R.id.addQuestionButton);
+        questionList = findViewById(R.id.questionList);
+
+        questionsDataList = new ArrayList<>();
+        questionAdapter = new CustomQuestionList(this, questionsDataList);
+        questionList.setAdapter(questionAdapter);
+
+        getQuestions();
+        /*db.collection("Questions")
+                .whereEqualTo("experimentID", experimentID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            questionsDataList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String questionId = document.getId();
+                                String questionText = document.getData().get("questionText").toString();
+                                questionsDataList.add(new Question(questionId,questionText));
+                            }
+                            questionAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });*/
 
         addQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(Questions.this);
+                AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(QuestionsActivity.this);
                 View settingsView = getLayoutInflater().inflate(R.layout.add_question_popup, null);
 
                 EditText questionText = settingsView.findViewById(R.id.addQuestion);
@@ -69,6 +100,7 @@ public class Questions extends AppCompatActivity {
                                     public void onSuccess(Void aVoid) {
                                         Log.d(TAG, "Question added");
                                         setDialog.dismiss();
+                                        getQuestions();
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -86,6 +118,26 @@ public class Questions extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void getQuestions() {
+        db.collection("Questions")
+                .whereEqualTo("experimentID", experimentID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            questionsDataList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String questionId = document.getId();
+                                String questionText = document.getData().get("questionText").toString();
+                                questionsDataList.add(new Question(questionId,questionText));
+                            }
+                            questionAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
     }
 
 }
