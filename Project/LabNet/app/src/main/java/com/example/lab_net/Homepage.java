@@ -35,7 +35,8 @@ public class Homepage extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.register:
-                startActivity(new Intent(this,RegisterUser.class));
+                Intent intent = new Intent(this,RegisterUser.class);
+                startActivity(intent);
                 break;
 
             case R.id.loginButton:

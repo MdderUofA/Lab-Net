@@ -35,8 +35,6 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_user);
 
-        //mAuth = FirebaseAuth.getInstance();
-
         signUp = (Button) findViewById(R.id.signupButton);
         signUp.setOnClickListener(this);
 
@@ -45,7 +43,6 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
         editTextEmail = (EditText) findViewById(R.id.EmailAddress);
         editTextPhone = (EditText) findViewById(R.id.editTextPhone);
         editTextPassword = (EditText) findViewById(R.id.password);
-        //db = FirebaseFirestore.getInstance();
 
     }
 
@@ -129,8 +126,3 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
         user = new User(userId,firstName,lastName,email,phone);
     }
 }
-
-
-
-
-

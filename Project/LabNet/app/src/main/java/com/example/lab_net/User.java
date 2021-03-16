@@ -11,11 +11,15 @@ public class User implements Serializable {
 //    }
 
     public User(String userId, String firstName, String lastName, String email, String phone) {
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
-        this.userId = userId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getFirstName() {
@@ -50,11 +54,4 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 }

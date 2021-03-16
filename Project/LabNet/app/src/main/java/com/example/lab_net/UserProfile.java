@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,11 +22,17 @@ import android.widget.Toast;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.model.Document;
+
+import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.Map;
 //import com.google.firebase.database.ValueEventListener;
 
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
@@ -196,7 +204,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 collectionReference.document(user.getUserId()).delete();
                 Intent intent1 = new Intent(UserProfile.this, Homepage.class);
                 startActivity(intent1);
-                //Delete from the list of users/usermanager
+
             }
         });
 
@@ -206,21 +214,61 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private void addExpDialog() {
         AlertDialog.Builder addBuilder = new AlertDialog.Builder(UserProfile.this);
         View addView = getLayoutInflater().inflate(R.layout.add_exp_dialog,null);
+        final CollectionReference collectionReference = db.collection("Experiments");
 
+        String trialTypes[] = {"Count-based","Binomial","Measurement","NonNegativeInteger"};
         EditText expTitle = (EditText) addView.findViewById(R.id.addExpTitle);
         EditText expDescription = (EditText) addView.findViewById(R.id.addExpDescription);
         EditText expRegion = (EditText) addView.findViewById(R.id.addExpRegion);
+        EditText expMinTrials = addView.findViewById(R.id.addExpMinTrials);
+        Spinner dropdown = (Spinner) addView.findViewById(R.id.dropdownTrialType);
         Button create = (Button) addView.findViewById(R.id.createButton);
 
         addBuilder.setView(addView);
         AlertDialog addDialog = addBuilder.create();
         addDialog.setCanceledOnTouchOutside(true);
 
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,trialTypes);
+        dropdown.setAdapter(adapter);
+
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO create experiment
-                // lead to experiment activity
+                //userprofile collection, have to update experiment list
+                String title = expTitle.getText().toString().trim();
+                String description = expDescription.getText().toString().trim();
+                String region = expRegion.getText().toString().trim();
+                int minTrials = Integer.valueOf(expMinTrials.getText().toString());
+                String trialType = dropdown.getSelectedItem().toString();
+
+                Map<String,Object> data = new HashMap<>();
+                data.put("Title",title);
+                data.put("Description",description);
+                data.put("Region",region);
+                data.put("MinTrials",minTrials);
+                data.put("TrialType",trialType);
+                data.put("Owner",user.getUserId());
+
+                String experimentId = collectionReference.document().getId();
+                collectionReference.document(experimentId).set(data)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(UserProfile.this, "Experiment created", Toast.LENGTH_LONG).show();
+                                addDialog.dismiss();
+                                /*Intent intent = new Intent(getApplicationContext(), ExperimentActivity.class);
+                                intent.putExtra("ExperimentId",experimentId);
+                                startActivity(intent);*/
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(UserProfile.this, "Experiment not created", Toast.LENGTH_LONG).show();
+                                addDialog.dismiss();
+                            }
+                        });
             }
         });
 
