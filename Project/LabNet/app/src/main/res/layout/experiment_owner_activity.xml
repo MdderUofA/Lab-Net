@@ -69,7 +69,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/statisticsButton"
+        android:id="@+id/ownerStatisticsButton"
         android:layout_width="170dp"
         android:layout_height="44dp"
         android:layout_marginTop="310dp"
