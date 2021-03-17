@@ -16,9 +16,11 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
 // much of this base code was created by Amardeep https://stackoverflow.com/users/7035327/amardeep
 // source: https://stackoverflow.com/a/40103682
 public class QRScanner extends AppCompatActivity implements ZXingScannerView.ResultHandler{
+
 
     public static final String QR_RESULT_EXTRA = "com.example.lab_net.qr_result_text";
 
