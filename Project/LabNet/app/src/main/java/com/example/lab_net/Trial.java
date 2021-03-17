@@ -1,6 +1,8 @@
 package com.example.lab_net;
 
-public class Trial {
+import java.io.Serializable;
+
+public class Trial implements Serializable {
     private String id;
     private String title;
 

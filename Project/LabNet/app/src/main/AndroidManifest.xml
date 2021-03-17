@@ -13,15 +13,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LabNet">
+
         <activity android:name=".MapActivity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCVb2ZRC9Ljbif1_GuVi-FAvhQeALAB7x4" />
 
+
+        <activity android:name=".AnswersActivity"></activity>
         <activity android:name=".QuestionsActivity" />
         <activity android:name=".Statistics" />
         <activity android:name=".ExperimentActivity" />
+        <activity android:name=".SubscribedExperimentActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

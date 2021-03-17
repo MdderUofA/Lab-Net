@@ -17,7 +17,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-black"
-        android:text="Add Question"
+        android:text="Add Answer"
         android:textSize="24sp" />
 
     <EditText
@@ -28,7 +28,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="80dp"
         android:ems="10"
-        android:hint="Type question"
+        android:hint="Type answer"
         android:inputType="textPersonName" />
 
 

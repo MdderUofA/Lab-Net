@@ -12,12 +12,12 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class CustomTrialList extends ArrayAdapter<CountTrial> {
+public class MeasurementCustomTrialList extends ArrayAdapter<MeasurementTrial> {
 
-    private ArrayList<CountTrial> trials;
+    private ArrayList<MeasurementTrial> trials;
     private Context context;
 
-    public CustomTrialList(Context context, ArrayList<CountTrial> trials){
+    public MeasurementCustomTrialList(Context context, ArrayList<MeasurementTrial> trials){
         super(context,0, trials);
         this.trials = trials;
         this.context = context;
@@ -34,12 +34,12 @@ public class CustomTrialList extends ArrayAdapter<CountTrial> {
             view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
         }
 
-        CountTrial trial = (CountTrial) trials.get(position);
+        MeasurementTrial trial = (MeasurementTrial) trials.get(position);
         TextView titleText = view.findViewById(R.id.title_text);
         TextView resultText = view.findViewById(R.id.result_text);
 
         titleText.setText(trial.getTitle());
-        resultText.setText(trial.getCount().toString());
+        resultText.setText(String.valueOf(trial.getMeasurement()));
 
 
         return view;

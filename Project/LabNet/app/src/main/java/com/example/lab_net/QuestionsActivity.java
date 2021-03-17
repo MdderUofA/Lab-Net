@@ -1,14 +1,15 @@
 package com.example.lab_net;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +19,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -49,26 +53,32 @@ public class QuestionsActivity extends AppCompatActivity {
 
         questionsDataList = new ArrayList<>();
         questionAdapter = new CustomQuestionList(this, questionsDataList);
+
+        // sorting questionDataList
+
+
         questionList.setAdapter(questionAdapter);
 
-        getQuestions();
-        /*db.collection("Questions")
-                .whereEqualTo("experimentID", experimentID)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            questionsDataList.clear();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String questionId = document.getId();
-                                String questionText = document.getData().get("questionText").toString();
-                                questionsDataList.add(new Question(questionId,questionText));
-                            }
-                            questionAdapter.notifyDataSetChanged();
-                        }
+        CollectionReference collectionReference = db.collection("Questions");
+
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                questionsDataList.clear();
+                for(QueryDocumentSnapshot doc : value){
+                    String questionId = doc.getId();
+                    String experimentId = doc.getData().get("experimentID").toString();
+                    if(experimentId.equals(experimentID)) {
+                        String questionText = (String) doc.getData().get("questionText");
+                        questionsDataList.add(new Question(questionId, questionText));
+                        questionAdapter.notifyDataSetChanged();
                     }
-                });*/
+                }
+            }
+        });
+
+
+        getQuestions();
 
         addQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,8 +86,8 @@ public class QuestionsActivity extends AppCompatActivity {
                 AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(QuestionsActivity.this);
                 View settingsView = getLayoutInflater().inflate(R.layout.add_question_popup, null);
 
-                EditText questionText = settingsView.findViewById(R.id.addQuestion);
-                Button addButtonQuestion = settingsView.findViewById(R.id.addButtonQuestion);
+                EditText questionText = settingsView.findViewById(R.id.addAnswer);
+                Button addButtonQuestion = settingsView.findViewById(R.id.addButtonAnswer);
 
                 settingsBuilder.setView(settingsView);
                 AlertDialog setDialog = settingsBuilder.create();
@@ -100,7 +110,6 @@ public class QuestionsActivity extends AppCompatActivity {
                                     public void onSuccess(Void aVoid) {
                                         Log.d(TAG, "Question added");
                                         setDialog.dismiss();
-                                        getQuestions();
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -112,12 +121,22 @@ public class QuestionsActivity extends AppCompatActivity {
                                 });
                     }
                 });
-
                 setDialog.show();
-
-
             }
         });
+
+        questionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String questionID = questionsDataList.get(position).getQuestionId();
+                String question_text = questionsDataList.get(position).getQuestionText();
+                Intent i = new Intent(getApplicationContext(), AnswersActivity.class);
+                i.putExtra("questionID", questionID);
+                i.putExtra("question_text", question_text);
+                startActivity(i);
+            }
+        });
+
     }
 
     public void getQuestions() {
@@ -133,10 +152,13 @@ public class QuestionsActivity extends AppCompatActivity {
                                 String questionId = document.getId();
                                 String questionText = document.getData().get("questionText").toString();
                                 questionsDataList.add(new Question(questionId,questionText));
+                                //Collections.sort("questionsDataList);
+                                questionAdapter.notifyDataSetChanged();
+
                             }
-                            questionAdapter.notifyDataSetChanged();
                         }
                     }
+
                 });
     }
 
