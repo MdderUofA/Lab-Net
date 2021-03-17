@@ -8,7 +8,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -216,7 +215,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
 
         addTrialButton = (Button) settingsView.findViewById(R.id.addButtonAnswer);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addAnswer);
-        addTrialResult = (EditText) settingsView.findViewById(R.id.addResult);
+        addTrialResult = (EditText) settingsView.findViewById(R.id.addResult1);
 
         final CollectionReference collectionReference = db.collection("Trials");
 
