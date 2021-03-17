@@ -3,6 +3,8 @@ package com.example.lab_net;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.media.CamcorderProfile.get;
+import static com.google.android.material.internal.ContextUtils.getActivity;
 
 
 /*public class ExperimentActivity extends AppCompatActivity {
@@ -561,8 +564,11 @@ public class ExperimentActivity extends AppCompatActivity {
 
         private void addTrial(){
 
-            Button addTrialButton;
+            Button addTrialButton, getLocationButton;
             EditText addTrialTitle, addTrialResult;
+
+            final CollectionReference collectionReference = db.collection("Trials");
+            String trialId = collectionReference.document().getId();
 
             AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(ExperimentActivity.this);
             View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog,null);
@@ -577,7 +583,22 @@ public class ExperimentActivity extends AppCompatActivity {
             addTrialTitle = (EditText) settingsView.findViewById(R.id.addQuestion);
             addTrialResult = (EditText) settingsView.findViewById(R.id.addResult);
 
-            final CollectionReference collectionReference = db.collection("Trials");
+
+            //Add location button that launches map fragment
+            //So needs collection reference to be initialized before this button is clicked
+            // (NOT only in addtrialbutton method like before) to allow trialid to go through
+
+            getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
+
+            getLocationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+                        intent.putExtra("trialId",trialId);
+                        startActivity(intent);
+                }
+            });
+
 
             addTrialButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -586,7 +607,6 @@ public class ExperimentActivity extends AppCompatActivity {
                     String title = addTrialTitle.getText().toString();
 
                     // add to firebase
-                    String trialId = collectionReference.document().getId();
                     // trialDataList.add(new Trial(trialId.toString(), ""+title, Long.valueOf(result)));
                     HashMap<String, Object> data = new HashMap<>();
 

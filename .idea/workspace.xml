@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8721b517-145f-4b77-a049-f0e0bdcb3394" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Lab-Net.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,9 +39,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="104" y="73" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1615059776321">
-      <screen x="0" y="23" width="1280" height="777" />
+    <state x="117" y="58" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1615905954213">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
+    <state x="117" y="58" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1615905954213" />
     <state x="104" y="73" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1280.777@0.23.1280.777" timestamp="1615059776321" />
   </component>
 </project>
