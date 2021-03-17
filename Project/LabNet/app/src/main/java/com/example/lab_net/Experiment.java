@@ -10,11 +10,12 @@ public class Experiment {
     String owner;
     int minTrials;
     String trialType;
+    String enableLocation;
     //ArrayList<Trial> trials;// aggregation with Trial
     // ArrayList<Question> questions; // aggregate with Question
     //qrCode QR; // aggregate with QR
 
-    public Experiment(String experimentId, String title, String description,String region, String owner, int minTrials, String trialType) {
+    public Experiment(String experimentId, String title, String description,String region, String owner, int minTrials, String trialType, String enableLocation) {
         this.experimentId = experimentId;
         this.title = title;
         this.description = description;
@@ -22,6 +23,7 @@ public class Experiment {
         this.owner = owner;
         this.minTrials = minTrials;
         this.trialType = trialType;
+        this.enableLocation = enableLocation;
         //trials = new ArrayList<>();
     }
 

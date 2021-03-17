@@ -48,6 +48,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private FirebaseFirestore db;
     private DocumentReference documentReference;
 
+    private String experimentId;
+
     private ImageButton editUser;
     private Button browse, addExp, qrCode;
     private ListView subExpListView, myExpListView;
@@ -91,6 +93,17 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         subExpView();
         myExpView();
+
+/*
+        myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent1 = new Intent(getApplicationContext(), ExperimentActivity.class);
+                intent1.putExtra("experimentId", experimentId);
+
+            }
+        });
+*/
 
     }
 
@@ -183,12 +196,17 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         View addView = getLayoutInflater().inflate(R.layout.add_exp_dialog,null);
         final CollectionReference collectionReference = db.collection("Experiments");
 
-        String trialTypes[] = {"Count-based","Binomial","Measurement","NonNegativeInteger"};
+        String trialTypes[] = {"Count-based", "Binomial", "Measurement", "NonNegativeInteger"};
+
+        //location spinner
+        String enableLocation[] = {"No", "Yes"};
+
         EditText expTitle = (EditText) addView.findViewById(R.id.addExpTitle);
         EditText expDescription = (EditText) addView.findViewById(R.id.addExpDescription);
         EditText expRegion = (EditText) addView.findViewById(R.id.addExpRegion);
         EditText expMinTrials = addView.findViewById(R.id.addExpMinTrials);
         Spinner dropdown = (Spinner) addView.findViewById(R.id.dropdownTrialType);
+        Spinner dropdown2 = (Spinner) addView.findViewById(R.id.dropdownLocation);
         Button create = (Button) addView.findViewById(R.id.createButton);
 
         addBuilder.setView(addView);
@@ -199,6 +217,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,trialTypes);
         dropdown.setAdapter(adapter);
 
+        ArrayAdapter<String> adapter2 =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,enableLocation);
+        dropdown2.setAdapter(adapter2);
+
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,6 +230,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 String region = expRegion.getText().toString().trim();
                 int minTrials = Integer.valueOf(expMinTrials.getText().toString());
                 String trialType = dropdown.getSelectedItem().toString();
+                String enableLocation = dropdown2.getSelectedItem().toString();
 
                 Map<String,Object> data = new HashMap<>();
                 data.put("Title",title);
@@ -216,8 +239,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 data.put("MinTrials",minTrials);
                 data.put("TrialType",trialType);
                 data.put("Owner",userId);
+                data.put("EnableLocation", enableLocation);
 
-                String experimentId = collectionReference.document().getId();
+                experimentId = collectionReference.document().getId();
                 collectionReference.document(experimentId).set(data)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -303,8 +327,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                                 String experimentOwner = document.getData().get("Owner").toString();
                                 int experimentMinTrials = Integer.valueOf(document.getData().get("MinTrials").toString());
                                 String experimentTrialType = document.getData().get("TrialType").toString();
+
+                                //String experimentEnableLocation = document.getData().get("EnableLocation").toString();
+
                                 myExperimentsDataList.add(new Experiment(experimentId,experimentTitle,
-                                        experimentDescription,experimentRegion,experimentOwner,experimentMinTrials,experimentTrialType));
+                                        experimentDescription,experimentRegion,experimentOwner,experimentMinTrials,experimentTrialType, "Yes"));
                                 myExperimentAdapter.notifyDataSetChanged();
 
                             }
