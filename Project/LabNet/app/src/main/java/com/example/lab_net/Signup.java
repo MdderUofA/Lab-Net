@@ -31,17 +31,13 @@ import java.util.Objects;
 
 public class Signup extends AppCompatActivity implements View.OnClickListener {
 
-    //private FirebaseAuth mAuth;
     private Button signUp;
-    private EditText editTextFirstName, editTextLastName, editTextEmail, editTextPhone, editTextPassword;
+    private EditText editTextFirstName, editTextLastName, editTextEmail, editTextPhone;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     final CollectionReference collectionReference = db.collection("UserProfile");
     private final String Tag = "Sample";
-    private String userId;
     private User user;
     private String deviceID;
-    //private ArrayList<String> allUsers = new ArrayList<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,15 +63,15 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                             for (QueryDocumentSnapshot document: task.getResult()) {
                                 String id = document.getId();
                                 if (deviceID.equals(id)) {
-                                    //Intent to Userprofile with the device id/userid
-                                    Log.d(Tag,deviceID+"**************");
+                                    Intent intent = new Intent(Signup.this, UserProfile.class);
+                                    intent.putExtra("UserId", deviceID);
+                                    startActivity(intent);
                                 }
                             }
                         }
 
                     }
                 });
-        Log.d(Tag,"%%%%%%%%%%%%%%");
     }
 
     @Override
@@ -141,21 +137,15 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         String lastName = editTextLastName.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
         String phone = editTextPhone.getText().toString().trim();
-        String deviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
-
-
-        //TODO add deviceID
         Map<String,Object> dataSet= new HashMap<>();
         dataSet.put("email",email);
         dataSet.put("firstName",firstName);
         dataSet.put("lastName",lastName);
         dataSet.put("phone",phone);
-//        dataSet.put("deviceID", deviceID);
 
-        userId = collectionReference.document().getId();
-        collectionReference.document(userId).set(dataSet)
+        collectionReference.document(deviceID).set(dataSet)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -168,10 +158,10 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                         Log.d(Tag,"not added");
                     }
                 });
-        user = new User(userId,firstName,lastName,email,phone);
+        user = new User(deviceID,firstName,lastName,email,phone);
 
         Intent intent1 = new Intent(Signup.this,UserProfile.class);
-        intent1.putExtra("User",user);
+        intent1.putExtra("UserId", user.getUserId());
         startActivity(intent1);
 
     }

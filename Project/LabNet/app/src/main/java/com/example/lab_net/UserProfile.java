@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -43,14 +44,16 @@ import java.util.Map;
 //instead of object i want from the user id.
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
-    private User user;
+    private String userId,firstNameText,lastNameText,emailText,phoneText;
     private FirebaseFirestore db;
+    private DocumentReference documentReference;
 
     private ImageButton editUser;
     private Button browse, addExp, qrCode;
     private ListView subExpListView, myExpListView;
     private ArrayList<Experiment> myExperimentsDataList;
     private ArrayAdapter<Experiment> myExperimentAdapter;
+    private TextView usernameTextView, firstNameTextView, lastNameTextView,emailTextView,phoneTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,24 +62,23 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
-        user = (User) intent.getSerializableExtra("User");
+        userId = intent.getStringExtra("UserId");
 
-        final TextView usernameTextView = (TextView) findViewById(R.id.username);
-        final TextView firstNameTextView = (TextView) findViewById(R.id.firstName);
-        final TextView lastNameTextView = (TextView) findViewById(R.id.lastName);
-        final TextView emailTextView = (TextView) findViewById(R.id.email);
-        final TextView phoneTextView = (TextView) findViewById(R.id.phone);
+        documentReference = db.collection("UserProfile").document(userId);
+
+        usernameTextView = (TextView) findViewById(R.id.username);
+        firstNameTextView = (TextView) findViewById(R.id.firstName);
+        lastNameTextView = (TextView) findViewById(R.id.lastName);
+        emailTextView = (TextView) findViewById(R.id.email);
+        phoneTextView = (TextView) findViewById(R.id.phone);
 
         myExpListView = findViewById(R.id.myExpListView);
         myExperimentsDataList = new ArrayList<>();
         myExperimentAdapter = new CustomMyExperimentsList(this, myExperimentsDataList);
         myExpListView.setAdapter(myExperimentAdapter);
 
-        usernameTextView.setText(user.getUserId());
-        firstNameTextView.setText(user.getFirstName());
-        lastNameTextView.setText(user.getLastName());
-        emailTextView.setText(user.getEmail());
-        phoneTextView.setText(user.getPhone());
+        getUserInfo();
+        getExperiments();
 
         editUser = (ImageButton) findViewById(R.id.editUserInfo);
         editUser.setOnClickListener(this);
@@ -87,7 +89,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         qrCode = (Button) findViewById(R.id.qrButton);
         qrCode.setOnClickListener(this);
 
-        getExperiments();
         subExpView();
         myExpView();
 
@@ -131,26 +132,20 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         AlertDialog setDialog = settingsBuilder.create();
         setDialog.setCanceledOnTouchOutside(true);
 
-        setFirstName.setText(user.getFirstName());
-        setLastName.setText(user.getLastName());
-        setEmail.setText(user.getEmail());
-        setPhone.setText(user.getPhone());
+        setFirstName.setText(firstNameText);
+        setLastName.setText(lastNameText);
+        setEmail.setText(emailText);
+        setPhone.setText(phoneText);
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DocumentReference updateDoc = db.collection("UserProfile").document(user.getUserId());
                 String updatedFirst = setFirstName.getText().toString();
                 String updatedLast = setLastName.getText().toString();
                 String updatedEmail = setEmail.getText().toString();
                 String updatedPhone = setPhone.getText().toString();
 
-                user.setFirstName(updatedFirst);
-                user.setLastName(updatedLast);
-                user.setEmail(updatedEmail);
-                user.setPhone(updatedPhone);
-
-                updateDoc.update(
+                documentReference.update(
                         "email", updatedEmail,
                         "firstName", updatedFirst,
                         "lastName", updatedLast,
@@ -161,17 +156,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Changes Saved", Toast.LENGTH_LONG).show();
                             setDialog.dismiss();
-                            final TextView usernameTextView = (TextView) findViewById(R.id.username);
-                            final TextView firstNameTextView = (TextView) findViewById(R.id.firstName);
-                            final TextView lastNameTextView = (TextView) findViewById(R.id.lastName);
-                            final TextView emailTextView = (TextView) findViewById(R.id.email);
-                            final TextView phoneTextView = (TextView) findViewById(R.id.phone);
-
-                            usernameTextView.setText(user.getUserId());
-                            firstNameTextView.setText(user.getFirstName());
-                            lastNameTextView.setText(user.getLastName());
-                            emailTextView.setText(user.getEmail());
-                            phoneTextView.setText(user.getPhone());
+                            getUserInfo();
                         } else {
                             Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
                         }
@@ -184,7 +169,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 CollectionReference collectionReference = db.collection("UserProfile");
-                collectionReference.document(user.getUserId()).delete();
+                collectionReference.document(userId).delete();
                 Intent intent1 = new Intent(UserProfile.this, Signup.class);
                 startActivity(intent1);
             }
@@ -230,7 +215,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 data.put("Region",region);
                 data.put("MinTrials",minTrials);
                 data.put("TrialType",trialType);
-                data.put("Owner",user.getUserId());
+                data.put("Owner",userId);
 
                 String experimentId = collectionReference.document().getId();
                 collectionReference.document(experimentId).set(data)
@@ -303,7 +288,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     public void getExperiments() {
         db.collection("Experiments")
-                .whereEqualTo("Owner", user.getUserId())
+                .whereEqualTo("Owner", userId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -328,5 +313,28 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
                 });
 
+    }
+
+    public void getUserInfo() {
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if(documentSnapshot.exists()){
+                        firstNameText = documentSnapshot.getData().get("firstName").toString();
+                        lastNameText = documentSnapshot.getData().get("lastName").toString();
+                        emailText = documentSnapshot.getData().get("email").toString();
+                        phoneText = documentSnapshot.getData().get("phone").toString();
+
+                        usernameTextView.setText(userId);
+                        firstNameTextView.setText(firstNameText);
+                        lastNameTextView.setText(lastNameText);
+                        emailTextView.setText(emailText);
+                        phoneTextView.setText(phoneText);
+                    }
+                }
+            }
+        });
     }
 }

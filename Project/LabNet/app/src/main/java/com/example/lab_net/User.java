@@ -1,14 +1,10 @@
 package com.example.lab_net;
 
-import java.io.Serializable;
 
-public class User implements Serializable {
+public class User {
 
     public String firstName, lastName, email, phone,userId;
 
-//    public User (){
-//
-//    }
 
     public User(String userId, String firstName, String lastName, String email, String phone) {
         this.userId = userId;
