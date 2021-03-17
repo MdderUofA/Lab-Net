@@ -37,8 +37,8 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
 
 
     private ListView trialList;
-    private ArrayAdapter<Trial> trialArrayAdapter;
-    private ArrayList<Trial> trialDataList;
+    private ArrayAdapter<CountTrial> trialArrayAdapter;
+    private ArrayList<CountTrial> trialDataList;
     private CustomTrialList customTrialList;
     String trialId, trialTitle;
     Long resultLong;
@@ -82,7 +82,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
                                 trialId = document.getId();
                                 trialTitle = document.getData().get("Title").toString();
                                 resultLong = (Long) document.getData().get("Result");
-                                trialDataList.add(new Trial(trialId, trialTitle));
+                                trialDataList.add(new CountTrial(trialId, trialTitle, resultLong));
                             }
                             trialArrayAdapter.notifyDataSetChanged();
                         }
@@ -265,7 +265,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
                     String trialId = doc.getId();
                     String trialTitle = (String) doc.getData().get("Title");
                     Long trialResult = (Long) doc.getData().get("Result");
-                    trialDataList.add(new Trial(trialId, trialTitle));
+                    trialDataList.add(new CountTrial(trialId, trialTitle, resultLong));
                 }
                 trialArrayAdapter.notifyDataSetChanged();
             }

@@ -379,9 +379,25 @@ import static android.media.CamcorderProfile.get;
 
 public class ExperimentActivity extends AppCompatActivity {
     private ListView trialList;
-    private ArrayAdapter<Trial> trialArrayAdapter;
-    private ArrayList<Trial> trialDataList;
+    // Count adapters and lists
+    private ArrayAdapter<CountTrial> trialArrayAdapter;
+    private ArrayList<CountTrial> trialDataList;
     private CustomTrialList customTrialList;
+
+    // Measurement
+    private ArrayAdapter<MeasurementTrial> measurementTrialArrayAdapter;
+    private ArrayList<MeasurementTrial>  measurementDataList;
+
+    // NonNegative
+    private ArrayAdapter<NonNegativeIntegerTrial> nonNegativeIntegerTrialArrayAdapter;
+    private ArrayList<NonNegativeIntegerTrial>  nonNegativeDataList;
+
+    // Binomial
+    private ArrayAdapter<BinomialTrial> binomialTrialArrayAdapter;
+    private ArrayList<BinomialTrial>  binomialDataList;
+
+
+
     String trialId, trialTitle;
     Long resultLong;
 
@@ -389,7 +405,7 @@ public class ExperimentActivity extends AppCompatActivity {
 
     // Experiment
     Experiment experiment;
-    String experimentId, experimentTitle, experimentDescription, experimentRegion;
+    String experimentId, experimentTitle, experimentDescription, experimentRegion, trialType;
 
     FirebaseFirestore db;
     Button add_trial_button;
@@ -406,10 +422,21 @@ public class ExperimentActivity extends AppCompatActivity {
         setContentView(R.layout.experiment_owner_activity);
         experimentId = "1234";
 
+        //count
         trialList = (ListView) findViewById(R.id.trial_list);
         trialDataList = new ArrayList<>();
         trialArrayAdapter = new CustomTrialList(this, trialDataList);
         trialList.setAdapter(trialArrayAdapter);
+
+        //Measurement
+        measurementDataList = new ArrayList<>();
+        measurementTrialArrayAdapter = new MeasurementCustomTrialList(this, measurementDataList);
+        trialList.setAdapter(measurementTrialArrayAdapter);
+
+        // Non negative
+        nonNegativeDataList = new ArrayList<>();
+        nonNegativeIntegerTrialArrayAdapter = new NonNegativeCustomTrialList(this, nonNegativeDataList);
+        trialList.setAdapter(nonNegativeIntegerTrialArrayAdapter);
 
         db = FirebaseFirestore.getInstance();
 
@@ -424,7 +451,7 @@ public class ExperimentActivity extends AppCompatActivity {
                                 trialId = document.getId();
                                 trialTitle = document.getData().get("Title").toString();
                                 resultLong = (Long) document.getData().get("Result");
-                                trialDataList.add(new Trial(trialId, trialTitle));
+                                trialDataList.add(new CountTrial(trialId, trialTitle, resultLong));
                             }
                             trialArrayAdapter.notifyDataSetChanged();
                         }
@@ -444,7 +471,7 @@ public class ExperimentActivity extends AppCompatActivity {
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
 
-        DocumentReference documentReference = db.collection("Experiments").document( "NqsWogfL0gYCSYXzt40J");
+        DocumentReference documentReference = db.collection("Experiments").document( "FRweuiaELgeTD7cYzpDo");
 
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -456,6 +483,9 @@ public class ExperimentActivity extends AppCompatActivity {
                         experimentDescription = documentSnapshot.getData().get("Description").toString();
                         experimentRegion = documentSnapshot.getData().get("Region").toString();
 
+                        //get trialtype to make respective dialog box appear
+                        trialType = documentSnapshot.getData().get("TrialType").toString();
+
                         // set textviews in experiment_owner_activity to experiment details
                         experiment_title.setText(experimentTitle);
                         experiment_description.setText("Description: " + experimentDescription);
@@ -464,8 +494,6 @@ public class ExperimentActivity extends AppCompatActivity {
                 }
             }
         });
-
-
 
         edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
         edit_experiment_button.setOnClickListener(new View.OnClickListener() {
@@ -504,8 +532,6 @@ public class ExperimentActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-
     }
 
     private void editExperiment() {
@@ -567,72 +593,73 @@ public class ExperimentActivity extends AppCompatActivity {
             Button addTrialButton;
             EditText addTrialTitle, addTrialResult;
 
-            AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(ExperimentActivity.this);
-            View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog,null);
+            if(trialType.equals("Count-based") || trialType.equals("Measurement") || trialType.equals("NonNegativeInteger")) {
+                AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(ExperimentActivity.this);
+                View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
 
 
-            settingsBuilder.setView(settingsView);
-            AlertDialog setDialog = settingsBuilder.create();
-            setDialog.setCanceledOnTouchOutside(true);
-            setDialog.show();
+                settingsBuilder.setView(settingsView);
+                AlertDialog setDialog = settingsBuilder.create();
+                setDialog.setCanceledOnTouchOutside(true);
+                setDialog.show();
 
-            addTrialButton = (Button) settingsView.findViewById(R.id.addButtonAnswer);
-            addTrialTitle = (EditText) settingsView.findViewById(R.id.addAnswer);
-            addTrialResult = (EditText) settingsView.findViewById(R.id.addResult);
+                addTrialButton = (Button) settingsView.findViewById(R.id.addButtonAnswer);
+                addTrialTitle = (EditText) settingsView.findViewById(R.id.addAnswer);
+                addTrialResult = (EditText) settingsView.findViewById(R.id.addResult);
 
-            final CollectionReference collectionReference = db.collection("Trials");
+                final CollectionReference collectionReference = db.collection("Trials");
 
-            addTrialButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Long result = Long.valueOf(addTrialResult.getText().toString());
-                    String title = addTrialTitle.getText().toString();
+                addTrialButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Long result = Long.valueOf(addTrialResult.getText().toString());
+                        String title = addTrialTitle.getText().toString();
 
-                    // add to firebase
-                    String trialId = collectionReference.document().getId();
-                    // trialDataList.add(new Trial(trialId.toString(), ""+title, Long.valueOf(result)));
-                    HashMap<String, Object> data = new HashMap<>();
+                        // add to firebase
+                        String trialId = collectionReference.document().getId();
+                        // trialDataList.add(new Trial(trialId.toString(), ""+title, Long.valueOf(result)));
+                        HashMap<String, Object> data = new HashMap<>();
 
-                    data.put("Title", title);
-                    data.put("Result", result);
+                        data.put("Title", title);
+                        data.put("Result", result);
 
-                    collectionReference
-                            .document(trialId)
-                            .set(data)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    //trialDataList.add(new Trial("1234", title, result));
-                                    //trialArrayAdapter.notifyDataSetChanged();
-                                    Toast.makeText(ExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
-                                    setDialog.dismiss();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(ExperimentActivity.this, "Trial not added", Toast.LENGTH_LONG).show();
-                                }
-                            });
+                        collectionReference
+                                .document(trialId)
+                                .set(data)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        //trialDataList.add(new Trial("1234", title, result));
+                                        //trialArrayAdapter.notifyDataSetChanged();
+                                        Toast.makeText(ExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
+                                        setDialog.dismiss();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(ExperimentActivity.this, "Trial not added", Toast.LENGTH_LONG).show();
+                                    }
+                                });
 
 
-                    setDialog.dismiss();
-                }
-            });
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                    trialDataList.clear();
-                    for(QueryDocumentSnapshot doc : value){
-                        String trialId = doc.getId();
-                        String trialTitle = (String) doc.getData().get("Title");
-                        Long trialResult = (Long) doc.getData().get("Result");
-                        trialDataList.add(new Trial(trialId, trialTitle));
+                        setDialog.dismiss();
                     }
-                    trialArrayAdapter.notifyDataSetChanged();
-                }
-            });
-
+                });
+                collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        trialDataList.clear();
+                        for (QueryDocumentSnapshot doc : value) {
+                            String trialId = doc.getId();
+                            String trialTitle = (String) doc.getData().get("Title");
+                            Long trialResult = (Long) doc.getData().get("Result");
+                            trialDataList.add(new CountTrial(trialId, trialTitle, trialResult));
+                        }
+                        trialArrayAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
         }
 
         public void deleteTrial(int position) {

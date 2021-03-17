@@ -17,8 +17,7 @@ public class Statistics extends AppCompatActivity {
     long sum = 0, mean = 0;
     ArrayList<Trial> trials;
     ArrayList<Long> results;
-    int i = 0;
-
+    int i;
 
 
     @Override
@@ -33,28 +32,24 @@ public class Statistics extends AppCompatActivity {
         trials = (ArrayList<Trial>) intent.getSerializableExtra("trialDataList");
 
         results = new ArrayList<>();
-        for(int i = 0; i < trials.size(); i++){
+        for (i = 0; i < trials.size(); i++) {
             Trial trial = trials.get(0);
-            Long result = trial.getResult();
-            results.add(result);
-            sum = sum + result;
-
-        for (i = 0; i < results.size(); i++) {
+            results.add((long) 4);
             sum = results.get(i) + sum;
+
+
+            if (results.size() != 0) {
+                mean = (sum / (Long.valueOf(results.size())));
+            } else {
+                mean = 0;
+            }
+            sum = 0;
+
+            // mean = (sum/(trials.size()));
+
+            meanView.setText("Mean: " + mean);
+
+
         }
-        if (results.size() != 0) {
-            mean = (sum / (Long.valueOf(results.size())));
-        } else {
-            mean = 0;
-        }
-        sum = 0;
-
-       // mean = (sum/(trials.size()));
-
-        meanView.setText("Mean: " + mean);
-
-
-
-
     }
 }
