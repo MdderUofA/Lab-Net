@@ -12,6 +12,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,8 +21,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -37,6 +40,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     private String userId;
     private User user;
     private String deviceID;
+    //private ArrayList<String> allUsers = new ArrayList<>();
 
 
     @Override
@@ -51,22 +55,27 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         editTextLastName = (EditText) findViewById(R.id.LastName);
         editTextEmail = (EditText) findViewById(R.id.EmailAddress);
         editTextPhone = (EditText) findViewById(R.id.PhoneNumber);
-        //db = FirebaseFirestore.getInstance();
 
         deviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        db.collection("UserProfile")
-                .whereEqualTo("deviceID", deviceID)
+
+        collectionReference
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()){
-                            //TODO get user
+                            for (QueryDocumentSnapshot document: task.getResult()) {
+                                String id = document.getId();
+                                if (deviceID.equals(id)) {
+                                    //Intent to Userprofile with the device id/userid
+                                    Log.d(Tag,deviceID+"**************");
+                                }
+                            }
                         }
 
                     }
                 });
-
+        Log.d(Tag,"%%%%%%%%%%%%%%");
     }
 
     @Override

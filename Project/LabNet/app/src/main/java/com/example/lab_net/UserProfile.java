@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,13 +25,22 @@ import android.widget.Toast;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.model.Document;
-//import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+//import com.google.firebase.database.ValueEventListener;
+//instead of object i want from the user id.
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
     private User user;
@@ -39,6 +49,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private ImageButton editUser;
     private Button browse, addExp, qrCode;
     private ListView subExpListView, myExpListView;
+    private ArrayList<Experiment> myExperimentsDataList;
+    private ArrayAdapter<Experiment> myExperimentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +67,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         final TextView emailTextView = (TextView) findViewById(R.id.email);
         final TextView phoneTextView = (TextView) findViewById(R.id.phone);
 
+        myExpListView = findViewById(R.id.myExpListView);
+        myExperimentsDataList = new ArrayList<>();
+        myExperimentAdapter = new CustomMyExperimentsList(this, myExperimentsDataList);
+        myExpListView.setAdapter(myExperimentAdapter);
+
         usernameTextView.setText(user.getUserId());
         firstNameTextView.setText(user.getFirstName());
         lastNameTextView.setText(user.getLastName());
@@ -70,15 +87,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         qrCode = (Button) findViewById(R.id.qrButton);
         qrCode.setOnClickListener(this);
 
+        getExperiments();
         subExpView();
         myExpView();
-
-
-
-
-
-
-
 
     }
 
@@ -176,7 +187,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 collectionReference.document(user.getUserId()).delete();
                 Intent intent1 = new Intent(UserProfile.this, Signup.class);
                 startActivity(intent1);
-                //Delete from the list of users/user manager
             }
         });
 
@@ -186,21 +196,59 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private void addExpDialog() {
         AlertDialog.Builder addBuilder = new AlertDialog.Builder(UserProfile.this);
         View addView = getLayoutInflater().inflate(R.layout.add_exp_dialog,null);
+        final CollectionReference collectionReference = db.collection("Experiments");
 
+        String trialTypes[] = {"Count-based","Binomial","Measurement","NonNegativeInteger"};
         EditText expTitle = (EditText) addView.findViewById(R.id.addExpTitle);
         EditText expDescription = (EditText) addView.findViewById(R.id.addExpDescription);
         EditText expRegion = (EditText) addView.findViewById(R.id.addExpRegion);
+        EditText expMinTrials = addView.findViewById(R.id.addExpMinTrials);
+        Spinner dropdown = (Spinner) addView.findViewById(R.id.dropdownTrialType);
         Button create = (Button) addView.findViewById(R.id.createButton);
 
         addBuilder.setView(addView);
         AlertDialog addDialog = addBuilder.create();
         addDialog.setCanceledOnTouchOutside(true);
 
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,trialTypes);
+        dropdown.setAdapter(adapter);
+
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO create experiment
-                // lead to experiment activity
+                //userprofile collection, have to update experiment list
+                String title = expTitle.getText().toString().trim();
+                String description = expDescription.getText().toString().trim();
+                String region = expRegion.getText().toString().trim();
+                int minTrials = Integer.valueOf(expMinTrials.getText().toString());
+                String trialType = dropdown.getSelectedItem().toString();
+
+                Map<String,Object> data = new HashMap<>();
+                data.put("Title",title);
+                data.put("Description",description);
+                data.put("Region",region);
+                data.put("MinTrials",minTrials);
+                data.put("TrialType",trialType);
+                data.put("Owner",user.getUserId());
+
+                String experimentId = collectionReference.document().getId();
+                collectionReference.document(experimentId).set(data)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(UserProfile.this, "Experiment created", Toast.LENGTH_LONG).show();
+                                addDialog.dismiss();
+                                getExperiments();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(UserProfile.this, "Experiment not created", Toast.LENGTH_LONG).show();
+                                addDialog.dismiss();
+                            }
+                        });
             }
         });
 
@@ -235,14 +283,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void myExpView (){
-        myExpListView = findViewById(R.id.myExpListView);
-
-        String[] test2 = new String[]{
-                "My1", "My2", "My3", "My3", "My4", "My5", "My6", "My7", "My8", "My9"
-        };
-
-        ArrayAdapter<String> myExpAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, test2);
-        myExpListView.setAdapter(myExpAdapter);
 
         myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -258,5 +298,35 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 //                }
             }
         });
+    }
+
+
+    public void getExperiments() {
+        db.collection("Experiments")
+                .whereEqualTo("Owner", user.getUserId())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            myExperimentsDataList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String experimentId = document.getId();
+                                String experimentTitle = document.getData().get("Title").toString();
+                                String experimentDescription = document.getData().get("Description").toString();
+                                String experimentRegion = document.getData().get("Region").toString();
+                                String experimentOwner = document.getData().get("Owner").toString();
+                                int experimentMinTrials = Integer.valueOf(document.getData().get("MinTrials").toString());
+                                String experimentTrialType = document.getData().get("TrialType").toString();
+                                myExperimentsDataList.add(new Experiment(experimentId,experimentTitle,
+                                        experimentDescription,experimentRegion,experimentOwner,experimentMinTrials,experimentTrialType));
+                                myExperimentAdapter.notifyDataSetChanged();
+
+                            }
+                        }
+                    }
+
+                });
+
     }
 }
