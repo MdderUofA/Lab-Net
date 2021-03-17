@@ -573,8 +573,8 @@ public class ExperimentActivity extends AppCompatActivity {
             setDialog.setCanceledOnTouchOutside(true);
             setDialog.show();
 
-            addTrialButton = (Button) settingsView.findViewById(R.id.addButtonQuestion);
-            addTrialTitle = (EditText) settingsView.findViewById(R.id.addQuestion);
+            addTrialButton = (Button) settingsView.findViewById(R.id.addButtonAnswer);
+            addTrialTitle = (EditText) settingsView.findViewById(R.id.addAnswer);
             addTrialResult = (EditText) settingsView.findViewById(R.id.addResult);
 
             final CollectionReference collectionReference = db.collection("Trials");

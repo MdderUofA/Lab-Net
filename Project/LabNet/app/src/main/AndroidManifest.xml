@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LabNet">
-        <activity android:name=".QuestionsActivity"></activity>
+        <activity android:name=".AnswersActivity"></activity>
+        <activity android:name=".QuestionsActivity" />
         <activity android:name=".Statistics" />
         <activity android:name=".ExperimentActivity" />
         <activity android:name=".MainActivity">

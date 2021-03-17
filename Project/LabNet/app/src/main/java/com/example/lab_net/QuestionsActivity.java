@@ -6,10 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,13 +23,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 
 public class QuestionsActivity extends AppCompatActivity {
@@ -89,8 +86,8 @@ public class QuestionsActivity extends AppCompatActivity {
                 AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(QuestionsActivity.this);
                 View settingsView = getLayoutInflater().inflate(R.layout.add_question_popup, null);
 
-                EditText questionText = settingsView.findViewById(R.id.addQuestion);
-                Button addButtonQuestion = settingsView.findViewById(R.id.addButtonQuestion);
+                EditText questionText = settingsView.findViewById(R.id.addAnswer);
+                Button addButtonQuestion = settingsView.findViewById(R.id.addButtonAnswer);
 
                 settingsBuilder.setView(settingsView);
                 AlertDialog setDialog = settingsBuilder.create();
@@ -128,6 +125,18 @@ public class QuestionsActivity extends AppCompatActivity {
             }
         });
 
+        questionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String questionID = questionsDataList.get(position).getQuestionId();
+                String question_text = questionsDataList.get(position).getQuestionText();
+                Intent i = new Intent(getApplicationContext(), AnswersActivity.class);
+                i.putExtra("questionID", questionID);
+                i.putExtra("question_text", question_text);
+                startActivity(i);
+            }
+        });
+
     }
 
     public void getQuestions() {
@@ -151,7 +160,6 @@ public class QuestionsActivity extends AppCompatActivity {
                     }
 
                 });
-
     }
 
 }
