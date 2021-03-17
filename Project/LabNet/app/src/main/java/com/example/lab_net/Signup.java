@@ -1,12 +1,19 @@
+/**
+ * CMPUT 301
+ * @version 1.0
+ * March 19, 2021
+ *
+ */
+
 package com.example.lab_net;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.provider.Settings.Secure;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -29,6 +36,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * This class is the homepage activity of the app that encourages the user to sign up or
+ * if they have already signed up than takes then to the User Profile.
+ *
+ * @author Vidhi Patel, Qasim Akhtar
+ */
 public class Signup extends AppCompatActivity implements View.OnClickListener {
 
     private Button signUp;
@@ -44,16 +57,26 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        //initialize Sign Up button
         signUp = (Button) findViewById(R.id.signupButton);
         signUp.setOnClickListener(this);
 
+        //initialize fields
         editTextFirstName = (EditText) findViewById(R.id.FirstName);
         editTextLastName = (EditText) findViewById(R.id.LastName);
         editTextEmail = (EditText) findViewById(R.id.EmailAddress);
         editTextPhone = (EditText) findViewById(R.id.PhoneNumber);
 
-        deviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        //get device ID
+        deviceID = Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        /**
+         * @author Qasim Akhtar
+         *
+         * if the deviceID already exists in the database,
+         * than move to UserProfile with user data from database,
+         * else do nothing.
+         */
         collectionReference
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -74,6 +97,12 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                 });
     }
 
+    /**
+     * On clicking the Sign Up button, check if all the fields are filled. If yes then create user,
+     * else check again.
+     *
+     * @author Vidhi Patel
+     */
     @Override
     public void onClick(View v) {
         checkSignUp();
@@ -82,10 +111,17 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         }
         else {
             checkSignUp();
-        };
+        }
 
     }
 
+    /**
+     * Check to insure the user has filled out every field or else request focus.
+     *
+     * @return true if all fields are filled.
+     *
+     * @author Vidhi Patel
+     */
     private boolean checkSignUp() {
         String firstName = editTextFirstName.getText().toString().trim();
         String lastName = editTextLastName.getText().toString().trim();
@@ -132,6 +168,12 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
 
     }
 
+    /**
+     * Create user by adding the user inputted information into the Firestore database and,
+     * the User class. Store the device ID as the UserID in Firestore.
+     *
+     * @author Qasim Akhtar
+     */
     private void createUser(){
         String firstName = editTextFirstName.getText().toString().trim();
         String lastName = editTextLastName.getText().toString().trim();

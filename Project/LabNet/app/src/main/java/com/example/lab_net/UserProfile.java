@@ -1,3 +1,9 @@
+/**
+ * CMPUT 301
+ * @version 1.0
+ * March 19, 2021
+ *
+ */
 package com.example.lab_net;
 
 import androidx.annotation.NonNull;
@@ -40,8 +46,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-//import com.google.firebase.database.ValueEventListener;
-//instead of object i want from the user id.
+/**
+ * This class includes the User Profile acitivity that displays the user information,
+ * as well as buttons for editing user info, browsing and creating experiments, and QR codes.
+ *
+ * @author Vidhi Patel, Qasim Akhtar
+ */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
     private String userId,firstNameText,lastNameText,emailText,phoneText;
@@ -62,12 +72,13 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        //initialize the database
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
         userId = intent.getStringExtra("UserId");
-
         documentReference = db.collection("UserProfile").document(userId);
 
+        //initialize the user information
         usernameTextView = (TextView) findViewById(R.id.username);
         firstNameTextView = (TextView) findViewById(R.id.firstName);
         lastNameTextView = (TextView) findViewById(R.id.lastName);
@@ -82,6 +93,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         getUserInfo();
         getExperiments();
 
+        //initialize the buttons
         editUser = (ImageButton) findViewById(R.id.editUserInfo);
         editUser.setOnClickListener(this);
         browse = (Button) findViewById(R.id.browseButton);
@@ -107,6 +119,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     }
 
+    /**
+     * Set buttons to their appropriate actions.
+     *
+     * @author Vidhi Patel
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -130,6 +147,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    /**
+     * Create a dialog with the user information that can be edited.
+     * Update the database with the new information, or delete the profile is user requested.
+     *
+     * @author Vidhi Patel, Qasim Akhtar
+     */
     private void editUserDialog() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(UserProfile.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_user_dialog,null);
@@ -191,6 +214,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         setDialog.show();
     }
 
+    /**
+     * Create a dialog to create a new experiment with title, description, and location.
+     * Select types of trials and if location is required.
+     *
+     * @author Qasim Akhtar
+     */
     private void addExpDialog() {
         AlertDialog.Builder addBuilder = new AlertDialog.Builder(UserProfile.this);
         View addView = getLayoutInflater().inflate(R.layout.add_exp_dialog,null);
@@ -265,6 +294,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     }
 
+    /**
+     * The view to display subscribed experiments in the User Profile.
+     *
+     * @author Vidhi Patel
+     */
     private void subExpView() {
         subExpListView = findViewById(R.id.subExpListView);
 
@@ -291,6 +325,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         });
     }
 
+    /**
+     * The view to display user created experiments in the User Profile.
+     *
+     * @author Vidhi Patel
+     */
     private void myExpView (){
 
         myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -309,7 +348,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         });
     }
 
-
+    /**
+     * Get experiments from the database that were created by the user by matching user ID.
+     *
+     * @author Qasim Akhtar
+     */
     public void getExperiments() {
         db.collection("Experiments")
                 .whereEqualTo("Owner", userId)
@@ -342,6 +385,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     }
 
+    /**
+     * Get user information from the database.
+     *
+     * @author Qasim Akhtar
+     */
     public void getUserInfo() {
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

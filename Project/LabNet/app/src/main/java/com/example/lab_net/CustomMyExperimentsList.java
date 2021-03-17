@@ -1,3 +1,9 @@
+/**
+ * CMPUT 301
+ * @version 1.0
+ * March 19, 2021
+ *
+ */
 package com.example.lab_net;
 
 import android.content.Context;
@@ -12,6 +18,11 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * This class is for displaying the experiments created by the user.
+ *
+ * @author  Qasim Akhtar
+ */
 public class CustomMyExperimentsList extends ArrayAdapter<Experiment> {
     private ArrayList<Experiment> experiments;
     private Context context;
