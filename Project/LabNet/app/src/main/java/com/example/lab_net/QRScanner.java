@@ -22,6 +22,11 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
 
     public static final String QR_RESULT_EXTRA = "com.example.lab_net.qr_result_text";
 
+    public static final String READ_TYPE_NAME = "com.example.lab_net.read_type";
+
+    public static final String READ_TYPE_VALUE_QR = "com.example.lab_net.read_type_qr";
+    public static final String READ_TYPE_VALUE_BARCODE = "com.example.lab_net.read_type_barcode";
+
     private ZXingScannerView scannerView;
 
     @Override
@@ -51,6 +56,17 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
 
                     }
                 }).check();
+
+        String type = getIntent().getStringExtra(QRScanner.READ_TYPE_NAME);
+        if(type==null)
+            throw new IllegalArgumentException("Read type must be supplied in intent.");
+        if(type.equals(QRScanner.READ_TYPE_VALUE_QR)) {
+
+        } else if(type.equals(QRScanner.READ_TYPE_VALUE_BARCODE)) {
+
+        } else {
+            throw new IllegalArgumentException("Read type "+type+" is invalid.");
+        }
     }
 
     @Override
@@ -76,7 +92,7 @@ public class QRScanner extends AppCompatActivity implements ZXingScannerView.Res
     @Override
     public void handleResult(Result result) {
         Intent ret = new Intent();
-        ret.putExtra(QRScanner.QR_RESULT_EXTRA,result.getText());
+        ret.putExtra(QRScanner.QR_RESULT_EXTRA, result.getText());
         setResult(RESULT_OK,ret);
         finish();
     }
