@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def googleMapApiKey = properties.getProperty('google.map.key')
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -43,6 +47,4 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     implementation 'com.android.support:multidex:1.0.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    //for permissions, makes it easier - https://github.com/Karumi/Dexter
-    implementation 'com.karumi:dexter:6.2.2'
 }
