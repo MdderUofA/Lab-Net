@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -26,12 +27,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
+
+import java.util.Objects;
 
 
 public class MapFragment extends Fragment {
@@ -42,6 +39,7 @@ public class MapFragment extends Fragment {
     private Task<Location> locationResult;
     private Location lastKnownLocation;
     private double[] coordinates = new double[2];
+
 
     public void putLocationOnMap(Location lastKnownLocation, GoogleMap googleMap){
 
@@ -66,6 +64,23 @@ public class MapFragment extends Fragment {
         ));
 
     }
+    @SuppressLint("MissingPermission")
+    public void getLocation(FusedLocationProviderClient fusedLocationProviderClient, GoogleMap googleMap){
+        locationResult = fusedLocationProviderClient.getLastLocation();
+        locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                if (task.isSuccessful()) {
+                    lastKnownLocation = locationResult.getResult();
+                    if (lastKnownLocation != null) {
+                        putLocationOnMap(lastKnownLocation, googleMap);
+                    } else {
+                        Toast.makeText(getContext(), "Can't get location, please try again", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }});
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,37 +100,20 @@ public class MapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap googleMap) {
 
-                if (isPermissionGiven()) {
-                    locationResult = fusedLocationProviderClient.getLastLocation();
-                    locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            if (task.isSuccessful()) {
-                                lastKnownLocation = locationResult.getResult();
-                                if (lastKnownLocation != null) {
-                                    putLocationOnMap(lastKnownLocation, googleMap);
-                                } else {
-                                    Toast.makeText(getContext(), "Can't get location, please try again", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        }});
+                    getLocation(fusedLocationProviderClient, googleMap);
 
-                } else {
-                    askPermission();
-                    locationResult = fusedLocationProviderClient.getLastLocation();
-                    locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            if (task.isSuccessful()) {
-                                lastKnownLocation = locationResult.getResult();
-                                if (lastKnownLocation != null) {
-                                    putLocationOnMap(lastKnownLocation, googleMap);
-                                } else {
-                                    Toast.makeText(getContext(), "Can't get location, please try again", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        }});
-                }
+
+
+                //while (isPermissionGiven() == false){
+                    //if (isPermissionGiven()) {
+                        //getLocation(fusedLocationProviderClient, googleMap);
+                    //} else {
+                        //askPermission();
+                //}
+                //}
+
+
+
                 googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
@@ -139,37 +137,6 @@ public class MapFragment extends Fragment {
             }
         });
         return view;
-    }
-
-    public boolean isPermissionGiven(){
-        return ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED;
-    }
-
-    public void askPermission(){
-        Dexter.withContext(getContext()).withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                .withListener(new PermissionListener() {
-                    @SuppressLint("MissingPermission")
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        locationResult = fusedLocationProviderClient.getLastLocation();
-                        lastKnownLocation = locationResult.getResult();
-                        mainLatitude = lastKnownLocation.getLatitude();
-                        mainLongitude = lastKnownLocation.getLongitude();
-                        Toast.makeText(getContext(), "Thank you, location is now shown", Toast.LENGTH_LONG).show();
-                    }
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                        Toast toast = new Toast(getContext());
-                        Toast.makeText(getContext(), "Permission is required to show your location", Toast.LENGTH_LONG).show();
-                    }
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                        permissionToken.continuePermissionRequest();
-                    }
-                });
-
     }
 
     public void sendLocation(double[] coordinates){

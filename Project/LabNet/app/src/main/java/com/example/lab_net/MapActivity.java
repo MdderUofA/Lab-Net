@@ -2,9 +2,12 @@ package com.example.lab_net;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +20,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MapActivity extends AppCompatActivity implements CoordinateListener {
 
@@ -24,7 +28,38 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
     FirebaseFirestore db;
     double trialLatitude;
     double trialLongitude;
+    private boolean isLocationPermissionGranted = false;
 
+
+    private void getLocationPermission() {
+        Log.d(TAG, "getLocationPermission: START"+ isLocationPermissionGranted);
+        if (ContextCompat.checkSelfPermission(Objects.requireNonNull(this.getApplicationContext()),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            isLocationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    9003);
+        }
+        Log.d(TAG, "getLocationPermission: END"+ isLocationPermissionGranted);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        isLocationPermissionGranted= false;
+        switch (requestCode) {
+            case 9003: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    isLocationPermissionGranted = true;
+
+                }
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +67,13 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
         setContentView(R.layout.activity_map);
         Fragment fragment = new MapFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.map_layout,fragment).commit();
+
+        if (!isLocationPermissionGranted){
+            getLocationPermission();
+            if (!isLocationPermissionGranted){
+                finish();
+            }
+        }
 
         db = FirebaseFirestore.getInstance();
         final CollectionReference collectionReference = db.collection("Trials");
