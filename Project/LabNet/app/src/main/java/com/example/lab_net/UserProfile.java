@@ -1,3 +1,9 @@
+/**
+ * CMPUT 301
+ * @version 1.0
+ * March 19, 2021
+ *
+ */
 package com.example.lab_net;
 
 import androidx.annotation.NonNull;
@@ -6,10 +12,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,39 +33,74 @@ import android.widget.Toast;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.model.Document;
-//import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * This class includes the User Profile activity that displays the user information,
+ * as well as buttons for editing user info, browsing and creating experiments, and QR codes.
+ *
+ * @author Vidhi Patel, Qasim Akhtar
+ */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
-//    private FirebaseUser user;
-//    private DatabaseReference ref;
-//    private String userID;
-    private User user;
+    private String userId,firstNameText,lastNameText,emailText,phoneText;
     private FirebaseFirestore db;
+    private DocumentReference documentReference;
+
+    private String experimentId;
 
     private ImageButton editUser;
     private Button browse, addExp, qrCode;
+    private ListView subExpListView, myExpListView;
+    private ArrayList<Experiment> myExperimentsDataList;
+    private ArrayAdapter<Experiment> myExperimentAdapter;
+    private TextView usernameTextView, firstNameTextView, lastNameTextView,emailTextView,phoneTextView;
+
+    // Make EditTexts in add Experiment global to ensure they aren't empty
+
+    EditText expTitle, expDescription, expRegion, expMinTrials;
+    Button create;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        //initialize the database
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
-        user = (User) intent.getSerializableExtra("User");
+        userId = intent.getStringExtra("UserId");
+        documentReference = db.collection("UserProfile").document(userId);
 
-        final TextView usernameTextView = (TextView) findViewById(R.id.username);
-        final TextView firstNameTextView = (TextView) findViewById(R.id.firstName);
-        final TextView lastNameTextView = (TextView) findViewById(R.id.lastName);
-        final TextView emailTextView = (TextView) findViewById(R.id.email);
-        final TextView phoneTextView = (TextView) findViewById(R.id.phone);
+        //initialize the user information
+        usernameTextView = (TextView) findViewById(R.id.username);
+        firstNameTextView = (TextView) findViewById(R.id.firstName);
+        lastNameTextView = (TextView) findViewById(R.id.lastName);
+        emailTextView = (TextView) findViewById(R.id.email);
+        phoneTextView = (TextView) findViewById(R.id.phone);
 
+        myExpListView = findViewById(R.id.myExpListView);
+        myExperimentsDataList = new ArrayList<>();
+        myExperimentAdapter = new CustomMyExperimentsList(this, myExperimentsDataList);
+        myExpListView.setAdapter(myExperimentAdapter);
+
+        getUserInfo();
+        getExperiments();
+
+        //initialize the buttons
         editUser = (ImageButton) findViewById(R.id.editUserInfo);
         editUser.setOnClickListener(this);
         browse = (Button) findViewById(R.id.browseButton);
@@ -62,45 +110,27 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         qrCode = (Button) findViewById(R.id.qrButton);
         qrCode.setOnClickListener(this);
 
-//        user = FirebaseAuth.getInstance().getCurrentUser();
-//        ref = FirebaseDatabase.getInstance().getReference("Users");
-//        userID = user.getUid();
+        subExpView();
+        myExpView();
 
+/*
+        myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent1 = new Intent(getApplicationContext(), ExperimentActivity.class);
+                intent1.putExtra("experimentId", experimentId);
 
-
-
-        usernameTextView.setText(user.getUserId());
-        firstNameTextView.setText(user.getFirstName());
-        lastNameTextView.setText(user.getLastName());
-        emailTextView.setText(user.getEmail());
-        phoneTextView.setText(user.getPhone());
-
-//        ref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                User userProfile = snapshot.getValue(User.class);
-//
-//                if (userProfile != null){
-//                    String username = userID;
-//
-//                    usernameTextView.setText(username);
-//                    firstNameTextView.setText(userProfile.firstName);
-//                    lastNameTextView.setText(userProfile.lastName);
-//                    emailTextView.setText(userProfile.email);
-//                    phoneTextView.setText(userProfile.phone);
-//
-//                }
-//            }
-
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Toast.makeText(UserProfile.this, "Error displaying profile", Toast.LENGTH_LONG).show();
-//            }
-//        });
-
+            }
+        });
+*/
 
     }
 
+    /**
+     * Set buttons to their appropriate actions.
+     *
+     * @author Vidhi Patel
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -124,7 +154,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-
+    /**
+     * Create a dialog with the user information that can be edited.
+     * Update the database with the new information, or delete the profile is user requested.
+     *
+     * @author Vidhi Patel, Qasim Akhtar
+     */
     private void editUserDialog() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(UserProfile.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_user_dialog,null);
@@ -140,26 +175,20 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         AlertDialog setDialog = settingsBuilder.create();
         setDialog.setCanceledOnTouchOutside(true);
 
-        setFirstName.setText(user.getFirstName());
-        setLastName.setText(user.getLastName());
-        setEmail.setText(user.getEmail());
-        setPhone.setText(user.getPhone());
+        setFirstName.setText(firstNameText);
+        setLastName.setText(lastNameText);
+        setEmail.setText(emailText);
+        setPhone.setText(phoneText);
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DocumentReference updateDoc = db.collection("UserProfile").document(user.getUserId());
                 String updatedFirst = setFirstName.getText().toString();
                 String updatedLast = setLastName.getText().toString();
                 String updatedEmail = setEmail.getText().toString();
                 String updatedPhone = setPhone.getText().toString();
 
-                user.setFirstName(updatedFirst);
-                user.setLastName(updatedLast);
-                user.setEmail(updatedEmail);
-                user.setPhone(updatedPhone);
-
-                updateDoc.update(
+                documentReference.update(
                         "email", updatedEmail,
                         "firstName", updatedFirst,
                         "lastName", updatedLast,
@@ -170,17 +199,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Changes Saved", Toast.LENGTH_LONG).show();
                             setDialog.dismiss();
-                            final TextView usernameTextView = (TextView) findViewById(R.id.username);
-                            final TextView firstNameTextView = (TextView) findViewById(R.id.firstName);
-                            final TextView lastNameTextView = (TextView) findViewById(R.id.lastName);
-                            final TextView emailTextView = (TextView) findViewById(R.id.email);
-                            final TextView phoneTextView = (TextView) findViewById(R.id.phone);
-
-                            usernameTextView.setText(user.getUserId());
-                            firstNameTextView.setText(user.getFirstName());
-                            lastNameTextView.setText(user.getLastName());
-                            emailTextView.setText(user.getEmail());
-                            phoneTextView.setText(user.getPhone());
+                            getUserInfo();
                         } else {
                             Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
                         }
@@ -193,38 +212,244 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 CollectionReference collectionReference = db.collection("UserProfile");
-                collectionReference.document(user.getUserId()).delete();
-                Intent intent1 = new Intent(UserProfile.this, Homepage.class);
+                collectionReference.document(userId).delete();
+                Intent intent1 = new Intent(UserProfile.this, Signup.class);
                 startActivity(intent1);
-                //Delete from the list of users/usermanager
             }
         });
 
         setDialog.show();
     }
 
+    /**
+     * Create a dialog to create a new experiment with title, description, and location.
+     * Select types of trials and if location is required.
+     *
+     * @author Qasim Akhtar
+     */
     private void addExpDialog() {
         AlertDialog.Builder addBuilder = new AlertDialog.Builder(UserProfile.this);
         View addView = getLayoutInflater().inflate(R.layout.add_exp_dialog,null);
+        final CollectionReference collectionReference = db.collection("Experiments");
 
-        EditText expTitle = (EditText) addView.findViewById(R.id.addExpTitle);
-        EditText expDescription = (EditText) addView.findViewById(R.id.addExpDescription);
-        EditText expRegion = (EditText) addView.findViewById(R.id.addExpRegion);
-        Button create = (Button) addView.findViewById(R.id.createButton);
+        String trialTypes[] = {"Count-based", "Binomial", "Measurement", "NonNegativeInteger"};
+
+        //location spinner
+        String enableLocation[] = {"No", "Yes"};
+
+        expTitle = (EditText) addView.findViewById(R.id.addExpTitle);
+        expDescription = (EditText) addView.findViewById(R.id.addExpDescription);
+        expRegion = (EditText) addView.findViewById(R.id.addExpRegion);
+        expMinTrials = addView.findViewById(R.id.addExpMinTrials);
+        Spinner dropdown = (Spinner) addView.findViewById(R.id.dropdownTrialType);
+        Spinner dropdown2 = (Spinner) addView.findViewById(R.id.dropdownLocation);
+        create = (Button) addView.findViewById(R.id.createButton);
+
+        expTitle.addTextChangedListener(addTextWatcher);
+        expDescription.addTextChangedListener(addTextWatcher);
+        expRegion.addTextChangedListener(addTextWatcher);
+        expMinTrials.addTextChangedListener(addTextWatcher);
+        create.setEnabled(false);
 
         addBuilder.setView(addView);
         AlertDialog addDialog = addBuilder.create();
         addDialog.setCanceledOnTouchOutside(true);
 
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,trialTypes);
+        dropdown.setAdapter(adapter);
+
+        ArrayAdapter<String> adapter2 =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,enableLocation);
+        dropdown2.setAdapter(adapter2);
+
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO create experiment
-                // lead to experiment activity
+                //userprofile collection, have to update experiment list
+                String title = expTitle.getText().toString().trim();
+                String description = expDescription.getText().toString().trim();
+                String region = expRegion.getText().toString().trim();
+                int minTrials = Integer.valueOf(expMinTrials.getText().toString());
+                String trialType = dropdown.getSelectedItem().toString();
+                String enableLocation = dropdown2.getSelectedItem().toString();
+
+                Map<String,Object> data = new HashMap<>();
+                data.put("Title",title);
+                data.put("Description",description);
+                data.put("Region",region);
+                data.put("MinTrials",minTrials);
+                data.put("TrialType",trialType);
+                data.put("Owner",userId);
+                data.put("EnableLocation", enableLocation);
+
+                experimentId = collectionReference.document().getId();
+                collectionReference.document(experimentId).set(data)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(UserProfile.this, "Experiment created", Toast.LENGTH_LONG).show();
+                                addDialog.dismiss();
+                                getExperiments();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(UserProfile.this, "Experiment not created", Toast.LENGTH_LONG).show();
+                                addDialog.dismiss();
+                            }
+                        });
             }
         });
 
         addDialog.show();
 
     }
+
+    /**
+     * The view to display subscribed experiments in the User Profile.
+     *
+     * @author Vidhi Patel
+     */
+    private void subExpView() {
+        subExpListView = findViewById(R.id.subExpListView);
+
+        String[] test1 = new String[]{
+                "Exp1", "Exp2", "Exp3", "Exp4", "Exp5", "Exp6", "Exp7", "Exp8", "Exp9"
+        };
+
+        ArrayAdapter<String> subExpAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, test1);
+        subExpListView.setAdapter(subExpAdapter);
+
+        subExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO
+//                if (position == 0){
+//                    Intent intent = new Intent(view.getContext(), Exp1.class);
+//                    startActivity(intent);
+//                }
+//                if (position == 1){
+//                    Intent intent = new Intent(view.getContext(), Exp2.class);
+//                    startActivity(intent);
+//                }
+            }
+        });
+    }
+
+    /**
+     * The view to display user created experiments in the User Profile.
+     *
+     * @author Vidhi Patel
+     */
+    private void myExpView (){
+
+        myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //TODO
+//                if (position == 0){
+//                    Intent intent = new Intent(view.getContext(), My1.class);
+//                    startActivity(intent);
+//                }
+//                if (position == 1){
+//                    Intent intent = new Intent(view.getContext(), My2.class);
+//                    startActivity(intent);
+//                }
+            }
+        });
+    }
+
+    /**
+     * Get experiments from the database that were created by the user by matching user ID.
+     *
+     * @author Qasim Akhtar
+     */
+    public void getExperiments() {
+        db.collection("Experiments")
+                .whereEqualTo("Owner", userId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            myExperimentsDataList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String experimentId = document.getId();
+                                String experimentTitle = document.getData().get("Title").toString();
+                                String experimentDescription = document.getData().get("Description").toString();
+                                String experimentRegion = document.getData().get("Region").toString();
+                                String experimentOwner = document.getData().get("Owner").toString();
+                                int experimentMinTrials = Integer.valueOf(document.getData().get("MinTrials").toString());
+                                String experimentTrialType = document.getData().get("TrialType").toString();
+
+                                //String experimentEnableLocation = document.getData().get("EnableLocation").toString();
+
+                                myExperimentsDataList.add(new Experiment(experimentId,experimentTitle,
+                                        experimentDescription,experimentRegion,experimentOwner,experimentMinTrials,experimentTrialType, "Yes"));
+                                myExperimentAdapter.notifyDataSetChanged();
+
+                            }
+                        }
+                    }
+
+                });
+
+    }
+
+    /**
+     * Get user information from the database.
+     *
+     * @author Qasim Akhtar
+     */
+    public void getUserInfo() {
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if(documentSnapshot.exists()){
+                        firstNameText = documentSnapshot.getData().get("firstName").toString();
+                        lastNameText = documentSnapshot.getData().get("lastName").toString();
+                        emailText = documentSnapshot.getData().get("email").toString();
+                        phoneText = documentSnapshot.getData().get("phone").toString();
+
+                        usernameTextView.setText(userId);
+                        firstNameTextView.setText(firstNameText);
+                        lastNameTextView.setText(lastNameText);
+                        emailTextView.setText(emailText);
+                        phoneTextView.setText(phoneText);
+                    }
+                }
+            }
+        });
+    }
+    @Override
+    public void onBackPressed() { }
+
+    private TextWatcher addTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String checkTitle = expTitle.getText().toString();
+            String checkDescription = expDescription.getText().toString();
+            String checkRegion = expRegion.getText().toString();
+            String checkMinTrials = expMinTrials.getText().toString();
+
+            create.setEnabled(!checkTitle.isEmpty()
+                    && !checkDescription.isEmpty()
+                    && !checkRegion.isEmpty()
+                    && !checkMinTrials.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 }

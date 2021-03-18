@@ -1,21 +1,31 @@
+/**
+ * CMPUT 301
+ * @version 1.0
+ * March 19, 2021
+ *
+ */
 package com.example.lab_net;
 
-import java.io.Serializable;
-
-public class User implements Serializable {
+/**
+ * This class defines the user and its attributes.
+ *
+ * @author Qasim Akhtar
+ */
+public class User {
 
     public String firstName, lastName, email, phone,userId;
 
-//    public User (){
-//
-//    }
 
     public User(String userId, String firstName, String lastName, String email, String phone) {
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
-        this.userId = userId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getFirstName() {
@@ -50,11 +60,4 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 }
