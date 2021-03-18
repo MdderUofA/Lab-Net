@@ -99,13 +99,13 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(MainActivity.this, "Location added", Toast.LENGTH_LONG).show();
+                                Toast.makeText(Signup.this, "Location added", Toast.LENGTH_LONG).show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(MainActivity.this, "Location not added", Toast.LENGTH_LONG).show();
+                                Toast.makeText(Signup.this, "Location not added", Toast.LENGTH_LONG).show();
                             }
                         });*/
 
