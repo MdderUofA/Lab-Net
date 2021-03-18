@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener  {
+class MainActivity extends AppCompatActivity implements View.OnClickListener  {
 
     private Button signUp;
     @Override

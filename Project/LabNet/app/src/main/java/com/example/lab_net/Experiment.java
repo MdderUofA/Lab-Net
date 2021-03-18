@@ -12,7 +12,7 @@ public class Experiment {
     String trialType;
     ArrayList<Trial> trials;// aggregation with Trial
     String enableLocation;
-   // ArrayList<Question> questions; // aggregate with Question
+    // ArrayList<Question> questions; // aggregate with Question
     //qrCode QR; // aggregate with QR
 
     public Experiment(String experimentId, String title, String description, String owner, String region, int minTrials, String trialType, String enableLocation) {

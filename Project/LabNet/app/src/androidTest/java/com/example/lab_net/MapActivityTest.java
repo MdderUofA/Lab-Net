@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import java.util.Objects;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -32,29 +33,24 @@ public class MapActivityTest {
     @Before
     public void setUp() {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        /*solo.waitForText(solo.getView(R.id.experimentTitle).toString());
-        solo.clickOnView(solo.getView(R.id.addRemoveTrialsButton));
-        solo.waitForDialogToOpen();*/
     }
 
     @Test
     public void checkPermissionConsistency(){
-        //solo.clickOnView(solo.getView(R.id.getLocationButton));
         MapActivity mapActivity = (MapActivity) solo.getCurrentActivity();
         boolean permission = mapActivity.isLocationPermissionGranted();
         if (permission){
             assertTrue(ContextCompat.checkSelfPermission(Objects.requireNonNull(solo.getCurrentActivity()),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED);
+                    android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
         } else {
             assertFalse(ContextCompat.checkSelfPermission(Objects.requireNonNull(solo.getCurrentActivity()),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED);
+                    android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
         }
+
     }
 
     @Test
-    public void checkIfLocationIsUpdated(){
+    public void checkIfLocationIsUpdated() {
         //Checking to see if location coordinates are updated from MapFragment.
         assertTrue("Permission to get location not given. Please give application location permission" +
                 "for test to work" +
@@ -66,14 +62,9 @@ public class MapActivityTest {
         assertNotEquals(mapActivity.getTrialLatitude(), 0.0);
     }
 
-
     @After
-    public void tearDown(){
+    public void tearDown() {
         solo.finishOpenedActivities();
     }
-
-
-
-
 
 }

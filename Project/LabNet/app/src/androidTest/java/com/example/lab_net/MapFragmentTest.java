@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.robotium.solo.Condition;
 import com.robotium.solo.Solo;
 
@@ -28,17 +29,13 @@ public class MapFragmentTest {
     private Solo solo;
 
     @Rule
-    public ActivityTestRule<ExperimentActivity> rule =
-            new ActivityTestRule<>(ExperimentActivity.class, true, true);
+    public ActivityTestRule<MapActivity> rule =
+            new ActivityTestRule<>(MapActivity.class, true, true);
 
     @Before
     public void setUp() {
 
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        solo.waitForText(solo.getView(R.id.experimentTitle).toString());
-        solo.clickOnView(solo.getView(R.id.addRemoveTrialsButton));
-        solo.waitForDialogToOpen();
-        solo.clickOnView(solo.getView(R.id.getLocationButton));
         solo.assertCurrentActivity("Not MapActivity", MapActivity.class);
         assertTrue("Permission to get location not given. Please give application location permission" +
                 "for test to work" +
@@ -63,22 +60,58 @@ public class MapFragmentTest {
             public boolean isSatisfied() {
                 return mapFragment.getMainLatitude()>0 && mapFragment.getMainLongitude() > 0;
             }
-        },10000);
+        },5000);
 
         assertEquals(myCurrentLocationLatitude, mapFragment.getMainLatitude(), 0.0001);
         assertEquals(myCurrentLocationLongitude, mapFragment.getMainLongitude(), 0.0001);
 
     }
     @Test
-    public void checkIfLocationIsUpdated(){
+    public void checkIfLocationIsUpdatedWhenClicked(){
         //Checking to see if location coordinates are updated from MapFragment.
+        MapActivity mapActivity = (MapActivity) solo.getCurrentActivity();
+        MapFragment mapFragment = (MapFragment) mapActivity.getMapFragment();
+
+        //my current location coordinates from google.com
+        //change to your current location to test
+        double myCurrentLocationLatitude = -4.0585018676036295;
+        double myCurrentLocationLongitude = 39.66499157809425;
+
+        solo.waitForCondition(new Condition(){
+
+            @Override
+            public boolean isSatisfied() {
+                return mapFragment.getMainLatitude()>0 && mapFragment.getMainLongitude() > 0;
+            }
+        },5000);
+
+        assertEquals(myCurrentLocationLatitude, mapFragment.getMainLatitude(), 0.0001);
+        assertEquals(myCurrentLocationLongitude, mapFragment.getMainLongitude(), 0.0001);
+
+        solo.clickOnScreen(810,690);//Random locationOne on map
+
+        double locationOneLatitude = mapFragment.getMainLatitude();
+        double locationOneLongitude = mapFragment.getMainLongitude();
+
+        assertNotEquals(myCurrentLocationLatitude, locationOneLatitude);
+        assertNotEquals(myCurrentLocationLongitude, locationOneLongitude);
+
+        solo.clickOnScreen(510,390);//Random locationTwo on map
+
+        double locationTwoLatitude = mapFragment.getMainLatitude();
+        double locationTwoLongitude = mapFragment.getMainLongitude();
+
+        assertNotEquals(myCurrentLocationLatitude, locationTwoLatitude);
+        assertNotEquals(myCurrentLocationLongitude, locationTwoLongitude);
+
+        assertNotEquals(locationOneLatitude, locationTwoLatitude);
+        assertNotEquals(locationOneLongitude, locationTwoLongitude);
 
     }
 
-
     @After
     public void tearDown(){
-        //solo.finishOpenedActivities();
+        solo.finishOpenedActivities();
     }
 
 }
