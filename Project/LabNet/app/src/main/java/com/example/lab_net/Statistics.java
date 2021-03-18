@@ -1,3 +1,10 @@
+/**
+ * CMPUT 301
+ * @version 1.0
+ * March 19, 2021
+ *
+ */
+
 package com.example.lab_net;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,9 +21,11 @@ import java.util.ArrayList;
 public class Statistics extends AppCompatActivity {
 
     TextView meanView;
-    long sum = 0, mean = 0;
+    long sum = 0;
+    double mean = 0;
     ArrayList<CountTrial> trials;
     ArrayList<Long> results;
+    String expId;
     int i;
 
     Button doneButton;
@@ -32,6 +41,7 @@ public class Statistics extends AppCompatActivity {
         Intent intent = getIntent();
         results = new ArrayList<>();
         results = (ArrayList<Long>) intent.getSerializableExtra("resultList");
+        expId = intent.getStringExtra("ExperimentId");
 
         for (i = 0; i < results.size(); i++) {
             sum = results.get(i) + sum;
@@ -48,6 +58,7 @@ public class Statistics extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent1 = new Intent(getApplicationContext(), ExperimentActivity.class);
+                intent1.putExtra("ExperimentId",expId);
                 startActivity(intent1);
             }
         });

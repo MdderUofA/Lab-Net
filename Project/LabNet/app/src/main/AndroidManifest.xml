@@ -29,6 +29,7 @@
         <activity android:name=".QuestionsActivity" />
         <activity android:name=".Statistics" />
         <activity android:name=".ExperimentActivity" />
+        <activity android:name=".UserProfile"/>
         <activity android:name=".SubscribedExperimentActivity"/>
         <activity android:name=".Signup">
             <intent-filter>

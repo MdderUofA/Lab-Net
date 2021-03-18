@@ -113,17 +113,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         subExpView();
         myExpView();
 
-/*
-        myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent1 = new Intent(getApplicationContext(), ExperimentActivity.class);
-                intent1.putExtra("experimentId", experimentId);
-
-            }
-        });
-*/
-
     }
 
     /**
@@ -348,15 +337,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO
-//                if (position == 0){
-//                    Intent intent = new Intent(view.getContext(), My1.class);
-//                    startActivity(intent);
-//                }
-//                if (position == 1){
-//                    Intent intent = new Intent(view.getContext(), My2.class);
-//                    startActivity(intent);
-//                }
+                Experiment experiment = myExperimentsDataList.get(position);
+                Intent intent = new Intent(UserProfile.this, ExperimentActivity.class);
+                intent.putExtra("ExperimentId", experiment.getExperimentId());
+                startActivity(intent);
             }
         });
     }
@@ -383,11 +367,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                                 String experimentOwner = document.getData().get("Owner").toString();
                                 int experimentMinTrials = Integer.valueOf(document.getData().get("MinTrials").toString());
                                 String experimentTrialType = document.getData().get("TrialType").toString();
-
-                                //String experimentEnableLocation = document.getData().get("EnableLocation").toString();
+                                String experimentEnableLocation = document.getData().get("EnableLocation").toString();
 
                                 myExperimentsDataList.add(new Experiment(experimentId,experimentTitle,
-                                        experimentDescription,experimentRegion,experimentOwner,experimentMinTrials,experimentTrialType, "Yes"));
+                                        experimentDescription,experimentRegion,experimentOwner,experimentMinTrials,experimentTrialType, experimentEnableLocation));
                                 myExperimentAdapter.notifyDataSetChanged();
 
                             }
