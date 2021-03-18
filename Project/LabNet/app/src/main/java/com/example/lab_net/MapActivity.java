@@ -25,9 +25,9 @@ import java.util.Objects;
 public class MapActivity extends AppCompatActivity implements CoordinateListener {
 
     private static final String TAG = "TESTING ACTIVITY" ;
-    FirebaseFirestore db;
-    double trialLatitude;
-    double trialLongitude;
+    private FirebaseFirestore db;
+    private double trialLatitude;
+    private double trialLongitude;
     private boolean isLocationPermissionGranted = false;
 
 
@@ -121,5 +121,37 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
         this.trialLongitude = longitude;
         Log.d(TAG, "onCreate: " + trialLatitude + trialLongitude);
 
+    }
+
+    public FirebaseFirestore getDb() {
+        return db;
+    }
+
+    public void setDb(FirebaseFirestore db) {
+        this.db = db;
+    }
+
+    public double getTrialLatitude() {
+        return trialLatitude;
+    }
+
+    public void setTrialLatitude(double trialLatitude) {
+        this.trialLatitude = trialLatitude;
+    }
+
+    public double getTrialLongitude() {
+        return trialLongitude;
+    }
+
+    public void setTrialLongitude(double trialLongitude) {
+        this.trialLongitude = trialLongitude;
+    }
+
+    public boolean isLocationPermissionGranted() {
+        return isLocationPermissionGranted;
+    }
+
+    public void setLocationPermissionGranted(boolean locationPermissionGranted) {
+        isLocationPermissionGranted = locationPermissionGranted;
     }
 }

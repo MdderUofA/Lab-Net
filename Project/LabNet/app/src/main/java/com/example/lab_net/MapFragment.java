@@ -35,7 +35,6 @@ public class MapFragment extends Fragment {
     private Location lastKnownLocation;
     private double[] coordinates = new double[2];
 
-
     public void putLocationOnMap(Location lastKnownLocation, GoogleMap googleMap){
 
         mainLatitude = lastKnownLocation.getLatitude();
@@ -128,5 +127,55 @@ public class MapFragment extends Fragment {
         Log.d(TAG, "sendLocation: " + coordinates[0] + coordinates[1]);
 
     }
+
+
+    public FusedLocationProviderClient getFusedLocationProviderClient() {
+        return fusedLocationProviderClient;
+    }
+
+    public void setFusedLocationProviderClient(FusedLocationProviderClient fusedLocationProviderClient) {
+        this.fusedLocationProviderClient = fusedLocationProviderClient;
+    }
+
+    public double getMainLongitude() {
+        return mainLongitude;
+    }
+
+    public void setMainLongitude(double mainLongitude) {
+        this.mainLongitude = mainLongitude;
+    }
+
+    public double getMainLatitude() {
+        return mainLatitude;
+    }
+
+    public void setMainLatitude(double mainLatitude) {
+        this.mainLatitude = mainLatitude;
+    }
+
+    public Task<Location> getLocationResult() {
+        return locationResult;
+    }
+
+    public void setLocationResult(Task<Location> locationResult) {
+        this.locationResult = locationResult;
+    }
+
+    public Location getLastKnownLocation() {
+        return lastKnownLocation;
+    }
+
+    public void setLastKnownLocation(Location lastKnownLocation) {
+        this.lastKnownLocation = lastKnownLocation;
+    }
+
+    public double[] getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(double[] coordinates) {
+        this.coordinates = coordinates;
+    }
+
 
 }
