@@ -49,7 +49,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class includes the User Profile acitivity that displays the user information,
+ * This class includes the User Profile activity that displays the user information,
  * as well as buttons for editing user info, browsing and creating experiments, and QR codes.
  *
  * @author Vidhi Patel, Qasim Akhtar
