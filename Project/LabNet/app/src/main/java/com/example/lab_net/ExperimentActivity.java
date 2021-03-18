@@ -851,7 +851,7 @@ public class ExperimentActivity extends AppCompatActivity {
                         });
                 dialog.dismiss();
                 // change to UserProfile
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), Signup.class);
                 startActivity(intent);
 
             }
