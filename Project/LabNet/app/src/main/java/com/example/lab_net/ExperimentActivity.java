@@ -416,8 +416,10 @@ public class ExperimentActivity extends AppCompatActivity {
 
     //stats
     Button statistics;
-
     Button questionButton;
+
+    Button addTrialButton;
+    EditText addTrialTitle, addTrialResult;
 
 
 
@@ -607,8 +609,7 @@ public class ExperimentActivity extends AppCompatActivity {
 
     private void addTrial(){
 
-        Button addTrialButton;
-        EditText addTrialTitle, addTrialResult;
+
 
         if(trialType.equals("Count-based") || trialType.equals("Measurement") || trialType.equals("NonNegativeInteger")) {
             AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(ExperimentActivity.this);
@@ -623,44 +624,10 @@ public class ExperimentActivity extends AppCompatActivity {
             addTrialButton = (Button) settingsView.findViewById(R.id.addTrial);
             addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
             addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
+            addTrialButton.setEnabled(false);
 
-            addTrialTitle.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String checkTitle = addTrialTitle.getText().toString().trim();
-
-                    addTrialButton.setEnabled(!checkTitle.isEmpty());
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                }
-            });
-
-            addTrialResult.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String checkResult = addTrialResult.getText().toString().trim();
-
-                    addTrialButton.setEnabled(!checkResult.isEmpty());
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                }
-            });
-
+            addTrialTitle.addTextChangedListener(addTextWatcher);
+            addTrialResult.addTextChangedListener(addTextWatcher);
 
             final CollectionReference collectionReference = db.collection("Trials");
 
@@ -860,6 +827,23 @@ public class ExperimentActivity extends AppCompatActivity {
         alert.show();
 
     }
+    private TextWatcher addTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String checkResult = addTrialResult.getText().toString();
+            String checkTitle = addTrialTitle.getText().toString();
+            addTrialButton.setEnabled(!checkResult.isEmpty() && !checkTitle.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
 }
 
