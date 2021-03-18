@@ -99,21 +99,24 @@ public class MapFragment extends Fragment {
                 googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(latLng);
+                        markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+                        googleMap.clear();
+                        googleMap.addMarker(markerOptions);
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                latLng, 15
+                        ));
 
-                            MarkerOptions markerOptions = new MarkerOptions();
-                            markerOptions.position(latLng);
-                            markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-                            googleMap.clear();
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                    latLng, 10
-                            ));
-                            googleMap.addMarker(markerOptions);
 
-                            mainLatitude = latLng.latitude;
-                            mainLongitude = latLng.longitude;
-                            coordinates[0] = mainLatitude;
-                            coordinates[1] = mainLongitude;
-                            sendLocation(coordinates);
+                        mainLatitude = latLng.latitude;
+                        mainLongitude = latLng.longitude;
+                        coordinates[0] = mainLatitude;
+                        coordinates[1] = mainLongitude;
+                        sendLocation(coordinates);
+
+
+
                     }
                 });
             }
@@ -176,6 +179,5 @@ public class MapFragment extends Fragment {
     public void setCoordinates(double[] coordinates) {
         this.coordinates = coordinates;
     }
-
 
 }
