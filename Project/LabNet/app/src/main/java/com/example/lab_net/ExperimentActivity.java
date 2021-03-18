@@ -33,9 +33,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import static android.media.CamcorderProfile.get;
 
@@ -417,6 +419,7 @@ public class ExperimentActivity extends AppCompatActivity {
     //stats
     Button statistics;
     Button questionButton;
+    List<Long> resultList = new ArrayList<Long>();
 
     Button addTrialButton;
     EditText addTrialTitle, addTrialResult;
@@ -459,11 +462,13 @@ public class ExperimentActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            resultList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 trialId = document.getId();
                                 trialTitle = document.getData().get("Title").toString();
                                 resultLong = (Long) document.getData().get("Result");
                                 trialDataList.add(new CountTrial(trialId, trialTitle, resultLong));
+                                resultList.add(resultLong);
                             }
                             trialArrayAdapter.notifyDataSetChanged();
                         }
@@ -523,15 +528,7 @@ public class ExperimentActivity extends AppCompatActivity {
             }
         });
 
-        statistics = (Button) findViewById(R.id.ownerStatisticsButton);
-        statistics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Statistics.class);
-                intent.putExtra("trialList", trialDataList);
-                startActivity(intent);
-            }
-        });
+
 
         questionButton = (Button) findViewById(R.id.questionAnswerBrowseButton);
         questionButton.setOnClickListener(new View.OnClickListener() {
@@ -548,6 +545,21 @@ public class ExperimentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 deleteExperiment();
+            }
+        });
+
+        statistics = (Button) findViewById(R.id.ownerStatisticsButton);
+        statistics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Statistics.class);
+                if(trialArrayAdapter.getCount() == 0){
+                    Toast.makeText(ExperimentActivity.this, "No stats available for this experiment", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    intent.putExtra("resultList", (Serializable) resultList);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -609,8 +621,6 @@ public class ExperimentActivity extends AppCompatActivity {
 
     private void addTrial(){
 
-
-
         if(trialType.equals("Count-based") || trialType.equals("Measurement") || trialType.equals("NonNegativeInteger")) {
             AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(ExperimentActivity.this);
             View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
@@ -636,6 +646,7 @@ public class ExperimentActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Long result = Long.valueOf(addTrialResult.getText().toString());
                     String title = addTrialTitle.getText().toString();
+                    resultList.add(result);
 
                     // add to firebase
                     String trialId = collectionReference.document().getId();
@@ -645,7 +656,6 @@ public class ExperimentActivity extends AppCompatActivity {
                     data.put("Title", title);
                     data.put("Result", result);
                     data.put("ExperimentId", experimentId);
-
                     collectionReference
                             .document(trialId)
                             .set(data)
@@ -767,7 +777,6 @@ public class ExperimentActivity extends AppCompatActivity {
         Trial trial = trialDataList.get(position);
         trialDataList.remove(position);
         trialArrayAdapter.notifyDataSetChanged();
-
         db.collection("Trials").document(trial.getId())
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
