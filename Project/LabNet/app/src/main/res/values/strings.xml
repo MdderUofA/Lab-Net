@@ -30,4 +30,6 @@
     <string name="dataCollected_label">Data Collected</string>
     <string name="completeTrial_button">Complete Trial</string>
     <string name="deleteTrial_button">Delete Trial</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
