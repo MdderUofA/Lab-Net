@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -66,6 +68,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private ArrayList<Experiment> myExperimentsDataList;
     private ArrayAdapter<Experiment> myExperimentAdapter;
     private TextView usernameTextView, firstNameTextView, lastNameTextView,emailTextView,phoneTextView;
+
+    // Make EditTexts in add Experiment global to ensure they aren't empty
+
+    EditText expTitle, expDescription, expRegion, expMinTrials;
+    Button create;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,13 +237,19 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         //location spinner
         String enableLocation[] = {"No", "Yes"};
 
-        EditText expTitle = (EditText) addView.findViewById(R.id.addExpTitle);
-        EditText expDescription = (EditText) addView.findViewById(R.id.addExpDescription);
-        EditText expRegion = (EditText) addView.findViewById(R.id.addExpRegion);
-        EditText expMinTrials = addView.findViewById(R.id.addExpMinTrials);
+        expTitle = (EditText) addView.findViewById(R.id.addExpTitle);
+        expDescription = (EditText) addView.findViewById(R.id.addExpDescription);
+        expRegion = (EditText) addView.findViewById(R.id.addExpRegion);
+        expMinTrials = addView.findViewById(R.id.addExpMinTrials);
         Spinner dropdown = (Spinner) addView.findViewById(R.id.dropdownTrialType);
         Spinner dropdown2 = (Spinner) addView.findViewById(R.id.dropdownLocation);
-        Button create = (Button) addView.findViewById(R.id.createButton);
+        create = (Button) addView.findViewById(R.id.createButton);
+
+        expTitle.addTextChangedListener(addTextWatcher);
+        expDescription.addTextChangedListener(addTextWatcher);
+        expRegion.addTextChangedListener(addTextWatcher);
+        expMinTrials.addTextChangedListener(addTextWatcher);
+        create.setEnabled(false);
 
         addBuilder.setView(addView);
         AlertDialog addDialog = addBuilder.create();
@@ -414,4 +427,29 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
     @Override
     public void onBackPressed() { }
+
+    private TextWatcher addTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String checkTitle = expTitle.getText().toString();
+            String checkDescription = expDescription.getText().toString();
+            String checkRegion = expRegion.getText().toString();
+            String checkMinTrials = expMinTrials.getText().toString();
+
+            create.setEnabled(!checkTitle.isEmpty()
+                    && !checkDescription.isEmpty()
+                    && !checkRegion.isEmpty()
+                    && !checkMinTrials.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 }
