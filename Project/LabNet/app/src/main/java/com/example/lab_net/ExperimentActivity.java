@@ -619,7 +619,17 @@ public class ExperimentActivity extends AppCompatActivity {
         });
     }
 
+
+    private void getLocation(String trialId){
+        Intent sendTrialId = new Intent(this, MapActivity.class);
+        sendTrialId.putExtra("trialId", trialId);
+        startActivity(sendTrialId);
+    }
+
+
+
     private void addTrial(){
+
 
         if(trialType.equals("Count-based") || trialType.equals("Measurement") || trialType.equals("NonNegativeInteger")) {
             AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(ExperimentActivity.this);
@@ -640,6 +650,15 @@ public class ExperimentActivity extends AppCompatActivity {
             addTrialResult.addTextChangedListener(addTextWatcher);
 
             final CollectionReference collectionReference = db.collection("Trials");
+            String trialId = collectionReference.document().getId();
+
+            Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
+            getLocationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getLocation(trialId);
+                }
+            });
 
             addTrialButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -649,7 +668,7 @@ public class ExperimentActivity extends AppCompatActivity {
                     resultList.add(result);
 
                     // add to firebase
-                    String trialId = collectionReference.document().getId();
+                    //String trialId = collectionReference.document().getId();
                     // trialDataList.add(new Trial(trialId.toString(), ""+title, Long.valueOf(result)));
                     HashMap<String, Object> data = new HashMap<>();
 
@@ -716,6 +735,16 @@ public class ExperimentActivity extends AppCompatActivity {
             addTrialResult2 = (EditText) settingsView.findViewById(R.id.addResult2);
 
             final CollectionReference collectionReference = db.collection("Trials");
+            String trialId = collectionReference.document().getId();
+
+            Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
+            getLocationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getLocation(trialId);
+                }
+            });
+
 
             addBinomialTrialButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -726,7 +755,7 @@ public class ExperimentActivity extends AppCompatActivity {
                     String title = addTitle.getText().toString();
 
                     // add to firebase
-                    String trialId = collectionReference.document().getId();
+                    //String trialId = collectionReference.document().getId();
                     // trialDataList.add(new Trial(trialId.toString(), ""+title, Long.valueOf(result)));
                     HashMap<String, Object> data = new HashMap<>();
 

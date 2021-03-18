@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
+//used 'Securing API key in Android without pushing to remote repository (GIT)'
+// by Chandrasekar Kuppusamy (@takeoffandroid) (05/28/2018, Medium from
+// https://medium.com/@takeoffandroid/securing-api-key-in-android-without-pushing-to-remote-repository-git-4237db104d91
+
+def getApiKey(){
+    def Properties props = new Properties()
+    props.load(new FileInputStream(new File('local.properties')))
+    return props['GOOGLE_API_KEY']
+}
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -13,6 +22,7 @@ android {
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [ GOOGLE_API_KEY:getApiKey()]
     }
 
     buildTypes {
@@ -39,10 +49,11 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.jayway.android.robotium:robotium-solo:5.3.1'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     implementation 'com.android.support:multidex:1.0.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    //for permissions, makes it easier - https://github.com/Karumi/Dexter
-    implementation 'com.karumi:dexter:6.2.2'
 }
