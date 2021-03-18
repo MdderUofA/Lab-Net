@@ -19,6 +19,8 @@ public class Statistics extends AppCompatActivity {
     ArrayList<Long> results;
     int i;
 
+    Button doneButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,14 @@ public class Statistics extends AppCompatActivity {
         }
         sum = 0;
 
+        doneButton = (Button) findViewById(R.id.doneButton);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(getApplicationContext(), ExperimentActivity.class);
+                startActivity(intent1);
+            }
+        });
         /*for (i = 0; i < trials.size(); i++) {
             Trial trial = trials.get(1);
             results.add((long) 4);
