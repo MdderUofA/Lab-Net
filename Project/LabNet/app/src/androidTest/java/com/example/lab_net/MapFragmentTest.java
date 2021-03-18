@@ -68,7 +68,6 @@ public class MapFragmentTest {
     }
     @Test
     public void checkIfLocationIsUpdatedWhenClicked(){
-        //Checking to see if location coordinates are updated from MapFragment.
         MapActivity mapActivity = (MapActivity) solo.getCurrentActivity();
         MapFragment mapFragment = (MapFragment) mapActivity.getMapFragment();
 

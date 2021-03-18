@@ -22,6 +22,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ * MapActivity generates MapFragment to allow map to be displayed. Allows user to set location for
+ * their trial. Acts as bridge between map fragment and rest of the app. Gets perimission to use
+ * location.
+ * @author gurjogsingh
+ * @version 1.0
+ * @see MapFragment
+ * @see CoordinateListener
+ */
 public class MapActivity extends AppCompatActivity implements CoordinateListener {
 
     private static final String TAG = "TESTING ACTIVITY" ;
@@ -31,7 +40,11 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
     private boolean isLocationPermissionGranted = false;
     private Fragment mapFragment;
 
-
+    /**
+     * Checks to see if app has location permission, if not prompts user to give permission. Updates
+     * permission boolean.
+     * @return void
+     */
     private void getLocationPermission() {
         Log.d(TAG, "getLocationPermission: START"+ isLocationPermissionGranted);
         if (ContextCompat.checkSelfPermission(Objects.requireNonNull(this.getApplicationContext()),
@@ -46,6 +59,13 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
         Log.d(TAG, "getLocationPermission: END"+ isLocationPermissionGranted);
     }
 
+    /**
+     * Checks result of the prompt given to the user to give permission. Updates permission boolean.
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     * @return void
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
@@ -56,12 +76,17 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     isLocationPermissionGranted = true;
-
                 }
             }
         }
     }
 
+    /**
+     * Creates MapFragment instance and stores location coordinate in firebase. If permission not
+     * given, ends the activity.
+     * @param savedInstanceState
+     * @return void
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +111,11 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
         Button saveLocationButton = (Button) findViewById(R.id.saveLocation);
 
         saveLocationButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * When user clicks on button, location is uploaded on firebase and activity ends.
+             * @param v
+             * @return void
+             */
             @Override
             public void onClick(View v) {
                 HashMap<String, Object> data = new HashMap<>();
@@ -117,6 +147,12 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
 
     }
 
+    /**
+     * Gets coordinates from MapFragment and updates MapActivity coordinate attributes.
+     * @param latitude
+     * @param longitude
+     * @return void
+     */
     @Override
     public void getCoordinates(double latitude, double longitude) {
         this.trialLatitude = latitude;
@@ -125,42 +161,82 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
 
     }
 
+    /**
+     * gets Db attribute
+     * @return db
+     */
     public FirebaseFirestore getDb() {
         return db;
     }
 
+    /**
+     * sets Db attribute
+     * @param db
+     */
     public void setDb(FirebaseFirestore db) {
         this.db = db;
     }
 
+    /**
+     * gets TrialLatitude attribute
+     * @return trialLatitude
+     */
     public double getTrialLatitude() {
         return trialLatitude;
     }
 
+    /**
+     * sets TrialLatitude attribute
+     * @param trialLatitude
+     */
     public void setTrialLatitude(double trialLatitude) {
         this.trialLatitude = trialLatitude;
     }
 
+    /**
+     * gets TrialLongitude attribute
+     * @return trialLongitude
+     */
     public double getTrialLongitude() {
         return trialLongitude;
     }
 
+    /**
+     * sets TrialLongitude attribute
+     * @param trialLongitude
+     */
     public void setTrialLongitude(double trialLongitude) {
         this.trialLongitude = trialLongitude;
     }
 
+    /**
+     * gets isLocationPermissionGranted attribute
+     * @return isLocationPermissionGranted
+     */
     public boolean isLocationPermissionGranted() {
         return isLocationPermissionGranted;
     }
 
+    /**
+     * sets isLocationPermissionGranted attribute
+     * @param locationPermissionGranted
+     */
     public void setLocationPermissionGranted(boolean locationPermissionGranted) {
         isLocationPermissionGranted = locationPermissionGranted;
     }
 
+    /**
+     * gets MapFragment attribute
+     * @return mapFragment
+     */
     public Fragment getMapFragment() {
         return mapFragment;
     }
 
+    /**
+     * sets MapFragment attribute
+     * @param mapFragment
+     */
     public void setMapFragment(Fragment mapFragment) {
         this.mapFragment = mapFragment;
     }
