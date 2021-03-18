@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
 
 public class SignupTest {
 
+    //testing123
     @Rule
     public ActivityTestRule<Signup> rule = new ActivityTestRule<>(Signup.class, true, true);
     @Before
