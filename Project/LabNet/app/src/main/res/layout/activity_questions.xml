@@ -11,6 +11,8 @@
         android:id="@+id/questionTextView"
         android:layout_width="match_parent"
         android:layout_height="41dp"
+        android:textSize="24dp"
+        android:textStyle="bold"
         android:text="Questions" />
 
     <Button
@@ -21,6 +23,7 @@
 
     <ListView
         android:id="@+id/questionList"
+        android:padding="2dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

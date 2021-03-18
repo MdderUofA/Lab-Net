@@ -15,9 +15,11 @@ public class Statistics extends AppCompatActivity {
 
     TextView meanView;
     long sum = 0, mean = 0;
-    ArrayList<Trial> trials;
+    ArrayList<CountTrial> trials;
     ArrayList<Long> results;
     int i;
+
+    Button doneButton;
 
 
     @Override
@@ -28,28 +30,44 @@ public class Statistics extends AppCompatActivity {
 
         //get from ExperimentActivity
         Intent intent = getIntent();
-        trials = new ArrayList<Trial>();
-        trials = (ArrayList<Trial>) intent.getSerializableExtra("trialDataList");
-
         results = new ArrayList<>();
-        for (i = 0; i < trials.size(); i++) {
-            Trial trial = trials.get(0);
+        results = (ArrayList<Long>) intent.getSerializableExtra("resultList");
+
+        for (i = 0; i < results.size(); i++) {
+            sum = results.get(i) + sum;
+        }
+        if (results.size() != 0) {
+            mean = (sum / (Long.valueOf(results.size())));
+        } else {
+            mean = 0;
+        }
+        sum = 0;
+
+        doneButton = (Button) findViewById(R.id.doneButton);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(getApplicationContext(), ExperimentActivity.class);
+                startActivity(intent1);
+            }
+        });
+        /*for (i = 0; i < trials.size(); i++) {
+            Trial trial = trials.get(1);
             results.add((long) 4);
             sum = results.get(i) + sum;
-
 
             if (results.size() != 0) {
                 mean = (sum / (Long.valueOf(results.size())));
             } else {
                 mean = 0;
             }
-            sum = 0;
+            sum = 0;*/
 
-            // mean = (sum/(trials.size()));
+        // mean = (sum/(trials.size()));
 
-            meanView.setText("Mean: " + mean);
+        meanView.setText("Mean: " + mean);
 
 
-        }
     }
+
 }

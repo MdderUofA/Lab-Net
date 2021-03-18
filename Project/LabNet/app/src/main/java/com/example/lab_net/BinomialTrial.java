@@ -1,11 +1,12 @@
 package com.example.lab_net;
 
 public class BinomialTrial extends Trial{
+    String title;
     private Long pass;
     private Long fail;
 
 
-    public BinomialTrial(String id, String title, Long result) {
+    public BinomialTrial(String id, String title, Long pass, Long fail) {
         super(id, title);
     }
 

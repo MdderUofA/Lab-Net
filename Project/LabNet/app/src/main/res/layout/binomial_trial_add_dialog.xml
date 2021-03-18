@@ -32,7 +32,7 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/addResult"
+        android:id="@+id/addResult1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -44,7 +44,7 @@
 
 
     <Button
-        android:id="@+id/addTrial"
+        android:id="@+id/addBinomialTrial"
         android:layout_width="141dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -54,7 +54,7 @@
         app:backgroundTint="#009688" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/addResult2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
