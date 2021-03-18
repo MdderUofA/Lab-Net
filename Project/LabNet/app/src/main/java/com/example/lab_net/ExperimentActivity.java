@@ -607,6 +607,14 @@ public class ExperimentActivity extends AppCompatActivity {
         });
     }
 
+
+    private void getLocation(String trialId){
+        Intent sendTrialId = new Intent(this, MapActivity.class);
+        sendTrialId.putExtra("trialId", trialId);
+        startActivity(sendTrialId);
+    }
+    
+
     private void addTrial(){
 
 
