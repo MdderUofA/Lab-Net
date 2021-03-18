@@ -412,4 +412,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             }
         });
     }
+    @Override
+    public void onBackPressed() { }
 }
