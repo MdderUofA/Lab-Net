@@ -8,4 +8,28 @@
     <string name="lab_net">Lab-Net</string>
     <string name="this_app_is_designed_to_let_users_create_experiments_and_trials">This App is designed to let Users create experiments and trials.</string>
     <string name="mainpagebackgroud">MainPageBackgroud</string>
+    <string name="experiment_title">Experiment Title</string>
+    <string name="experimenter_name">Experimenter Name</string>
+    <string name="experiment_description">Description</string>
+    <string name="experiment_region">Region</string>
+    <string name="trials_label">Trials</string>
+    <string name="addremove_button">Add/Remove</string>
+    <string name="statistics_button">Statistics</string>
+    <string name="graphs_button">Graphs</string>
+    <string name="subscribedUsers_label">Subscribed Users</string>
+    <string name="browse_button">Browse</string>
+    <string name="questionAnswer_label">Q/A</string>
+    <string name="subscribeToExperiment_label">Subscribe to Experiment</string>
+    <string name="edit_button">Edit</string>
+    <string name="completeExperiment_button">Complete Experiment</string>
+    <string name="publishExperiment_button">Publish Experiment</string>
+    <string name="deleteExperiment_button">Delete Experiment</string>
+    <string name="trial_title">Trial Title</string>
+    <string name="tester_username">Tester Username</string>
+    <string name="location">Location (Geo Location)</string>
+    <string name="dataCollected_label">Data Collected</string>
+    <string name="completeTrial_button">Complete Trial</string>
+    <string name="deleteTrial_button">Delete Trial</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
