@@ -1,5 +1,4 @@
 package com.example.lab_net;
-
 import android.content.pm.PackageManager;
 
 import androidx.core.content.ContextCompat;
@@ -21,7 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MapActivityTest {
+public class ExperimentActivityMapTest {
 
     private Solo solo;
 
@@ -56,11 +55,6 @@ public class MapActivityTest {
     @Test
     public void checkIfLocationIsUpdated(){
         //Checking to see if location coordinates are updated from MapFragment.
-        assertTrue("Permission to get location not given. Please give application location permission" +
-                "for test to work" +
-                "", ContextCompat.checkSelfPermission(Objects.requireNonNull(solo.getCurrentActivity()),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED);
         MapActivity mapActivity = (MapActivity) solo.getCurrentActivity();
         assertNotEquals(mapActivity.getTrialLatitude(), 0.0);
         assertNotEquals(mapActivity.getTrialLatitude(), 0.0);
@@ -71,9 +65,5 @@ public class MapActivityTest {
     public void tearDown(){
         solo.finishOpenedActivities();
     }
-
-
-
-
 
 }
