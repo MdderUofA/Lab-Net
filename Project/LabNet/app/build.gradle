@@ -1,10 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def googleMapApiKey = properties.getProperty('google.map.key')
+//used 'Securing API key in Android without pushing to remote repository (GIT)'
+// by Chandrasekar Kuppusamy (@takeoffandroid) (05/28/2018, Medium from
+// https://medium.com/@takeoffandroid/securing-api-key-in-android-without-pushing-to-remote-repository-git-4237db104d91
 
+def getApiKey(){
+    def Properties props = new Properties()
+    props.load(new FileInputStream(new File('local.properties')))
+    return props['GOOGLE_API_KEY']
+}
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -17,6 +22,7 @@ android {
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [ GOOGLE_API_KEY:getApiKey()]
     }
 
     buildTypes {
