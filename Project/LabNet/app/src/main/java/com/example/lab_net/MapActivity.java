@@ -29,7 +29,6 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
     private double trialLatitude;
     private double trialLongitude;
     private boolean isLocationPermissionGranted = false;
-    private Fragment mapFragment;
 
 
     private void getLocationPermission() {
@@ -67,7 +66,6 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         Fragment fragment = new MapFragment();
-        mapFragment = fragment;
         getSupportFragmentManager().beginTransaction().replace(R.id.map_layout,fragment).commit();
 
         if (!isLocationPermissionGranted){
@@ -155,13 +153,5 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
 
     public void setLocationPermissionGranted(boolean locationPermissionGranted) {
         isLocationPermissionGranted = locationPermissionGranted;
-    }
-
-    public Fragment getMapFragment() {
-        return mapFragment;
-    }
-
-    public void setMapFragment(Fragment mapFragment) {
-        this.mapFragment = mapFragment;
     }
 }

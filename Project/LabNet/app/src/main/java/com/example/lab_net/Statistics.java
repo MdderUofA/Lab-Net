@@ -10,12 +10,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Statistics extends AppCompatActivity {
 
-    TextView meanView, medianView;
-
+    TextView meanView;
     long sum = 0, mean = 0;
     ArrayList<CountTrial> trials;
     ArrayList<Long> results;
@@ -53,24 +51,6 @@ public class Statistics extends AppCompatActivity {
                 startActivity(intent1);
             }
         });
-        meanView.setText("Mean: " + mean);
-
-        // median
-        Collections.sort(results);
-        long median = 0;
-        int mid = results.size() / 2;
-
-        if (results.size() % 2 == 0){
-            median = (results.get(mid-1) + results.get(mid)) / 2;
-        }
-        else {
-            median = results.get(mid);
-        }
-
-        medianView = findViewById(R.id.median_view);
-        medianView.setText("Median: " + median);
-
-
         /*for (i = 0; i < trials.size(); i++) {
             Trial trial = trials.get(1);
             results.add((long) 4);
@@ -85,7 +65,7 @@ public class Statistics extends AppCompatActivity {
 
         // mean = (sum/(trials.size()));
 
-
+        meanView.setText("Mean: " + mean);
 
 
     }
