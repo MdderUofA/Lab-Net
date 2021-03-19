@@ -6,6 +6,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * Test class for User.
+ *
+ * @author Vidhi Patel
+ */
 public class UserTest {
 
     @Test

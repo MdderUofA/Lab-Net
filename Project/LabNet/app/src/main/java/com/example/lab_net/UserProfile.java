@@ -1,9 +1,3 @@
-/**
- * CMPUT 301
- * @version 1.0
- * March 19, 2021
- *
- */
 package com.example.lab_net;
 
 import androidx.annotation.NonNull;
@@ -118,11 +112,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     }
 
-    /**
-     * Set buttons to their appropriate actions.
-     *
-     * @author Vidhi Patel
-     */
+    //Set buttons
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -146,6 +136,70 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 break;
 
         }
+    }
+
+    /**
+     * Get experiments from the database that were created by the user by matching user ID.
+     *
+     * @author Qasim Akhtar
+     */
+    public void getExperiments() {
+        db.collection("Experiments")
+                .whereEqualTo("Owner", userId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            myExperimentsDataList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String experimentId = document.getId();
+                                String experimentTitle = document.getData().get("Title").toString();
+                                String experimentDescription = document.getData().get("Description").toString();
+                                String experimentRegion = document.getData().get("Region").toString();
+                                String experimentOwner = document.getData().get("Owner").toString();
+                                int experimentMinTrials = Integer.valueOf(document.getData().get("MinTrials").toString());
+                                String experimentTrialType = document.getData().get("TrialType").toString();
+                                String experimentEnableLocation = document.getData().get("EnableLocation").toString();
+
+                                myExperimentsDataList.add(new Experiment(experimentId,experimentTitle,
+                                        experimentDescription,experimentRegion,experimentOwner,experimentMinTrials,experimentTrialType, experimentEnableLocation));
+                                myExperimentAdapter.notifyDataSetChanged();
+
+                            }
+                        }
+                    }
+
+                });
+
+    }
+
+    /**
+     * Get user information from the database.
+     *
+     * @author Qasim Akhtar
+     */
+    public void getUserInfo() {
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if(documentSnapshot.exists()){
+                        firstNameText = documentSnapshot.getData().get("firstName").toString();
+                        lastNameText = documentSnapshot.getData().get("lastName").toString();
+                        emailText = documentSnapshot.getData().get("email").toString();
+                        phoneText = documentSnapshot.getData().get("phone").toString();
+
+                        usernameTextView.setText(userId);
+                        firstNameTextView.setText(firstNameText);
+                        lastNameTextView.setText(lastNameText);
+                        emailTextView.setText(emailText);
+                        phoneTextView.setText(phoneText);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -219,7 +273,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
      * Create a dialog to create a new experiment with title, description, and location.
      * Select types of trials and if location is required.
      *
-     * @author Qasim Akhtar
+     * @author Vidhi Patel, Qasim Akhtar
      */
     private void addExpDialog() {
         AlertDialog.Builder addBuilder = new AlertDialog.Builder(UserProfile.this);
@@ -349,69 +403,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         });
     }
 
-    /**
-     * Get experiments from the database that were created by the user by matching user ID.
-     *
-     * @author Qasim Akhtar
-     */
-    public void getExperiments() {
-        db.collection("Experiments")
-                .whereEqualTo("Owner", userId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            myExperimentsDataList.clear();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String experimentId = document.getId();
-                                String experimentTitle = document.getData().get("Title").toString();
-                                String experimentDescription = document.getData().get("Description").toString();
-                                String experimentRegion = document.getData().get("Region").toString();
-                                String experimentOwner = document.getData().get("Owner").toString();
-                                int experimentMinTrials = Integer.valueOf(document.getData().get("MinTrials").toString());
-                                String experimentTrialType = document.getData().get("TrialType").toString();
-                                String experimentEnableLocation = document.getData().get("EnableLocation").toString();
 
-                                myExperimentsDataList.add(new Experiment(experimentId,experimentTitle,
-                                        experimentDescription,experimentRegion,experimentOwner,experimentMinTrials,experimentTrialType, experimentEnableLocation));
-                                myExperimentAdapter.notifyDataSetChanged();
-
-                            }
-                        }
-                    }
-
-                });
-
-    }
-
-    /**
-     * Get user information from the database.
-     *
-     * @author Qasim Akhtar
-     */
-    public void getUserInfo() {
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    if(documentSnapshot.exists()){
-                        firstNameText = documentSnapshot.getData().get("firstName").toString();
-                        lastNameText = documentSnapshot.getData().get("lastName").toString();
-                        emailText = documentSnapshot.getData().get("email").toString();
-                        phoneText = documentSnapshot.getData().get("phone").toString();
-
-                        usernameTextView.setText(userId);
-                        firstNameTextView.setText(firstNameText);
-                        lastNameTextView.setText(lastNameText);
-                        emailTextView.setText(emailText);
-                        phoneTextView.setText(phoneText);
-                    }
-                }
-            }
-        });
-    }
     @Override
     public void onBackPressed() { }
 
