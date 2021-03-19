@@ -54,6 +54,8 @@ public class MapFragment extends Fragment {
      * @return void
      */
     public void putLocationOnMap(Location lastKnownLocation, GoogleMap googleMap){
+        //Help from 'How to Implement Google Map Inside Fragment in Android Studio | GoogleMap | Android Coding'
+        //by Android Coding (09/12/2020, YouTube) - https://www.youtube.com/watch?v=YCFPClPjDIQ
 
         mainLatitude = lastKnownLocation.getLatitude();
         mainLongitude = lastKnownLocation.getLongitude();
@@ -87,6 +89,8 @@ public class MapFragment extends Fragment {
 
     @SuppressLint("MissingPermission")
     public void getLocation(FusedLocationProviderClient fusedLocationProviderClient, GoogleMap googleMap){
+        //Help from 'Select Current Place and Show Details on a Map' by Google Developers
+        //(03/17/2021, Apache 2.0) - https://developers.google.com/maps/documentation/android-sdk/current-place-tutorial
         locationResult = fusedLocationProviderClient.getLastLocation();
         locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
             @Override

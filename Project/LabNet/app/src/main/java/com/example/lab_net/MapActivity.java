@@ -46,6 +46,8 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
      * @return void
      */
     private void getLocationPermission() {
+        //Permissions implemented with the help from 'Google Services, GPS, and Location Permissions'
+        //by CodingWithMitch (09/20/2018, YouTube) - https://www.youtube.com/watch?v=1f4b2-Y_q2A
         Log.d(TAG, "getLocationPermission: START"+ isLocationPermissionGranted);
         if (ContextCompat.checkSelfPermission(Objects.requireNonNull(this.getApplicationContext()),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -70,6 +72,8 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
+        //Permissions implemented with the help from 'Google Services, GPS, and Location Permissions'
+        //by CodingWithMitch (09/20/2018, YouTube) - https://www.youtube.com/watch?v=1f4b2-Y_q2A
         isLocationPermissionGranted= false;
         switch (requestCode) {
             case 9003: {
@@ -91,6 +95,8 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        //Help from 'How to Implement Google Map Inside Fragment in Android Studio | GoogleMap | Android Coding'
+        //by Android Coding (09/12/2020, YouTube) - https://www.youtube.com/watch?v=YCFPClPjDIQ
         Fragment fragment = new MapFragment();
         mapFragment = fragment;
         getSupportFragmentManager().beginTransaction().replace(R.id.map_layout,fragment).commit();
