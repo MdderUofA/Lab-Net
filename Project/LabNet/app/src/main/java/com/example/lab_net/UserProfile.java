@@ -337,13 +337,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
      * @author Vidhi Patel
      */
     private void myExpView (){
-
         myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Experiment experiment = myExperimentsDataList.get(position);
                 Intent intent = new Intent(UserProfile.this, ExperimentActivity.class);
-                intent.putExtra("ExperimentId", experiment.getExperimentId());
+                intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
                 startActivity(intent);
             }
         });
