@@ -1,16 +1,10 @@
 package com.example.lab_net;
 
-import android.service.autofill.AutofillService;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * Test class for User.
- *
- * @author Vidhi Patel
- */
 public class UserTest {
 
     @Test
