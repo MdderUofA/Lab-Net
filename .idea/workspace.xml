@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="b9ca8085-dea7-48ad-b47f-d9999f8e99ed" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/src/main/java/com/example/lab_net/Homepage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/src/main/res/layout/activity_homepage.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/LabNet/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/LabNet/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/LabNet/app/src/main/java/com/example/lab_net/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/Project/LabNet/app/src/main/java/com/example/lab_net/RegisterUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/LabNet/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/LabNet/app/src/main/res/layout/activity_register_user.xml" afterDir="false" />
+=======
     <list default="true" id="8721b517-145f-4b77-a049-f0e0bdcb3394" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Lab-Net.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Project/LabNet/app/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> Team_2_Gurjog
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +21,11 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+<<<<<<< HEAD
+  <component name="ProjectId" id="1pWog0ro1yTPuMem8XbMzJeRSfu" />
+=======
   <component name="ProjectId" id="1pOgkNaXqUDc0viqApKQH77Sy94" />
+>>>>>>> Team_2_Gurjog
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -25,16 +33,34 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+<<<<<<< HEAD
+    <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
+    <property name="project.structure.last.edited" value="SDK Location" />
+    <property name="project.structure.proportion" value="0.17" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="preferences.general" />
+=======
     <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
     <property name="show.migrate.to.gradle.popup" value="false" />
+>>>>>>> Team_2_Gurjog
   </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
+<<<<<<< HEAD
+      <changelist id="b9ca8085-dea7-48ad-b47f-d9999f8e99ed" name="Default Changelist" comment="" />
+      <created>1615308314571</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1615308314571</updated>
+    </task>
+    <servers />
+  </component>
+=======
       <changelist id="8721b517-145f-4b77-a049-f0e0bdcb3394" name="Default Changelist" comment="" />
       <created>1615059692726</created>
       <option name="number" value="Default" />
@@ -44,9 +70,11 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="104" y="73" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1615059776321">
-      <screen x="0" y="23" width="1280" height="777" />
+    <state x="117" y="58" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1615905954213">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
+    <state x="117" y="58" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1615905954213" />
     <state x="104" y="73" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1280.777@0.23.1280.777" timestamp="1615059776321" />
   </component>
+>>>>>>> Team_2_Gurjog
 </project>
