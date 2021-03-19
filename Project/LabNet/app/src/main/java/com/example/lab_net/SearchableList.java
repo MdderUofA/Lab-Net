@@ -36,9 +36,11 @@ public class SearchableList {
     public static final int SEARCH_QA = 4;
     public static final int SEARCH_ALL = -1;
 
+    private static final int TOTAL_SEARCH_OPTIONS = 3; // the different options as given above
+
     private ArrayList<Searchable> data;
 
-    private int searchFilters = SEARCH_ALL;
+    private int searchFilters = SearchableList.SEARCH_ALL;
 
     private ListView listView;
     private SearchableDisplayAdapter adapter;
@@ -79,30 +81,27 @@ public class SearchableList {
     }
 
     /**
+     * Sets which types of objects to query from the database on search.
+     * @param searchFilters The search flags to use.
+     */
+    public void setSearchFilters(int searchFilters) {
+        this.searchFilters = searchFilters;
+    }
+
+    /**
      * Performs a search with the specified input. Search uses the default options
      * @param query The string query to run
      */
     public void performSearch(String query) {
-        performSearch(query, SearchableList.SEARCH_ALL);
+        performSearchOnDatabase(query);
     }
 
-    /**
-     * Performs a search with the specified input.
-     * @param query The string query to run
-     * @param filter The filter to use.
-     */
-    public void performSearch(String query, int filter) {
-        performSearchOnDatabase(query, filter);
-    }
-
-    private void performSearchOnDatabase(String query, int filter) {
+    private void performSearchOnDatabase(String query) {
         List<String> list = Arrays.asList(query.split("\\s"));
         ArrayList<String> keywords = new ArrayList<>();
         keywords.addAll(list);
 
-        this.setSearchFilters(filter); // filter by these elements.
-
-        Toast.makeText(SearchableList.this.listView.getContext(),
+        Toast.makeText(this.listView.getContext(),
                 "Searching...",
                 Toast.LENGTH_SHORT)
                 .show();
@@ -118,7 +117,7 @@ public class SearchableList {
 
     private int getNumQueries() {
         int total = 0;
-        for(int i = 1;i < (1<<3);i<<=1) {
+        for(int i = 1;i < (1<<SearchableList.TOTAL_SEARCH_OPTIONS);i<<=1) {
             total+= this.checkFlag(i) ? 1 : 0;
         }
         return total;
@@ -210,10 +209,6 @@ public class SearchableList {
         return data.get(index);
     }
 
-    public void setSearchFilters(int searchFilters) {
-        this.searchFilters = searchFilters;
-    }
-
     /**
      * A simple listener class to watch the queries and then execute a callback when all queries
      * are completed.
@@ -286,11 +281,17 @@ public class SearchableList {
         private final ArrayList<Searchable> listData;
         private final SearchableList parent;
 
+        /**
+         * Constructs a new SearchableDisplayAdapater for use in a SearchableList
+         * @param context The context
+         * @param data The ArrayList representing the ListView's data
+         * @param parent The SearchableList that this SearchableDisplayAdapter services.
+         */
         public SearchableDisplayAdapter(Context context, ArrayList data,
                                         SearchableList parent) {
             super(context,0,data);
             this.context = context;
-            this.listData=data;
+            this.listData = data;
             this.parent = parent;
             setupSegments();
         }
