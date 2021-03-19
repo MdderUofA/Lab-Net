@@ -1,6 +1,7 @@
 package com.example.lab_net;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -393,6 +395,14 @@ public class SearchableList {
          * @param searchable The searchable that was clicked.
          */
         public abstract void itemClicked(Searchable searchable);
+
+        /**
+         * Determines whether or not this DisplayAdapterSegment is capable of handling
+         * the specified input class.
+         * @param cl The class to test
+         * @return True if this DisplayAdapterSegment claims to be able to handle the class,
+         *          false otherwise.
+         */
         public abstract boolean canHandleClass(Class<? extends Searchable> cl);
     }
 
@@ -456,6 +466,13 @@ public class SearchableList {
             super(adapter);
         }
 
+        /**
+         * Creates an experiment view
+         * @param position The position in the data.
+         * @param convertView The view to set
+         * @param parent The parent ViewGroup
+         * @return
+         */
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             View view = convertView;
@@ -468,17 +485,35 @@ public class SearchableList {
 
             TextView name = view.findViewById(R.id.sr_experiment_name);
             TextView description = view.findViewById(R.id.sr_experiment_description);
+            TextView ownerId = view.findViewById(R.id.sr_experiment_owner_id);
+            TextView status = view.findViewById(R.id.sr_experiment_status);
 
             name.setText(experiment.getName());
             description.setText(experiment.getDescription());
+            ownerId.setText("owner: " + experiment.getOwnerId());
+            status.setText("status: " + (experiment.getStatus() ? "Open" : "Closed"));
 
             return view;
         }
 
+        /**
+         * Performs the standard on click behaviour and navigates the user to the experiment activity
+         * @param searchable The searchable that was clicked.
+         */
         @Override
         public void itemClicked(Searchable searchable) {
             SearchableExperiment experiment = (SearchableExperiment) searchable;
             SearchableDocumentReference ref = experiment.getDocumentReference();
+            /*DialogInterface.OnClickListener listener = (d, which) -> {
+                if(which == DialogInterface.BUTTON_POSITIVE) {
+
+                }
+            };
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.getAdapter().getContext());
+            builder.setMessage("Subscribe to experiment?")
+                    .setPositiveButton("Yes",listener)
+                    .setNegativeButton("No",listener)
+                    .show();*/
             AppCompatActivity parentActivity = this.getAdapter().getSearchableList().getParent();
             Intent intent = new Intent(parentActivity,
                     ExperimentActivity.class);
