@@ -10,20 +10,12 @@ public class Experiment {
     String owner;
     int minTrials;
     String trialType;
-<<<<<<< HEAD
+    ArrayList<Trial> trials;// aggregation with Trial
     String enableLocation;
-    //ArrayList<Trial> trials;// aggregation with Trial
     // ArrayList<Question> questions; // aggregate with Question
     //qrCode QR; // aggregate with QR
 
-    public Experiment(String experimentId, String title, String description,String region, String owner, int minTrials, String trialType, String enableLocation) {
-=======
-    ArrayList<Trial> trials;// aggregation with Trial
-   // ArrayList<Question> questions; // aggregate with Question
-    //qrCode QR; // aggregate with QR
-
-    public Experiment(String experimentId, String title, String description, String owner, String region, int minTrials, String trialType) {
->>>>>>> Team_2_Gurjog
+    public Experiment(String experimentId, String title, String description, String owner, String region, int minTrials, String trialType, String enableLocation) {
         this.experimentId = experimentId;
         this.title = title;
         this.description = description;
@@ -31,12 +23,7 @@ public class Experiment {
         this.owner = owner;
         this.minTrials = minTrials;
         this.trialType = trialType;
-<<<<<<< HEAD
         this.enableLocation = enableLocation;
-        //trials = new ArrayList<>();
-=======
-        trials = new ArrayList<>();
->>>>>>> Team_2_Gurjog
     }
 
     public String getExperimentId() {

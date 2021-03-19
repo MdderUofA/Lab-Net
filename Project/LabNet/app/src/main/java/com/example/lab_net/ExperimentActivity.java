@@ -823,8 +823,6 @@ public class ExperimentActivity extends AppCompatActivity {
 
 
     }
-    @Override
-    public void onBackPressed() { }
 
     private void deleteExperiment() {
         final CollectionReference collectionReference = db.collection("Experiments");
