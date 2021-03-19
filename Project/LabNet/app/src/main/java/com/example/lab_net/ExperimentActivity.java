@@ -53,6 +53,7 @@ public class ExperimentActivity extends AppCompatActivity {
 
     public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
 
+
     private ListView trialList;
     // Count adapters and lists
     private ArrayAdapter<CountTrial> trialArrayAdapter;
@@ -102,29 +103,13 @@ public class ExperimentActivity extends AppCompatActivity {
         setContentView(R.layout.experiment_owner_activity);
 
 
-        experimentId = getIntent().getStringExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA);
+        experimentId = getIntent().getStringExtra(EXPERIMENT_ID_EXTRA);
 
         //count
         trialList = (ListView) findViewById(R.id.trial_list);
         trialDataList = new ArrayList<>();
         trialArrayAdapter = new CustomTrialList(this, trialDataList);
         trialList.setAdapter(trialArrayAdapter);
-        /*
-        //Measurement
-        measurementDataList = new ArrayList<>();
-        measurementTrialArrayAdapter = new MeasurementCustomTrialList(this, measurementDataList);
-        trialList.setAdapter(measurementTrialArrayAdapter);
-
-        // Non negative
-        nonNegativeDataList = new ArrayList<>();
-        nonNegativeIntegerTrialArrayAdapter = new NonNegativeCustomTrialList(this, nonNegativeDataList);
-        trialList.setAdapter(nonNegativeIntegerTrialArrayAdapter);
-
-        //Binomial
-        binomialDataList = new ArrayList<>();
-        binomialTrialArrayAdapter = new CustomBinomialTrialList(this, binomialDataList);
-        trialList.setAdapter(binomialTrialArrayAdapter);*/
-
         db = FirebaseFirestore.getInstance();
 
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
@@ -161,6 +146,7 @@ public class ExperimentActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 trialId = document.getId();
                                 trialTitle = document.getData().get("Title").toString();
+                                trialType = document.getData().get("Title").toString();
                                 if(!trialType.equals("Binomial")) {
                                     resultLong = (Long) document.getData().get("Result");
                                     trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
@@ -231,10 +217,10 @@ public class ExperimentActivity extends AppCompatActivity {
         statistics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Statistics.class);
                 if (trialArrayAdapter.getCount() == 0 || trialType.equals("Binomial")) {
                     Toast.makeText(ExperimentActivity.this, "No stats available for this experiment", Toast.LENGTH_LONG).show();
                 } else {
+                    Intent intent = new Intent(getApplicationContext(), Statistics.class);
                     intent.putExtra("resultList", (Serializable) resultList);
                     intent.putExtra("ExperimentId", experimentId);
                     startActivity(intent);
@@ -434,97 +420,6 @@ public class ExperimentActivity extends AppCompatActivity {
                     }
 
                 }
-
-
-
-        /*if(trialType.equals("Binomial")){
-            EditText addTitle, addTrialResult1, addTrialResult2;
-            Button addBinomialTrialButton;
-            binomialDataList = new ArrayList<>();
-            binomialTrialArrayAdapter = new CustomBinomialTrialList(this, binomialDataList);
-            trialList.setAdapter(binomialTrialArrayAdapter);
-
-            AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(ExperimentActivity.this);
-            View settingsView = getLayoutInflater().inflate(R.layout.binomial_trial_add_dialog, null);
-
-
-            settingsBuilder.setView(settingsView);
-            AlertDialog setDialog = settingsBuilder.create();
-            setDialog.setCanceledOnTouchOutside(true);
-            setDialog.show();
-
-            addBinomialTrialButton = (Button) settingsView.findViewById(R.id.addBinomialTrial);
-
-            addTitle = (EditText) settingsView.findViewById(R.id.addTitle);
-            addTrialResult1 = (EditText) settingsView.findViewById(R.id.addResult1);
-            addTrialResult2 = (EditText) settingsView.findViewById(R.id.addResult2);
-
-            final CollectionReference collectionReference = db.collection("Trials");
-            String trialId = collectionReference.document().getId();
-
-            Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
-            getLocationButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getLocation(trialId);
-                }
-            });
-
-
-            addBinomialTrialButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Long result1 = Long.valueOf(addTrialResult1.getText().toString());
-                    Long result2 = Long.valueOf(addTrialResult2.getText().toString());
-
-                    String title = addTitle.getText().toString();
-
-                    // add to firebase
-                    //String trialId = collectionReference.document().getId();
-                    // trialDataList.add(new Trial(trialId.toString(), ""+title, Long.valueOf(result)));
-                    HashMap<String, Object> data = new HashMap<>();
-
-                    data.put("Title", title);
-                    data.put("Result1", result1);
-                    data.put("Result2", result2);
-
-                    collectionReference
-                            .document(trialId)
-                            .set(data)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    //trialDataList.add(new Trial("1234", title, result));
-                                    //trialArrayAdapter.notifyDataSetChanged();
-                                    Toast.makeText(ExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
-                                    setDialog.dismiss();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(ExperimentActivity.this, "Trial not added", Toast.LENGTH_LONG).show();
-                                }
-                            });
-
-
-                    setDialog.dismiss();
-                }
-            });
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                    trialDataList.clear();
-                    for (QueryDocumentSnapshot doc : value) {
-                        String trialId = doc.getId();
-                        String trialTitle = (String) doc.getData().get("Title");
-                        Long trialResult = (Long) doc.getData().get("Result");
-                        trialDataList.add(new CountTrial(trialId, trialTitle, trialResult));
-                    }
-                    trialArrayAdapter.notifyDataSetChanged();
-                }
-            });
-        }*/
             });
         }
     }
@@ -534,7 +429,7 @@ public class ExperimentActivity extends AppCompatActivity {
     public void deleteTrial(int position) {
         CountTrial trial = trialDataList.get(position);
         trialDataList.remove(position);
-        resultList.remove(trial.getCount());
+        /*resultList.remove(trial.getCount());*/
         trialArrayAdapter.notifyDataSetChanged();
         db.collection("Trials").document(trial.getId())
                 .delete()
@@ -550,7 +445,33 @@ public class ExperimentActivity extends AppCompatActivity {
                         Toast.makeText(ExperimentActivity.this, "Trial not deleted", Toast.LENGTH_LONG).show();
                     }
                 });
+        db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            trialDataList.clear();
+                            resultList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                trialId = document.getId();
+                                trialTitle = document.getData().get("Title").toString();
+                                trialType = document.getData().get("Title").toString();
+                                if(!trialType.equals("Binomial")) {
+                                    resultLong = (Long) document.getData().get("Result");
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
+                                    resultList.add(resultLong);
+                                }
+                                else{
+                                    result = (String) document.getData().get("Result");
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, result.toString()));
+                                }
 
+                            }
+                            trialArrayAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
 
     }
 
@@ -613,4 +534,3 @@ public class ExperimentActivity extends AppCompatActivity {
     };
 
 }
-
