@@ -14,10 +14,14 @@ import java.util.Collections;
 
 public class Statistics extends AppCompatActivity {
 
-    private TextView meanView, medianView;
+    private TextView meanView, medianView, lowerQuartileView;
 
     private float sum = 0;
-    private double mean = 0, median = 0;;
+    private double mean = 0, median = 0;
+    private double lowerQuartile = 0;
+    private double upperQuartile = 0;
+    private double standardDeviation = 0;
+
     private ArrayList<CountTrial> trials;
     private ArrayList<Long> results;
     private String expId;
@@ -62,8 +66,36 @@ public class Statistics extends AppCompatActivity {
             median = results.get(mid);
         }
 
+        int lq = results.size()/4;
+        if(results.size() % 2 == 0 && results.size() != 1)  {
+            lowerQuartile = (results.get(lq - 1) + results.get(lq))/2;
+        }
+        else if(results.size() == 1){
+            lowerQuartile = results.get(0);
+        }
+        else{
+            lowerQuartile = results.get(lq - 1);
+        }
+
+        int uq = ((3 * results.size())/4);
+        if(results.size() % 2 == 0 && results.size() != 1)  {
+            upperQuartile = (results.get(uq - 1) + results.get(uq+1))/2;
+        }
+        else if(results.size() == 1){
+            upperQuartile = results.get(0);
+        }
+        else{
+            lowerQuartile = results.get(uq + 1);
+        }
+
+
+
         medianView = findViewById(R.id.median_view);
         medianView.setText("Median: " + median);
+
+        lowerQuartileView = findViewById(R.id.q1);
+
+        lowerQuartileView.setText("Lower Quartile: " + lowerQuartile);
 
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override

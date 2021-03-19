@@ -105,22 +105,6 @@ public class ExperimentActivity extends AppCompatActivity {
         trialDataList = new ArrayList<>();
         trialArrayAdapter = new CustomTrialList(this, trialDataList);
         trialList.setAdapter(trialArrayAdapter);
-        /*
-        //Measurement
-        measurementDataList = new ArrayList<>();
-        measurementTrialArrayAdapter = new MeasurementCustomTrialList(this, measurementDataList);
-        trialList.setAdapter(measurementTrialArrayAdapter);
-
-        // Non negative
-        nonNegativeDataList = new ArrayList<>();
-        nonNegativeIntegerTrialArrayAdapter = new NonNegativeCustomTrialList(this, nonNegativeDataList);
-        trialList.setAdapter(nonNegativeIntegerTrialArrayAdapter);
-
-        //Binomial
-        binomialDataList = new ArrayList<>();
-        binomialTrialArrayAdapter = new CustomBinomialTrialList(this, binomialDataList);
-        trialList.setAdapter(binomialTrialArrayAdapter);*/
-
         db = FirebaseFirestore.getInstance();
 
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
@@ -157,6 +141,7 @@ public class ExperimentActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 trialId = document.getId();
                                 trialTitle = document.getData().get("Title").toString();
+                                trialType = document.getData().get("Title").toString();
                                 if(!trialType.equals("Binomial")) {
                                     resultLong = (Long) document.getData().get("Result");
                                     trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
@@ -227,10 +212,10 @@ public class ExperimentActivity extends AppCompatActivity {
         statistics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Statistics.class);
                 if (trialArrayAdapter.getCount() == 0 || trialType.equals("Binomial")) {
                     Toast.makeText(ExperimentActivity.this, "No stats available for this experiment", Toast.LENGTH_LONG).show();
                 } else {
+                    Intent intent = new Intent(getApplicationContext(), Statistics.class);
                     intent.putExtra("resultList", (Serializable) resultList);
                     intent.putExtra("ExperimentId", experimentId);
                     startActivity(intent);
@@ -530,7 +515,7 @@ public class ExperimentActivity extends AppCompatActivity {
     public void deleteTrial(int position) {
         CountTrial trial = trialDataList.get(position);
         trialDataList.remove(position);
-        resultList.remove(trial.getCount());
+        /*resultList.remove(trial.getCount());*/
         trialArrayAdapter.notifyDataSetChanged();
         db.collection("Trials").document(trial.getId())
                 .delete()
@@ -546,7 +531,33 @@ public class ExperimentActivity extends AppCompatActivity {
                         Toast.makeText(ExperimentActivity.this, "Trial not deleted", Toast.LENGTH_LONG).show();
                     }
                 });
+        db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            trialDataList.clear();
+                            resultList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                trialId = document.getId();
+                                trialTitle = document.getData().get("Title").toString();
+                                trialType = document.getData().get("Title").toString();
+                                if(!trialType.equals("Binomial")) {
+                                    resultLong = (Long) document.getData().get("Result");
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
+                                    resultList.add(resultLong);
+                                }
+                                else{
+                                    result = (String) document.getData().get("Result");
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, result.toString()));
+                                }
 
+                            }
+                            trialArrayAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
 
     }
 
