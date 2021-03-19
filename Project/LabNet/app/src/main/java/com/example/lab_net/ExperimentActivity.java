@@ -51,7 +51,6 @@ import static android.media.CamcorderProfile.get;
 
 public class ExperimentActivity extends AppCompatActivity {
 
-    public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
 
 
     private ListView trialList;
@@ -103,7 +102,7 @@ public class ExperimentActivity extends AppCompatActivity {
         setContentView(R.layout.experiment_owner_activity);
 
 
-        experimentId = getIntent().getStringExtra(EXPERIMENT_ID_EXTRA);
+        experimentId = getIntent().getStringExtra("experimentID");
 
         //count
         trialList = (ListView) findViewById(R.id.trial_list);
@@ -200,7 +199,6 @@ public class ExperimentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), QuestionsActivity.class);
-                i.putExtra("check", "OwnerActivity");
                 i.putExtra("experimentID", experimentId);
                 startActivity(i);
             }
@@ -501,7 +499,7 @@ public class ExperimentActivity extends AppCompatActivity {
                 dialog.dismiss();
                 // change to UserProfile
                 Intent intent = new Intent(getApplicationContext(), UserProfile.class);
-                intent.putExtra(UserProfile.USER_ID_EXTRA, owner);
+                intent.putExtra("userID", owner);
                 startActivity(intent);
 
             }
