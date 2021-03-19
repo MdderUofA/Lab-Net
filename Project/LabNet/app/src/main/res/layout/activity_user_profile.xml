@@ -13,7 +13,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginTop="75dp"
-        android:text="Username:"
+        android:text="User Id:"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,7 +35,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:text="first"
         app:layout_constraintStart_toEndOf="@+id/nameTag"
         app:layout_constraintTop_toBottomOf="@+id/usernameTag" />
 
@@ -46,7 +45,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:text="last"
         app:layout_constraintStart_toEndOf="@+id/firstName"
         app:layout_constraintTop_toBottomOf="@+id/username" />
 

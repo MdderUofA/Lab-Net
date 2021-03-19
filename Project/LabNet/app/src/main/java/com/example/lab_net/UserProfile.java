@@ -50,6 +50,8 @@ import java.util.Map;
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String USER_ID_EXTRA = "com.example.lab_net.user_profile.user_id";
+
     private String userId,firstNameText,lastNameText,emailText,phoneText;
     private FirebaseFirestore db;
     private DocumentReference documentReference;
@@ -76,7 +78,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         //initialize the database
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
-        userId = intent.getStringExtra("UserId");
+        userId = intent.getStringExtra(UserProfile.USER_ID_EXTRA);
+
         documentReference = db.collection("UserProfile").document(userId);
 
         //initialize the user information
@@ -117,9 +120,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 editUserDialog();
                 break;
             case R.id.browseButton:
-                //TODO
-                //startActivity(new Intent());
-                //should lead to 'search for experiments' activity
+                Intent searchIntent = new Intent(this, SearchableListActivity.class);
+                searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
+                        SearchableList.SEARCH_EXPERIMENTS);
+                startActivity(searchIntent);
+
                 break;
             case R.id.addExpButton:
                 addExpDialog();
@@ -256,7 +261,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             public void onClick(View v) {
                 CollectionReference collectionReference = db.collection("UserProfile");
                 collectionReference.document(userId).delete();
-                Intent intent1 = new Intent(UserProfile.this, Signup.class);
+                Intent intent1 = new Intent(UserProfile.this, MainActivity.class);
                 startActivity(intent1);
             }
         });
@@ -268,7 +273,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
      * Create a dialog to create a new experiment with title, description, and location.
      * Select types of trials and if location is required.
      *
-     * @author Qasim Akhtar
+     * @author Vidhi Patel, Qasim Akhtar
      */
     private void addExpDialog() {
         AlertDialog.Builder addBuilder = new AlertDialog.Builder(UserProfile.this);
@@ -387,13 +392,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
      * @author Vidhi Patel
      */
     private void myExpView (){
-
         myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Experiment experiment = myExperimentsDataList.get(position);
                 Intent intent = new Intent(UserProfile.this, ExperimentActivity.class);
-                intent.putExtra("ExperimentId", experiment.getExperimentId());
+                intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
                 startActivity(intent);
             }
         });

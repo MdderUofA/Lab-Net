@@ -1,6 +1,5 @@
 package com.example.lab_net;
 
-import android.service.autofill.AutofillService;
 
 import org.junit.Test;
 
