@@ -75,6 +75,7 @@ public class ExperimentActivity extends AppCompatActivity {
     String trialId, trialTitle;
     Long resultLong;
     String result;
+    String owner;
 
     TextView experiment_title, experiment_description, experiment_region;
 
@@ -137,7 +138,7 @@ public class ExperimentActivity extends AppCompatActivity {
                         experimentTitle = documentSnapshot.getData().get("Title").toString();
                         experimentDescription = documentSnapshot.getData().get("Description").toString();
                         experimentRegion = documentSnapshot.getData().get("Region").toString();
-
+                        owner = documentSnapshot.getData().get("Owner").toString();
                         //get trialtype to make respective dialog box appear
                         trialType = documentSnapshot.getData().get("TrialType").toString();
 
@@ -578,7 +579,8 @@ public class ExperimentActivity extends AppCompatActivity {
                         });
                 dialog.dismiss();
                 // change to UserProfile
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), UserProfile.class);
+                intent.putExtra(UserProfile.USER_ID_EXTRA, owner);
                 startActivity(intent);
 
             }
