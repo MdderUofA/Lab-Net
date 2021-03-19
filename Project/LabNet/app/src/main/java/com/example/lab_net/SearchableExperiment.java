@@ -1,41 +1,18 @@
 package com.example.lab_net;
 
-import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.Date;
 
-public class SearchableExperiment implements Searchable {
+public class SearchableExperiment extends Searchable {
 
-    private String name = "NOT_YET_DEFINED";
-    private String description = "NOT_YET_DEFINED";
-    private Date date = null;
-    private SearchableDocumentReference ref;
-
-    public SearchableExperiment(String experimentName, String experimentDescription,
-                                SearchableDocumentReference ref) {
-        this.name = experimentName;
-        this.description = experimentDescription;
-        this.ref = ref;
+    @Override
+    public SearchableExperiment applyFromDatabase(QueryDocumentSnapshot snapshot) {
+        this.name =(String)snapshot.get("Title");
+        this.description = (String)snapshot.get("Description");
         this.date = null;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public Date getDate() {
-        return date;
-    }
-
-    @Override
-    public SearchableDocumentReference getDocumentReference() {
-        return ref;
+        this.reference = new SearchableDocumentReference("Experiments",
+                snapshot.getId());
+        return this;
     }
 }

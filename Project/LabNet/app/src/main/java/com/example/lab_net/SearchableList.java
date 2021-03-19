@@ -2,8 +2,6 @@ package com.example.lab_net;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,25 +13,23 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
 /**
  * A utility class which will allows a list to be referenced and fed results from a database query.
  */
 public class SearchableList {
+
+    public static final String SEARCHABLE_FILTER_EXTRA = "com.example.lab_net.searchable_list.filter";
 
     public static final int SEARCH_USERS = 1;
     public static final int SEARCH_EXPERIMENTS = 2;
@@ -41,12 +37,12 @@ public class SearchableList {
     public static final int SEARCH_ALL = -1;
 
     private ArrayList<Searchable> data;
-    private int selectedIndex=-1;
+
+    private int searchFilters = SEARCH_ALL;
 
     private ListView listView;
-    private Function<Searchable,Void> onClicked = null;
-    private SearchableDisplayAdapter adapter = null;
-    private AppCompatActivity parent = null;
+    private SearchableDisplayAdapter adapter;
+    private AppCompatActivity parent;
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -69,13 +65,7 @@ public class SearchableList {
 
         listView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
             Searchable s = getFromIndex(position);
-            this.selectedIndex=position;
-
-            if(onClicked!=null) {
-                onClicked.apply(s);
-            } else {
-                this.adapter.itemClicked(s);
-            }
+            this.adapter.itemClicked(s);
         });
     };
 
@@ -86,32 +76,6 @@ public class SearchableList {
      */
     public AppCompatActivity getParent() {
         return this.parent;
-    }
-
-    /**
-     * Sets a custom function to run once an element is clicked. If this is set to a non null value,
-     * this function will be called instead of the default clickListener which just navigates to the
-     * appropriate activity.
-     * @param func The function to call.
-     */
-    public void setOnClicked(Function<Searchable,Void> func) {
-        onClicked = func;
-    }
-
-    /**
-     *
-     * @return Whether or not an element is currently selected
-     */
-    public boolean hasSelectedIndex() {
-        return this.selectedIndex!=-1;
-    }
-
-    /**
-     * Gets the selected object from the list.
-     * @return The selected object, or null if none is selected.
-     */
-    public Searchable getSelected() {
-        return this.hasSelectedIndex() ? this.getFromIndex(this.selectedIndex) : null;
     }
 
     /**
@@ -131,53 +95,60 @@ public class SearchableList {
         performSearchOnDatabase(query, filter);
     }
 
-    private void applyAdapter() {
-        adapter=new SearchableDisplayAdapter(this.listView.getContext(),data,this);
-        listView.setAdapter(adapter);
-    }
-
     private void performSearchOnDatabase(String query, int filter) {
         List<String> list = Arrays.asList(query.split("\\s"));
         ArrayList<String> keywords = new ArrayList<>();
         keywords.addAll(list);
+
+        this.setSearchFilters(filter); // filter by these elements.
+
         Toast.makeText(SearchableList.this.listView.getContext(),
                 "Searching...",
                 Toast.LENGTH_SHORT)
                 .show();
-        final SearchProgressListener listener = new SearchProgressListener(1) {
+        final SearchProgressListener listener =
+                new SearchProgressListener(this.getNumQueries()) {
             @Override
             public void onAllQueriesDone(ArrayList<Searchable> results) {
                 SearchableList.this.setListContents(results);
             }
         };
-        this.performSearchOnDatabaseExperiments(keywords, listener);
-
-
+        this.performSearchOnDatabaseElements(keywords, listener);
     }
 
-    private void performSearchOnDatabaseExperiments(ArrayList<String> searchWordList,
-            SearchProgressListener listener) {
+    private int getNumQueries() {
+        int total = 0;
+        for(int i = 1;i < (1<<3);i<<=1) {
+            total+= this.checkFlag(i) ? 1 : 0;
+        }
+        return total;
+    }
 
-        // Query all experiments and from there pick ones that fit.
-        db.collection("Experiments")
-                //.whereArrayContainsAny("arrayWord", searchWordList)
+    private void performSearchOnDatabaseElements(ArrayList<String> searchWordList,
+                                                 SearchProgressListener listener) {
+
+        if(this.checkFlag(SearchableList.SEARCH_USERS))
+            this.queryCollection("UserProfile", searchWordList, listener,
+                        SearchableUser.class);
+
+        if(this.checkFlag(SearchableList.SEARCH_EXPERIMENTS))
+            this.queryCollection("Experiments", searchWordList, listener,
+                        SearchableExperiment.class);
+
+        if(this.checkFlag(SearchableList.SEARCH_QA))
+            this.queryCollection("QA", searchWordList, listener, null);
+    }
+
+    private void queryCollection(String collection, ArrayList<String> searchWordList,
+                                 SearchProgressListener listener, Class<? extends Searchable> cl) {
+        db.collection(collection)
                 .get()
                 .addOnCompleteListener((task) -> {
                     if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String title = (String) document.get("Title");
-                            String description = (String) document.get("Description");
-                            String combined = (title + description).toLowerCase();
-                            SearchableDocumentReference ref = new SearchableDocumentReference(
-                                    "Experiments",document.getId());
-                            // check if our experiment is actually valid.
-                            for(String s : searchWordList)
-                                if(combined.contains(s.toLowerCase())) {
-                                    listener.addResults(new SearchableExperiment(title,
-                                            description, ref));
-                                    break; // matched word, break. TODO: Remove
-                                }
-
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            Searchable s = SearchableList.this.createSearchableFromSnapshot(doc,cl);
+                            if(SearchableList.this.testSearchable(s,searchWordList))
+                                listener.addResults(s);
                         }
                     } else {
                         // whoops.
@@ -190,6 +161,36 @@ public class SearchableList {
                 });
     }
 
+    private boolean testSearchable(Searchable searchable, ArrayList<String> searchWordList) {
+        String combined = (searchable.getName()+searchable.getDescription()).toLowerCase();
+        // check if our experiment is actually valid.
+        for(String s : searchWordList) {
+            if (combined.contains(s.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    private Searchable createSearchableFromSnapshot(QueryDocumentSnapshot doc,
+                                                    Class<? extends Searchable> type) {
+        try {
+            // this will only throw an error if someone incorrectly implements Searchable.
+            return type.newInstance().applyFromDatabase(doc);
+        } catch (InstantiationException e) {
+            throw new IllegalStateException("SearchableList contains non Searchable elements");
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Searchable "+type.getSimpleName()
+                    + " lacks null constructor.");
+        }
+
+    }
+
+    private boolean checkFlag(int flagValue) {
+        return ( this.searchFilters & flagValue ) != 0;
+    }
+
     private void setListContents(Collection<Searchable> newContents) {
         this.data.clear();
         this.data.addAll(newContents);
@@ -200,8 +201,17 @@ public class SearchableList {
         adapter.notifyDataSetChanged();
     }
 
+    private void applyAdapter() {
+        adapter=new SearchableDisplayAdapter(this.listView.getContext(),data,this);
+        listView.setAdapter(adapter);
+    }
+
     private Searchable getFromIndex(int index) {
         return data.get(index);
+    }
+
+    public void setSearchFilters(int searchFilters) {
+        this.searchFilters = searchFilters;
     }
 
     /**
@@ -271,10 +281,10 @@ public class SearchableList {
      */
     private class SearchableDisplayAdapter extends ArrayAdapter {
 
-        private ArrayList<ListDisplayAdapterSegment> segments = new ArrayList<>();
-        private Context context;
-        private ArrayList<Searchable> listData;
-        private SearchableList parent;
+        private final ArrayList<ListDisplayAdapterSegment> segments = new ArrayList<>();
+        private final Context context;
+        private final ArrayList<Searchable> listData;
+        private final SearchableList parent;
 
         public SearchableDisplayAdapter(Context context, ArrayList data,
                                         SearchableList parent) {
@@ -366,7 +376,8 @@ public class SearchableList {
         }
 
         /**
-         * Creates the view for the list
+         * Creates the view for the list. It is guaranteed that the data held at data.get(position)
+         * will be the appropriate type based on the class.
          * @param position The position in the data.
          * @param convertView The view to set
          * @param parent The parent ViewGroup
@@ -390,7 +401,7 @@ public class SearchableList {
          * Creates a new ListDisplayAdapterSegment and attaches a reference
          * to the parent SearchableDisplayAdapter
          *
-         * @param adapter
+         * @param adapter The parent adapter
          */
         public UserDisplayAdapterSegment(SearchableDisplayAdapter adapter) {
             super(adapter);
@@ -398,12 +409,32 @@ public class SearchableList {
 
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            throw new UnsupportedOperationException("Not yet implemented");
+            View view = convertView;
+            if(view==null) {
+                view = LayoutInflater.from(this.adapter.getContext()).inflate(
+                        R.layout.searchable_list_content_user,parent,false);
+            }
+
+            SearchableUser user = (SearchableUser) data.get(position);
+
+            TextView name = view.findViewById(R.id.sr_user_name);
+            TextView description = view.findViewById(R.id.sr_user_description);
+
+            name.setText(user.getName());
+            description.setText(user.getDescription());
+
+            return view;
         }
 
         @Override
-        public void itemClicked(Searchable t) {
-            throw new UnsupportedOperationException("Not yet implemented");
+        public void itemClicked(Searchable searchable) {
+            SearchableUser user = (SearchableUser) searchable;
+            SearchableDocumentReference ref = user.getDocumentReference();
+            AppCompatActivity parentActivity = this.getAdapter().getSearchableList().getParent();
+            Intent intent = new Intent(parentActivity,
+                    UserProfile.class);
+            intent.putExtra(UserProfile.USER_ID_EXTRA,ref.getDocumentId());
+            parentActivity.startActivity(intent);
         }
 
         @Override
@@ -418,7 +449,7 @@ public class SearchableList {
          * Creates a new ListDisplayAdapterSegment and attaches a reference
          * to the parent SearchableDisplayAdapter
          *
-         * @param adapter
+         * @param adapter The parent adapter
          */
         public ExperimentDisplayAdapterSegment(SearchableDisplayAdapter adapter) {
             super(adapter);
@@ -434,8 +465,8 @@ public class SearchableList {
 
             SearchableExperiment experiment = (SearchableExperiment) data.get(position);
 
-            TextView name = view.findViewById(R.id.sr_user_name);
-            TextView description = view.findViewById(R.id.sr_user_description);
+            TextView name = view.findViewById(R.id.sr_experiment_name);
+            TextView description = view.findViewById(R.id.sr_experiment_description);
 
             name.setText(experiment.getName());
             description.setText(experiment.getDescription());
@@ -447,10 +478,10 @@ public class SearchableList {
         public void itemClicked(Searchable searchable) {
             SearchableExperiment experiment = (SearchableExperiment) searchable;
             SearchableDocumentReference ref = experiment.getDocumentReference();
-            // TODO: remove hard coded experiment.
             AppCompatActivity parentActivity = this.getAdapter().getSearchableList().getParent();
             Intent intent = new Intent(parentActivity,
                     ExperimentActivity.class);
+            intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA,ref.getDocumentId());
             parentActivity.startActivity(intent);
         }
 

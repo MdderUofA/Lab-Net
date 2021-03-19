@@ -56,6 +56,8 @@ import java.util.Map;
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String USER_ID_EXTRA = "com.example.lab_net.user_profile.user_id";
+
     private String userId,firstNameText,lastNameText,emailText,phoneText;
     private FirebaseFirestore db;
     private DocumentReference documentReference;
@@ -82,7 +84,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         //initialize the database
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
-        userId = intent.getStringExtra("UserId");
+        userId = intent.getStringExtra(UserProfile.USER_ID_EXTRA);
         documentReference = db.collection("UserProfile").document(userId);
 
         //initialize the user information
@@ -127,9 +129,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 editUserDialog();
                 break;
             case R.id.browseButton:
-                //TODO
-                //startActivity(new Intent());
-                //should lead to 'search for experiments' activity
+                Intent searchIntent = new Intent(this, SearchableListActivity.class);
+                searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
+                        SearchableList.SEARCH_EXPERIMENTS);
+                startActivity(searchIntent);
+
                 break;
             case R.id.addExpButton:
                 addExpDialog();
