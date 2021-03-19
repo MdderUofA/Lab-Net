@@ -8,28 +8,17 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.function.Function;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 /**
  * An activity which encapsulates a SearchableList and puts it into an independent activity.
  */
 public class SearchableListActivity extends AppCompatActivity {
-
-    public final int SEARCH_USERS = 1;
-    public final int SEARCH_EXPERIMENTS = 2;
-    public final int SEARCH_QA = 4;
-    public final int SEARCH_ALL = -1;
-
-    private int selectedIndex=-1;
-    private int totalResults = 0;
-
     private EditText searchText;
     private Button searchButton;
     private ListView listView;
@@ -58,11 +47,11 @@ public class SearchableListActivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
 
-            this.performSearch(this.searchText.getText().toString());
+            this.searchableList.performSearch(this.searchText.getText().toString());
         });
-    }
 
-    private void performSearch(String query) {
-        this.searchableList.performSearch(query);
+        int filters = getIntent().getIntExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
+                    SearchableList.SEARCH_ALL);
+        this.searchableList.setSearchFilters(filters);
     }
 }

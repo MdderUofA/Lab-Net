@@ -87,7 +87,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
                                 String id = document.getId();
                                 if (deviceID.equals(id)) {
                                     Intent intent = new Intent(Signup.this, UserProfile.class);
-                                    intent.putExtra("UserId", deviceID);
+                                    intent.putExtra(UserProfile.USER_ID_EXTRA, deviceID);
                                     startActivity(intent);
                                 }
                             }

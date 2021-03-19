@@ -50,6 +50,9 @@ import static android.media.CamcorderProfile.get;
 // New Version
 
 public class ExperimentActivity extends AppCompatActivity {
+
+    public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
+
     private ListView trialList;
     // Count adapters and lists
     private ArrayAdapter<CountTrial> trialArrayAdapter;
@@ -99,7 +102,7 @@ public class ExperimentActivity extends AppCompatActivity {
         setContentView(R.layout.experiment_owner_activity);
 
 
-        experimentId = getIntent().getStringExtra("ExperimentId");
+        experimentId = getIntent().getStringExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA);
 
        //count
         trialList = (ListView) findViewById(R.id.trial_list);
