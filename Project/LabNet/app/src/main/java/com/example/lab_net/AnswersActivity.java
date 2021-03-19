@@ -30,8 +30,14 @@ import java.util.HashMap;
 
 public class AnswersActivity extends AppCompatActivity {
 
+    public static final String QUESTION_ID_EXTRA =
+            "com.example.lab_net.answers_activity.question_id";
+
+    public static final String QUESTION_TEXT_EXTRA =
+            "com.example.lab_net.answers_activity.question_text";
+
     private FirebaseFirestore db;
-    final String TAG = "sample";
+    private final String TAG = "sample";
     private ArrayList<Answer> answersDataList;
     private ArrayAdapter<Answer> answerAdapter;
     private ListView answerList;
@@ -45,8 +51,8 @@ public class AnswersActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        questionID = getIntent().getStringExtra("questionID");
-        question_text = getIntent().getStringExtra("question_text");
+        questionID = getIntent().getStringExtra(AnswersActivity.QUESTION_ID_EXTRA);
+        question_text = getIntent().getStringExtra(AnswersActivity.QUESTION_TEXT_EXTRA);
 
         Button addAnswerButton = findViewById(R.id.addAnswerButton);
         answerList = findViewById(R.id.answerList);
@@ -58,7 +64,7 @@ public class AnswersActivity extends AppCompatActivity {
 
         answerList.setAdapter(answerAdapter);
 
-        CollectionReference collectionReference = db.collection("Answers");
+        CollectionReference collectionReference = db.collection(DatabaseCollections.ANSWERS.value());
 
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -98,9 +104,10 @@ public class AnswersActivity extends AppCompatActivity {
                         newAnswer.put("questionID", questionID);
                         newAnswer.put("answerText", answerText.getText().toString());
 
-                        String answerID = db.collection("Answers").document().getId();
+                        String answerID = db.collection(DatabaseCollections.ANSWERS.value())
+                                            .document().getId();
 
-                        db.collection("Answers")
+                        db.collection(DatabaseCollections.ANSWERS.value())
                                 .document(answerID)
                                 .set(newAnswer)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -125,7 +132,7 @@ public class AnswersActivity extends AppCompatActivity {
 
     }
     public void getAnswers() {
-        db.collection("Answers")
+        db.collection(DatabaseCollections.ANSWERS.value())
                 .whereEqualTo("questionID", questionID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

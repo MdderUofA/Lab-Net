@@ -38,24 +38,29 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
     private ListView trialList;
     private ArrayAdapter<CountTrial> trialArrayAdapter;
     private ArrayList<CountTrial> trialDataList;
-    private CustomTrialList customTrialList;
-    String trialId, trialTitle;
-    Long resultLong;
+    private String trialId;
+    private String trialTitle;
+    private long resultLong;
 
-    TextView experiment_title, experiment_description, experiment_region;
+    private TextView experiment_title;
+    private TextView experiment_description;
+    private TextView experiment_region;
 
     // Experiment
-    Experiment experiment;
-    String experimentId, experimentTitle, experimentDescription, experimentRegion;
+    //private Experiment experiment;
+    private String experimentId;
+    private String experimentTitle;
+    private String experimentDescription;
+    private String experimentRegion;
 
-    FirebaseFirestore db;
-    Button add_trial_button;
-    ImageButton edit_experiment_button;
+    private FirebaseFirestore db;
+    private Button add_trial_button;
+    //private ImageButton edit_experiment_button;
 
     //stats
-    Button statisticsSub;
+    private Button statisticsSub;
 
-    Button questionButton;
+    private Button questionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +76,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         // Fills in trialDataList
-        db.collection("Trials")
+        db.collection(DatabaseCollections.TRIALS.value())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -92,7 +97,8 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
 
-        DocumentReference documentReference = db.collection("Experiments").document( "NqsWogfL0gYCSYXzt40J");
+        DocumentReference documentReference = db.collection(DatabaseCollections.TRIALS.value())
+                .document( "NqsWogfL0gYCSYXzt40J");
 
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -115,31 +121,22 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
 
 
         add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
-        add_trial_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addTrial();
-            }
+        add_trial_button.setOnClickListener((v) -> {
+            addTrial();
         });
 
         statisticsSub = (Button) findViewById(R.id.subscriberStatisticsButton);
-        statisticsSub.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Statistics.class);
-                intent.putExtra("trialList", trialDataList);
-            }
+        statisticsSub.setOnClickListener((v) -> {
+            Intent intent = new Intent(getApplicationContext(), Statistics.class);
+            intent.putExtra(Statistics.RESULT_LIST_EXTRA, trialDataList);
         });
 
         questionButton = (Button) findViewById(R.id.questionAnswerBrowseButton);
-        questionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), QuestionsActivity.class);
-                i.putExtra("check","OwnerActivity");
-                i.putExtra("experimentID", experimentId);
-                startActivity(i);
-            }
+        questionButton.setOnClickListener((v) -> {
+            Intent intent = new Intent(getApplicationContext(), QuestionsActivity.class);
+            intent.putExtra(QuestionsActivity.CHECK_EXTRA,"OwnerActivity");
+            intent.putExtra(QuestionsActivity.EXPERIMENT_ID_EXTRA, experimentId);
+            startActivity(intent);
         });
 
 
@@ -167,7 +164,9 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
         update_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DocumentReference updateExperimentDoc = db.collection("Experiments").document("NqsWogfL0gYCSYXzt40J");
+                DocumentReference updateExperimentDoc =
+                                db.collection(DatabaseCollections.EXPERIMENTS.value())
+                                .document("NqsWogfL0gYCSYXzt40J");
                 updateExperimentDoc.update("Title", edit_title.getText().toString(),
                         "Description", edit_description.getText().toString(),
                         "Region", edit_region.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -188,7 +187,10 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
                             experiment_description.setText("Description: " + experimentDescription);
                             experiment_region.setText("Region: " + experimentRegion);
                         } else {
-                            Toast.makeText(SubscribedExperimentActivity.this, "experiment not edited", Toast.LENGTH_LONG).show();
+                            Toast.makeText(SubscribedExperimentActivity.this,
+                                    "experiment not edited",
+                                    Toast.LENGTH_LONG)
+                                    .show();
                             setDialog.dismiss();
                         }
 
@@ -217,7 +219,8 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addAnswer);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addResult1);
 
-        final CollectionReference collectionReference = db.collection("Trials");
+        final CollectionReference collectionReference =
+                        db.collection(DatabaseCollections.TRIALS.value());
 
         addTrialButton.setOnClickListener(new View.OnClickListener() {
             @Override

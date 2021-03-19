@@ -67,9 +67,15 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private ImageButton editUser;
     private Button browse, addExp, qrCode;
     private ListView subExpListView, myExpListView;
+
     private ArrayList<Experiment> myExperimentsDataList;
     private ArrayAdapter<Experiment> myExperimentAdapter;
-    private TextView usernameTextView, firstNameTextView, lastNameTextView,emailTextView,phoneTextView;
+
+    private TextView usernameTextView;
+    private TextView firstNameTextView;
+    private TextView lastNameTextView;
+    private TextView emailTextView;
+    private TextView phoneTextView;
 
     // Make EditTexts in add Experiment global to ensure they aren't empty
 
@@ -85,7 +91,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
         userId = intent.getStringExtra(UserProfile.USER_ID_EXTRA);
-        documentReference = db.collection("UserProfile").document(userId);
+        documentReference = db.collection(DatabaseCollections.USER_PROFILE.value()).document(userId);
 
         //initialize the user information
         usernameTextView = (TextView) findViewById(R.id.username);
@@ -204,7 +210,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         deleteProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CollectionReference collectionReference = db.collection("UserProfile");
+                CollectionReference collectionReference =
+                            db.collection(DatabaseCollections.USER_PROFILE.value());
                 collectionReference.document(userId).delete();
                 Intent intent1 = new Intent(UserProfile.this, Signup.class);
                 startActivity(intent1);
@@ -223,7 +230,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private void addExpDialog() {
         AlertDialog.Builder addBuilder = new AlertDialog.Builder(UserProfile.this);
         View addView = getLayoutInflater().inflate(R.layout.add_exp_dialog,null);
-        final CollectionReference collectionReference = db.collection("Experiments");
+        final CollectionReference collectionReference =
+                    db.collection(DatabaseCollections.EXPERIMENTS.value());
 
         String trialTypes[] = {"Count-based", "Binomial", "Measurement", "NonNegativeInteger"};
 
@@ -248,12 +256,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         AlertDialog addDialog = addBuilder.create();
         addDialog.setCanceledOnTouchOutside(true);
 
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,trialTypes);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                                    android.R.layout.simple_spinner_dropdown_item,trialTypes);
         dropdown.setAdapter(adapter);
 
-        ArrayAdapter<String> adapter2 =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,enableLocation);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this,
+                                    android.R.layout.simple_spinner_dropdown_item,enableLocation);
         dropdown2.setAdapter(adapter2);
 
         create.setOnClickListener(new View.OnClickListener() {
@@ -343,7 +351,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Experiment experiment = myExperimentsDataList.get(position);
                 Intent intent = new Intent(UserProfile.this, ExperimentActivity.class);
-                intent.putExtra("ExperimentId", experiment.getExperimentId());
+                intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
                 startActivity(intent);
             }
         });
@@ -355,7 +363,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
      * @author Qasim Akhtar
      */
     public void getExperiments() {
-        db.collection("Experiments")
+        db.collection(DatabaseCollections.EXPERIMENTS.value())
                 .whereEqualTo("Owner", userId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -374,7 +382,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                                 String experimentEnableLocation = document.getData().get("EnableLocation").toString();
 
                                 myExperimentsDataList.add(new Experiment(experimentId,experimentTitle,
-                                        experimentDescription,experimentRegion,experimentOwner,experimentMinTrials,experimentTrialType, experimentEnableLocation));
+                                        experimentDescription,experimentRegion,
+                                        experimentOwner,experimentMinTrials,
+                                        experimentTrialType, experimentEnableLocation));
                                 myExperimentAdapter.notifyDataSetChanged();
 
                             }

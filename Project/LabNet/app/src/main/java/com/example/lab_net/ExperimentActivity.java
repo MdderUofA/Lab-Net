@@ -128,7 +128,7 @@ public class ExperimentActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         // Fills in trialDataList
-        db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
+        db.collection(DatabaseCollections.TRIALS.value()).whereEqualTo("ExperimentId", experimentId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -160,7 +160,8 @@ public class ExperimentActivity extends AppCompatActivity {
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
 
-        DocumentReference documentReference = db.collection("Experiments").document(experimentId);
+        DocumentReference documentReference = db.collection(DatabaseCollections.EXPERIMENTS.value())
+                                                .document(experimentId);
 
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -207,8 +208,8 @@ public class ExperimentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), QuestionsActivity.class);
-                i.putExtra("check","OwnerActivity");
-                i.putExtra("experimentID", experimentId);
+                i.putExtra(QuestionsActivity.CHECK_EXTRA,"OwnerActivity");
+                i.putExtra(QuestionsActivity.EXPERIMENT_ID_EXTRA, experimentId);
                 startActivity(i);
             }
         });
@@ -229,8 +230,8 @@ public class ExperimentActivity extends AppCompatActivity {
                     Toast.makeText(ExperimentActivity.this, "No stats available for this experiment", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    intent.putExtra("resultList", (Serializable) resultList);
-                    intent.putExtra("ExperimentId",experimentId);
+                    intent.putExtra(Statistics.RESULT_LIST_EXTRA, (Serializable) resultList);
+                    intent.putExtra(Statistics.EXPERIMENT_ID_EXTRA,experimentId);
                     startActivity(intent);
                 }
             }
@@ -260,7 +261,8 @@ public class ExperimentActivity extends AppCompatActivity {
         update_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DocumentReference updateExperimentDoc = db.collection("Experiments").document(experimentId);
+                DocumentReference updateExperimentDoc = db.collection(DatabaseCollections.EXPERIMENTS.value())
+                                                        .document(experimentId);
                 updateExperimentDoc.update("Title", edit_title.getText().toString(),
                         "Description", edit_description.getText().toString(),
                         "Region", edit_region.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -295,7 +297,7 @@ public class ExperimentActivity extends AppCompatActivity {
 
     private void getLocation(String trialId){
         Intent sendTrialId = new Intent(this, MapActivity.class);
-        sendTrialId.putExtra("trialId", trialId);
+        sendTrialId.putExtra(MapActivity.TRIAL_ID_EXTRA, trialId);
         startActivity(sendTrialId);
     }
 
@@ -322,7 +324,8 @@ public class ExperimentActivity extends AppCompatActivity {
             addTrialTitle.addTextChangedListener(addTextWatcher);
             addTrialResult.addTextChangedListener(addTextWatcher);
 
-            final CollectionReference collectionReference = db.collection("Trials");
+            final CollectionReference collectionReference =
+                        db.collection(DatabaseCollections.TRIALS.value());
             String trialId = collectionReference.document().getId();
 
             Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
@@ -407,7 +410,8 @@ public class ExperimentActivity extends AppCompatActivity {
             addTrialResult1 = (EditText) settingsView.findViewById(R.id.addResult1);
             addTrialResult2 = (EditText) settingsView.findViewById(R.id.addResult2);
 
-            final CollectionReference collectionReference = db.collection("Trials");
+            final CollectionReference collectionReference =
+                        db.collection(DatabaseCollections.TRIALS.value());
             String trialId = collectionReference.document().getId();
 
             Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
@@ -480,7 +484,7 @@ public class ExperimentActivity extends AppCompatActivity {
         trialDataList.remove(position);
         resultList.remove(trial.getCount());
         trialArrayAdapter.notifyDataSetChanged();
-        db.collection("Trials").document(trial.getId())
+        db.collection(DatabaseCollections.TRIALS.value()).document(trial.getId())
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -499,7 +503,8 @@ public class ExperimentActivity extends AppCompatActivity {
     }
 
     private void deleteExperiment() {
-        final CollectionReference collectionReference = db.collection("Experiments");
+        final CollectionReference collectionReference =
+                    db.collection(DatabaseCollections.EXPERIMENTS.value());
 
         AlertDialog.Builder alert = new AlertDialog.Builder(ExperimentActivity.this);
         alert.setTitle("Alert");

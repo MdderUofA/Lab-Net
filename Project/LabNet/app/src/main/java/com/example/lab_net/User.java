@@ -14,7 +14,11 @@ package com.example.lab_net;
  */
 public class User {
 
-    public String firstName, lastName, email, phone,userId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+    private String userId;
 
 
     public User(String userId, String firstName, String lastName, String email, String phone) {

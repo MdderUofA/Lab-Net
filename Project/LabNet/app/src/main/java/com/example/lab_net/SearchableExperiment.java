@@ -11,7 +11,7 @@ public class SearchableExperiment extends Searchable {
         this.name =(String)snapshot.get("Title");
         this.description = (String)snapshot.get("Description");
         this.date = null;
-        this.reference = new SearchableDocumentReference("Experiments",
+        this.reference = new SearchableDocumentReference(DatabaseCollections.EXPERIMENTS.value(),
                 snapshot.getId());
         return this;
     }

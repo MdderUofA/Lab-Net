@@ -9,19 +9,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class Statistics extends AppCompatActivity {
 
-    private TextView meanView, medianView;
+    public static final String EXPERIMENT_ID_EXTRA =
+            "com.example.subscribed_experiment_activity.experiment_id";
+
+    public static final String RESULT_LIST_EXTRA =
+            "com.example.subscribed_experiment_activity.result_list";
+
+    private TextView meanView;
+    private TextView medianView;
 
     private float sum = 0;
-    private double mean = 0, median = 0;;
+    private double mean = 0;
+    private double median = 0;;
     private ArrayList<CountTrial> trials;
     private ArrayList<Long> results;
     private String expId;
-    private int i;
 
     private Button doneButton;
 
@@ -35,10 +44,10 @@ public class Statistics extends AppCompatActivity {
         //get from ExperimentActivity
         Intent intent = getIntent();
         results = new ArrayList<>();
-        results = (ArrayList<Long>) intent.getSerializableExtra("resultList");
-        expId = intent.getStringExtra("ExperimentId");
+        results = (ArrayList<Long>) intent.getSerializableExtra(Statistics.RESULT_LIST_EXTRA);
+        expId = intent.getStringExtra(Statistics.EXPERIMENT_ID_EXTRA);
 
-        for (i = 0; i < results.size(); i++) {
+        for (int i = 0; i < results.size(); i++) {
             sum = results.get(i) + sum;
         }
         if (results.size() != 0) {
@@ -69,7 +78,7 @@ public class Statistics extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent1 = new Intent(getApplicationContext(), ExperimentActivity.class);
-                intent1.putExtra("ExperimentId", expId);
+                intent1.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, expId);
                 startActivity(intent1);
             }
         });

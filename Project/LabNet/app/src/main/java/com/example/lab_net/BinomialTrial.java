@@ -1,7 +1,7 @@
 package com.example.lab_net;
 
 public class BinomialTrial extends Trial{
-    String title;
+    private String title;
     private Long pass;
     private Long fail;
 

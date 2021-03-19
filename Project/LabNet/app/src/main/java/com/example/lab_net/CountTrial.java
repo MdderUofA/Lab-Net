@@ -1,19 +1,18 @@
 package com.example.lab_net;
 
 public class CountTrial extends Trial{
-    private Long count;
-
+    private long count;
 
     public CountTrial(String id, String title, Long count) {
         super(id, title);
         this.count = count;
     }
 
-    public Long getCount() {
+    public long getCount() {
         return count;
     }
 
-    public void setCount(Long count) {
+    public void setCount(long count) {
         this.count = count;
     }
 }

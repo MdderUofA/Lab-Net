@@ -19,22 +19,18 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * This class is the homepage activity of the app that encourages the user to sign up or
@@ -47,7 +43,8 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
     private Button signUp;
     private EditText editTextFirstName, editTextLastName, editTextEmail, editTextPhone;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    final CollectionReference collectionReference = db.collection("UserProfile");
+    final CollectionReference collectionReference =
+            db.collection(DatabaseCollections.USER_PROFILE.value());
     private final String Tag = "Sample";
     private User user;
     private String deviceID;
@@ -203,7 +200,7 @@ public class Signup extends AppCompatActivity implements View.OnClickListener {
         user = new User(deviceID,firstName,lastName,email,phone);
 
         Intent intent1 = new Intent(Signup.this,UserProfile.class);
-        intent1.putExtra("UserId", user.getUserId());
+        intent1.putExtra(UserProfile.USER_ID_EXTRA, user.getUserId());
         startActivity(intent1);
 
     }

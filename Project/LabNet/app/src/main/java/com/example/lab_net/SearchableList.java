@@ -127,15 +127,16 @@ public class SearchableList {
                                                  SearchProgressListener listener) {
 
         if(this.checkFlag(SearchableList.SEARCH_USERS))
-            this.queryCollection("UserProfile", searchWordList, listener,
+            this.queryCollection(DatabaseCollections.USER_PROFILE.value(), searchWordList, listener,
                         SearchableUser.class);
 
         if(this.checkFlag(SearchableList.SEARCH_EXPERIMENTS))
-            this.queryCollection("Experiments", searchWordList, listener,
+            this.queryCollection(DatabaseCollections.EXPERIMENTS.value(), searchWordList, listener,
                         SearchableExperiment.class);
 
         if(this.checkFlag(SearchableList.SEARCH_QA))
-            this.queryCollection("QA", searchWordList, listener, null);
+            this.queryCollection(DatabaseCollections.QUESTIONS.value(), searchWordList, listener,
+                    null);
     }
 
     private void queryCollection(String collection, ArrayList<String> searchWordList,
@@ -179,7 +180,7 @@ public class SearchableList {
             return type.newInstance().applyFromDatabase(doc);
         } catch (InstantiationException e) {
             throw new IllegalStateException("SearchableList contains non Searchable elements");
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) { // impossible
             throw new IllegalStateException("Searchable "+type.getSimpleName()
                     + " lacks null constructor.");
         }

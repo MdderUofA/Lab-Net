@@ -31,8 +31,14 @@ import java.util.HashMap;
 
 public class QuestionsActivity extends AppCompatActivity {
 
+    public static final String EXPERIMENT_ID_EXTRA =
+            "com.example.lab_net.questions_activity.experiment_id";
+
+    public static final String CHECK_EXTRA = "com.example.lab_net.questions_activity.check";
+
+
     private FirebaseFirestore db;
-    final String TAG = "sample";
+    private final String TAG = "sample";
     private ArrayList<Question> questionsDataList;
     private ArrayAdapter<Question> questionAdapter;
     private ListView questionList;
@@ -45,8 +51,8 @@ public class QuestionsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        experimentID = getIntent().getStringExtra("experimentID");
-        String check = getIntent().getStringExtra("check");
+        experimentID = getIntent().getStringExtra(QuestionsActivity.EXPERIMENT_ID_EXTRA);
+        String check = getIntent().getStringExtra(QuestionsActivity.CHECK_EXTRA);
 
         Button addQuestion = findViewById(R.id.addQuestionButton);
         questionList = findViewById(R.id.questionList);
@@ -59,11 +65,13 @@ public class QuestionsActivity extends AppCompatActivity {
 
         questionList.setAdapter(questionAdapter);
 
-        CollectionReference collectionReference = db.collection("Questions");
+        CollectionReference collectionReference =
+                    db.collection(DatabaseCollections.QUESTIONS.value());
 
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+            public void onEvent(@Nullable QuerySnapshot value,
+                                @Nullable FirebaseFirestoreException error) {
                 questionsDataList.clear();
                 for(QueryDocumentSnapshot doc : value){
                     String questionId = doc.getId();
@@ -100,9 +108,10 @@ public class QuestionsActivity extends AppCompatActivity {
                         newQuestion.put("experimentID", experimentID);
                         newQuestion.put("questionText", questionText.getText().toString());
 
-                        String questionID = db.collection("Questions").document().getId();
+                        String questionID = db.collection(DatabaseCollections.QUESTIONS.value())
+                                .document().getId();
 
-                        db.collection("Questions")
+                        db.collection(DatabaseCollections.QUESTIONS.value())
                                 .document(questionID)
                                 .set(newQuestion)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -131,8 +140,8 @@ public class QuestionsActivity extends AppCompatActivity {
                 String questionID = questionsDataList.get(position).getQuestionId();
                 String question_text = questionsDataList.get(position).getQuestionText();
                 Intent i = new Intent(getApplicationContext(), AnswersActivity.class);
-                i.putExtra("questionID", questionID);
-                i.putExtra("question_text", question_text);
+                i.putExtra(AnswersActivity.QUESTION_ID_EXTRA, questionID);
+                i.putExtra(AnswersActivity.QUESTION_TEXT_EXTRA, question_text);
                 startActivity(i);
             }
         });
@@ -140,7 +149,7 @@ public class QuestionsActivity extends AppCompatActivity {
     }
 
     public void getQuestions() {
-        db.collection("Questions")
+        db.collection(DatabaseCollections.QUESTIONS.value())
                 .whereEqualTo("experimentID", experimentID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

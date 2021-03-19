@@ -33,6 +33,8 @@ import java.util.Objects;
  */
 public class MapActivity extends AppCompatActivity implements CoordinateListener {
 
+    public static final String TRIAL_ID_EXTRA = "com.example.lab_net.map_activitiy.trial_id";
+
     private static final String TAG = "TESTING ACTIVITY" ;
     private FirebaseFirestore db;
     private double trialLatitude;
@@ -109,9 +111,9 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
         }
 
         db = FirebaseFirestore.getInstance();
-        final CollectionReference collectionReference = db.collection("Trials");
+        //final CollectionReference collectionReference = db.collection(DatabaseCollections.TRIALS.value());
         Intent intent = getIntent();
-        String trialId = intent.getStringExtra("trialId");
+        String trialId = intent.getStringExtra(MapActivity.TRIAL_ID_EXTRA);
 
 
         Button saveLocationButton = (Button) findViewById(R.id.saveLocation);

@@ -8,7 +8,7 @@ public class SearchableUser extends Searchable {
         this.name = (String)snapshot.get("firstName") + " " + (String)snapshot.get("lastName");
         this.description = (String)snapshot.get("email");
         this.date = null;
-        this.reference = new SearchableDocumentReference("UserProfile",
+        this.reference = new SearchableDocumentReference(DatabaseCollections.USER_PROFILE.value(),
                 snapshot.getId());
         return this;
     }

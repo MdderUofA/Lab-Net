@@ -39,7 +39,7 @@ public class CustomTrialList extends ArrayAdapter<CountTrial> {
         TextView resultText = view.findViewById(R.id.result_text);
 
         titleText.setText(trial.getTitle());
-        resultText.setText(trial.getCount().toString());
+        resultText.setText(String.valueOf(trial.getCount()));
 
 
         return view;

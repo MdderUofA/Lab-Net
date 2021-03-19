@@ -3,17 +3,17 @@ package com.example.lab_net;
 import java.util.ArrayList;
 
 public class Experiment {
-    String experimentId;
-    String title;
-    String description;
-    String region;
-    String owner;
+    private String experimentId;
+    private String title;
+    private String description;
+    private String region;
+    private String owner;
     int minTrials;
-    String trialType;
-    ArrayList<Trial> trials;// aggregation with Trial
-    String enableLocation;
-    // ArrayList<Question> questions; // aggregate with Question
-    //qrCode QR; // aggregate with QR
+    private String trialType;
+    private ArrayList<Trial> trials;// aggregation with Trial
+    private String enableLocation;
+    //private  ArrayList<Question> questions; // aggregate with Question
+    //private qrCode QR; // aggregate with QR
 
     public Experiment(String experimentId, String title, String description, String owner, String region, int minTrials, String trialType, String enableLocation) {
         this.experimentId = experimentId;
