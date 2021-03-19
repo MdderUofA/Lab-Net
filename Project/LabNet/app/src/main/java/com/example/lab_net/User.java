@@ -1,9 +1,3 @@
-/**
- * CMPUT 301
- * @version 1.0
- * March 19, 2021
- *
- */
 package com.example.lab_net;
 
 
