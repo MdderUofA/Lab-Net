@@ -85,6 +85,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
         userId = intent.getStringExtra(UserProfile.USER_ID_EXTRA);
+
         documentReference = db.collection("UserProfile").document(userId);
 
         //initialize the user information
@@ -206,7 +207,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             public void onClick(View v) {
                 CollectionReference collectionReference = db.collection("UserProfile");
                 collectionReference.document(userId).delete();
-                Intent intent1 = new Intent(UserProfile.this, Signup.class);
+                Intent intent1 = new Intent(UserProfile.this, MainActivity.class);
                 startActivity(intent1);
             }
         });
