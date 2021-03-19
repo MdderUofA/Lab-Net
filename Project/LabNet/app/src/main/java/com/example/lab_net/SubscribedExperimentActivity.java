@@ -81,7 +81,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
                                 trialId = document.getId();
                                 trialTitle = document.getData().get("Title").toString();
                                 resultLong = (Long) document.getData().get("Result");
-                                trialDataList.add(new CountTrial(trialId, trialTitle, resultLong));
+                                trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
                             }
                             trialArrayAdapter.notifyDataSetChanged();
                         }
@@ -264,7 +264,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
                     String trialId = doc.getId();
                     String trialTitle = (String) doc.getData().get("Title");
                     Long trialResult = (Long) doc.getData().get("Result");
-                    trialDataList.add(new CountTrial(trialId, trialTitle, resultLong));
+                    trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
                 }
                 trialArrayAdapter.notifyDataSetChanged();
             }
