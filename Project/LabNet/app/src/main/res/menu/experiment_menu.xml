@@ -8,35 +8,59 @@
             android:icon="@drawable/ic_person"/>
 
         <item
-            android:id="@+id/nav_settings"
-            android:title="Settings"
-            android:icon="@drawable/ic_settings"/>
+            android:id="@+id/nav_qr"
+            android:title="QR Code"
+            android:icon="@drawable/ic_qr"/>
 
     </group>
 
-        <item
-            android:title="Experiment">
+    <item
+        android:title="Experiment">
 
-            <menu>
-                <group android:checkableBehavior="single">
-                    <item
-                        android:id="@+id/nav_statistics"
-                        android:title="Statistics"
-                        android:icon="@drawable/ic_stats"/>
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_statistics"
+                    android:title="Statistics"
+                    android:icon="@drawable/ic_stats"/>
 
-                    <item
-                        android:id="@+id/nav_graphs"
-                        android:title="Graphs"
-                        android:icon="@drawable/ic_graphs"/>
+                <item
+                    android:id="@+id/nav_graphs"
+                    android:title="Graphs"
+                    android:icon="@drawable/ic_graphs"/>
 
-                    <item
-                        android:id="@+id/nav_qa"
-                        android:title="Q and A"
-                        android:icon="@drawable/ic_question_answer"/>
-                </group>
-            </menu>
+                <item
+                    android:id="@+id/nav_qa"
+                    android:title="Q and A"
+                    android:icon="@drawable/ic_question_answer"/>
+            </group>
+        </menu>
 
-        </item>
+    </item>
+
+    <item
+        android:title="Settings">
+
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_completeExp"
+                    android:title="Complete Experiment "
+                    android:icon="@drawable/ic_complete"/>
+
+                <item
+                    android:id="@+id/nav_publishExp"
+                    android:title="Publish Experiment"
+                    android:icon="@drawable/ic_publish"/>
+
+                <item
+                    android:id="@+id/nav_deleteExp"
+                    android:title="Delete Experiment"
+                    android:icon="@drawable/ic_delete_forever"/>
+            </group>
+        </menu>
+
+    </item>
 
 
 </menu>

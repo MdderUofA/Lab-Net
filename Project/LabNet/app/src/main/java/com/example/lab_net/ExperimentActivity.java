@@ -91,7 +91,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
     String experimentId, experimentTitle, experimentDescription, experimentRegion, trialType;
 
     FirebaseFirestore db;
-    Button add_trial_button, deleteButton;
+    Button add_trial_button;
     ImageButton edit_experiment_button;
 
     //stats
@@ -104,7 +104,6 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
-    TextView nav_title;
 
 
     @Override
@@ -205,15 +204,6 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
             }
         });
 
-        deleteButton = (Button) findViewById(R.id.deleteExperimentButton);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteExperiment();
-            }
-        });
-
-
 
     }
 
@@ -242,7 +232,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
                 profileIntent.putExtra(UserProfile.USER_ID_EXTRA, owner);
                 startActivity(profileIntent);
                 break;
-            case R.id.nav_settings:
+            case R.id.nav_qr:
                 //TODO
                 break;
             case R.id.nav_statistics:
@@ -264,6 +254,15 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
                 qaIntent.putExtra("check", "OwnerActivity");
                 qaIntent.putExtra("experimentID", experimentId);
                 startActivity(qaIntent);
+                break;
+            case R.id.nav_completeExp:
+                //TODO
+                break;
+            case R.id.nav_publishExp:
+                //TODO
+                break;
+            case R.id.nav_deleteExp:
+                deleteExperiment();
                 break;
         }
         return true;
