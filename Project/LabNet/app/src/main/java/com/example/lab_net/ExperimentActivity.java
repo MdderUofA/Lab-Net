@@ -207,6 +207,8 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
 
     }
 
+    //side menu created from youtube: Android Navigation Drawer Menu Material Design
+    // by Coding With Tea
     private void setToolbar(){
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
