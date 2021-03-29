@@ -61,6 +61,22 @@ public class QuestionsActivity extends AppCompatActivity {
 
         CollectionReference collectionReference = db.collection("Questions");
 
+//        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+//                questionsDataList.clear();
+//                for(QueryDocumentSnapshot doc : value){
+//                    String questionId = doc.getId();
+//                    String experimentId = doc.getData().get("experimentID").toString();
+//                    if(experimentId.equals(experimentID)) {
+//                        String questionText = (String) doc.getData().get("questionText");
+//                        questionsDataList.add(new Question(questionId, questionText));
+//                        questionAdapter.notifyDataSetChanged();
+//                    }
+//                }
+//            }
+//        });
+
 
         getQuestions();
 
@@ -105,8 +121,6 @@ public class QuestionsActivity extends AppCompatActivity {
                                     }
                                 });
                     }
-
-
                 });
                 setDialog.show();
             }
