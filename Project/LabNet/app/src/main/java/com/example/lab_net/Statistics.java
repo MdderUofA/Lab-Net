@@ -101,7 +101,7 @@ public class Statistics extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent1 = new Intent(getApplicationContext(), ExperimentActivity.class);
-                intent1.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, expId);
+                intent1.putExtra("experimentID", expId);
                 startActivity(intent1);
             }
         });

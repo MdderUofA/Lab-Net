@@ -50,7 +50,6 @@ import java.util.Map;
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String USER_ID_EXTRA = "com.example.lab_net.user_profile.user_id";
 
     private String userId,firstNameText,lastNameText,emailText,phoneText;
     private FirebaseFirestore db;
@@ -78,7 +77,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         //initialize the database
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
-        userId = intent.getStringExtra(UserProfile.USER_ID_EXTRA);
+        userId = intent.getStringExtra("userID");
 
         documentReference = db.collection("UserProfile").document(userId);
 
@@ -397,7 +396,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Experiment experiment = myExperimentsDataList.get(position);
                 Intent intent = new Intent(UserProfile.this, ExperimentActivity.class);
-                intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
+                intent.putExtra("experimentID", experiment.getExperimentId());
                 startActivity(intent);
             }
         });
