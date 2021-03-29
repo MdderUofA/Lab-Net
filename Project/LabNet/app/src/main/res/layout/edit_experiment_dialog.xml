@@ -17,7 +17,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-black"
-        android:text="Edit Experiment"
+        android:text="Experiment Settings"
         android:textSize="24sp" />
 
     <EditText
@@ -25,8 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="83dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
         android:ems="10"
         android:hint="Title"
         android:inputType="textPersonName" />
@@ -55,12 +55,14 @@
 
     <Button
         android:id="@+id/updateExperimentButton"
-        android:layout_width="141dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="330dp"
-        android:text="Update"
+        android:text="Update Details"
         app:backgroundTint="#009688" />
+
+
 
 </RelativeLayout>

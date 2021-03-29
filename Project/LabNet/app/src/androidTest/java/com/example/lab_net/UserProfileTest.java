@@ -19,7 +19,7 @@ public class UserProfileTest {
     private Solo solo;
     @Rule
     //public ActivityScenarioRule<Signup> rule = new ActivityScenarioRule<>(Signup.class);
-    public ActivityTestRule<Signup> rule = new ActivityTestRule<>(Signup.class, true, true);
+    public ActivityTestRule<UserProfile> rule = new ActivityTestRule<>(UserProfile.class, true, true);
 
     @Before
     public void setUp() throws Exception {

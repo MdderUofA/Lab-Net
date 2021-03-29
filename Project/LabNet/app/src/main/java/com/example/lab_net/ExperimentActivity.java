@@ -8,7 +8,10 @@ package com.example.lab_net;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,6 +19,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,10 +30,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -49,7 +55,7 @@ import static android.media.CamcorderProfile.get;
 
 // New Version
 
-public class ExperimentActivity extends AppCompatActivity {
+public class ExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
 
@@ -89,12 +95,16 @@ public class ExperimentActivity extends AppCompatActivity {
     ImageButton edit_experiment_button;
 
     //stats
-    Button statistics;
-    Button questionButton;
     List<Long> resultList = new ArrayList<Long>();
 
     Button addTrialButton;
     EditText addTrialTitle, addTrialResult;
+
+    //side menu
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Toolbar toolbar;
+    TextView nav_title;
 
 
     @Override
@@ -102,6 +112,8 @@ public class ExperimentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.experiment_owner_activity);
 
+        //side menu
+        setToolbar();
 
         experimentId = getIntent().getStringExtra(EXPERIMENT_ID_EXTRA);
 
@@ -177,7 +189,6 @@ public class ExperimentActivity extends AppCompatActivity {
         experiment_region = findViewById(R.id.experimentRegion);
 
 
-
         edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
         edit_experiment_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,17 +205,6 @@ public class ExperimentActivity extends AppCompatActivity {
             }
         });
 
-
-        questionButton = (Button) findViewById(R.id.questionAnswerBrowseButton);
-        questionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), QuestionsActivity.class);
-                i.putExtra("check", "OwnerActivity");
-                i.putExtra("experimentID", experimentId);
-                startActivity(i);
-            }
-        });
         deleteButton = (Button) findViewById(R.id.deleteExperimentButton);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,21 +213,60 @@ public class ExperimentActivity extends AppCompatActivity {
             }
         });
 
-        statistics = (Button) findViewById(R.id.ownerStatisticsButton);
-        statistics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (trialArrayAdapter.getCount() == 0 || trialType.equals("Binomial")) {
-                    Toast.makeText(ExperimentActivity.this, "No stats available for this experiment", Toast.LENGTH_LONG).show();
-                } else {
-                    Intent intent = new Intent(getApplicationContext(), Statistics.class);
-                    intent.putExtra("resultList", (Serializable) resultList);
-                    intent.putExtra("ExperimentId", experimentId);
-                    startActivity(intent);
-                }
-            }
-        });
 
+
+    }
+
+    private void setToolbar(){
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.bringToFront();
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,
+                toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.app_teal));
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.nav_profile:
+                Intent profileIntent = new Intent(getApplicationContext(),UserProfile.class);
+                profileIntent.putExtra(UserProfile.USER_ID_EXTRA, owner);
+                startActivity(profileIntent);
+                break;
+            case R.id.nav_settings:
+                //TODO
+                break;
+            case R.id.nav_statistics:
+                if (trialArrayAdapter.getCount() == 0 || trialType.equals("Binomial")) {
+                    Toast.makeText(ExperimentActivity.this,
+                            "No stats available for this experiment", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent statsIntent = new Intent(getApplicationContext(), Statistics.class);
+                    statsIntent.putExtra("resultList", (Serializable) resultList);
+                    statsIntent.putExtra("ExperimentId", experimentId);
+                    startActivity(statsIntent);
+                }
+                break;
+            case R.id.nav_graphs:
+                //TODO
+                break;
+            case R.id.nav_qa:
+                Intent qaIntent = new Intent(getApplicationContext(), QuestionsActivity.class);
+                qaIntent.putExtra("check", "OwnerActivity");
+                qaIntent.putExtra("experimentID", experimentId);
+                startActivity(qaIntent);
+                break;
+        }
+        return true;
     }
 
     private void editExperiment() {
@@ -532,5 +571,6 @@ public class ExperimentActivity extends AppCompatActivity {
 
         }
     };
+
 
 }
