@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (deviceId.equals(id)) {
                                     x = "1";
                                     Intent intent = new Intent(MainActivity.this, UserProfile.class);
-                                    intent.putExtra("userID", deviceId);
+                                    intent.putExtra(UserProfile.USER_ID_EXTRA, deviceId);
                                     startActivity(intent);
                                 }
                             }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         Intent intent1 = new Intent(MainActivity.this, UserProfile.class);
-        intent1.putExtra("userID", deviceId);
+        intent1.putExtra(UserProfile.USER_ID_EXTRA, deviceId);
         startActivity(intent1);
 
     }

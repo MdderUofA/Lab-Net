@@ -444,7 +444,7 @@ public class SearchableList {
             AppCompatActivity parentActivity = this.getAdapter().getSearchableList().getParent();
             Intent intent = new Intent(parentActivity,
                     UserProfile.class);
-            intent.putExtra("userID",ref.getDocumentId());
+            intent.putExtra(UserProfile.USER_ID_EXTRA,ref.getDocumentId());
             parentActivity.startActivity(intent);
         }
 
@@ -517,7 +517,7 @@ public class SearchableList {
             AppCompatActivity parentActivity = this.getAdapter().getSearchableList().getParent();
             Intent intent = new Intent(parentActivity,
                     ExperimentActivity.class);
-            intent.putExtra("experimentID",ref.getDocumentId());
+            intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA,ref.getDocumentId());
             parentActivity.startActivity(intent);
         }
 
