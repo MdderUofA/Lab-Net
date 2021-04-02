@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LabNet"
         tools:ignore="ExtraText">
-        <activity android:name=".SubscribedUser"></activity>
+        <activity android:name=".SubscribedUserActivity"></activity>
         <activity android:name=".MapActivity" />
 
         <meta-data
