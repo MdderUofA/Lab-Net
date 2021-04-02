@@ -6,7 +6,7 @@
     <TextView
         android:id="@+id/question_text"
         android:layout_width="match_parent"
-        android:layout_height="67dp"
+        android:layout_height="wrap_content"
         android:text="Question"
         android:textSize="20sp" />
 </LinearLayout>

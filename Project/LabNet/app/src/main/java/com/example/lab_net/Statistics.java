@@ -49,7 +49,7 @@ public class Statistics extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.stats_dialog);
+        setContentView(R.layout.activity_stats);
         meanView = (TextView) findViewById(R.id.mean_view);
 
         //get from ExperimentActivity
