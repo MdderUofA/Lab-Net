@@ -1,29 +1,22 @@
 package com.example.lab_net;
 
 public class BinomialTrial extends Trial{
-    String title;
-    private Long pass;
-    private Long fail;
+    private String result;
 
 
-    public BinomialTrial(String id, String title, Long pass, Long fail) {
+
+    public BinomialTrial(String id, String title, String result) {
         super(id, title);
+        this.result = result;
     }
 
-    public Long getPass() {
-        return pass;
+    public String getResult() {
+        return result;
     }
 
-    public Long getFail() {
-        return fail;
+    public void setResult(String pass) {
+        this.result = result;
     }
 
-    public void setPass(Long pass) {
-        this.pass = pass;
-    }
-
-    public void setFail(Long fail) {
-        this.fail = fail;
-    }
 }
 

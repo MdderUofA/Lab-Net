@@ -148,12 +148,12 @@ public class ExperimentActivity extends AppCompatActivity {
                                 trialType = document.getData().get("Title").toString();
                                 if(!trialType.equals("Binomial")) {
                                     resultLong = (Long) document.getData().get("Result");
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
+                                    //trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
                                     resultList.add(resultLong);
                                 }
                                 else{
                                     result = (String) document.getData().get("Result");
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, result.toString()));
+                                    //trialDataList.add(new CountTrial(trialId, trialTitle, result.toString()));
                                 }
 
                             }
@@ -404,7 +404,7 @@ public class ExperimentActivity extends AppCompatActivity {
                             String trialId = doc.getId();
                             String trialTitle = (String) doc.getData().get("Title");
                             Long trialResult = (Long) doc.getData().get("Result");
-                            trialDataList.add(new CountTrial(trialId, trialTitle, trialResult.toString()));
+                          //  trialDataList.add(new CountTrial(trialId, trialTitle, trialResult.toString()));
                             trialArrayAdapter.notifyDataSetChanged();
                         }
                     } else {
@@ -412,7 +412,7 @@ public class ExperimentActivity extends AppCompatActivity {
                             String trialId = doc.getId();
                             String trialTitle = (String) doc.getData().get("Title");
                             String trialResult = (String) doc.getData().get("Result");
-                            trialDataList.add(new CountTrial(trialId, trialTitle, trialResult));
+                   //         trialDataList.add(new CountTrial(trialId, trialTitle, trialResult));
                             trialArrayAdapter.notifyDataSetChanged();
                         }
                     }
@@ -457,12 +457,12 @@ public class ExperimentActivity extends AppCompatActivity {
                                 trialType = document.getData().get("Title").toString();
                                 if(!trialType.equals("Binomial")) {
                                     resultLong = (Long) document.getData().get("Result");
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
+                                 //   trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
                                     resultList.add(resultLong);
                                 }
                                 else{
                                     result = (String) document.getData().get("Result");
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, result.toString()));
+                            //        trialDataList.add(new CountTrial(trialId, trialTitle, result.toString()));
                                 }
 
                             }

@@ -68,6 +68,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     EditText expTitle, expDescription, expRegion, expMinTrials;
     Button create;
+    String experimentTrialType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -395,9 +396,28 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Experiment experiment = myExperimentsDataList.get(position);
-                Intent intent = new Intent(UserProfile.this, ExperimentActivity.class);
-                intent.putExtra("experimentID", experiment.getExperimentId());
-                startActivity(intent);
+                experimentTrialType = experiment.getTrialType();
+                // add condition to check trial type
+                if(experimentTrialType.equals("Binomial")){
+                    Intent intent = new Intent(UserProfile.this, BinomialExperimentActivity.class);
+                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    startActivity(intent);
+                }
+                if(experimentTrialType.equals("Count-based")) {
+                    Intent intent = new Intent(UserProfile.this, CountExperimentActivity.class);
+                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    startActivity(intent);
+                }
+                if(experimentTrialType.equals("NonNegativeInteger")) {
+                    Intent intent = new Intent(UserProfile.this, NonNegativeExperimentActivity.class);
+                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    startActivity(intent);
+                }
+                if(experimentTrialType.equals("Measurement")) {
+                    Intent intent = new Intent(UserProfile.this, MeasurementExperimentActivity.class);
+                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    startActivity(intent);
+                }
             }
         });
     }

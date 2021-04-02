@@ -1,15 +1,15 @@
 package com.example.lab_net;
 
 public class CountTrial extends Trial{
-    private String count;
+    private Long count;
 
 
-    public CountTrial(String id, String title, String count) {
+    public CountTrial(String id, String title, Long count) {
         super(id, title);
         this.count = count;
     }
 
-    public String getCount() {
+    public Long getCount() {
         return count;
     }
 }

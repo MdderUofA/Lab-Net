@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
     <TextView
         android:id="@+id/experimentTitle"
@@ -16,6 +17,7 @@
         android:padding="2dp"
         android:text="@string/experiment_title"
         android:textSize="22sp"
+        android:textColor="@color/app_teal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,6 +29,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginTop="20dp"
         android:text="@string/experiment_description"
+        android:textColor="@color/app_teal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/experimentTitle" />
 
@@ -38,6 +41,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/experiment_region"
+        android:textColor="@color/app_teal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/experimentDescription" />
 
@@ -50,6 +54,7 @@
         android:layout_marginRight="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/black"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <View
@@ -73,6 +78,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/trials_label"
         android:textSize="20sp"
+        android:textColor="@color/app_teal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
@@ -84,7 +90,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="Add Trial"
-        app:backgroundTint="#009688"
+        app:backgroundTint="#F44336"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
@@ -117,6 +123,9 @@
                 android:id="@+id/trial_list"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
+                android:background="#EF9A9A"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:textSize="2dp" />
         </LinearLayout>
     </ScrollView>
@@ -141,7 +150,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="4dp"
         android:text="@string/statistics_button"
-        app:backgroundTint="#009688"
+        app:backgroundTint="#F44336"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider3" />
 
@@ -153,7 +162,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/graphs_button"
-        app:backgroundTint="#009688"
+        app:backgroundTint="#F44336"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider3" />
 
@@ -178,6 +187,9 @@
         android:layout_marginTop="8dp"
         android:text="@string/subscribedUsers_label"
         android:textSize="20sp"
+        android:textColor="@color/app_teal"
+
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
@@ -189,7 +201,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/browse_button"
-        app:backgroundTint="#009688"
+        app:backgroundTint="#F44336"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
@@ -226,6 +238,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/questionAnswer_label"
         android:textSize="20sp"
+        android:textColor="@color/app_teal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider6" />
 
@@ -237,7 +250,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="Browse Forum"
-        app:backgroundTint="#009688"
+        app:backgroundTint="#F44336"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider6" />
     <View
@@ -312,7 +325,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="4dp"
         android:text="@string/publishExperiment_button"
-        app:backgroundTint="#2196F3"
+        app:backgroundTint="#1E88E5"
         app:layout_constraintBottom_toTopOf="@+id/deleteExperimentButton"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -337,14 +350,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp"
         android:text="@string/completeExperiment_button"
-        app:backgroundTint="#009688"
+        app:backgroundTint="#5E35B1"
         app:layout_constraintBottom_toTopOf="@+id/publishExperimentButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider8" />
-
-
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

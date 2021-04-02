@@ -73,4 +73,12 @@ public class Experiment {
     public void setMinTrials(int minTrials) {
         this.minTrials = minTrials;
     }
+
+    public String getTrialType() {
+        return trialType;
+    }
+
+    public void setTrialType(String trialType) {
+        this.trialType = trialType;
+    }
 }
