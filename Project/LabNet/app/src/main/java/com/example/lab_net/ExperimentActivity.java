@@ -1,17 +1,4 @@
-/**
- * CMPUT 301
- * @version 1.0
- * March 19, 2021
- *
- */
 package com.example.lab_net;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,6 +17,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,13 +40,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
-import static android.media.CamcorderProfile.get;
-
-// New Version
 
 public class ExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -590,5 +578,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
         }
     };
 
+    @Override
+    public void onBackPressed() { }
 
 }

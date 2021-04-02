@@ -1,14 +1,6 @@
 package com.example.lab_net;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -20,10 +12,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -153,14 +151,14 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
                                 trialId = document.getId();
                                 trialTitle = document.getData().get("Title").toString();
                                 trialType = document.getData().get("Title").toString();
-                                if(!trialType.equals("Binomial")) {
+                                if(trialType.equals("Binomial")) {
                                     resultLong = (Long) document.getData().get("Result");
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
+                                    //trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
                                     resultList.add(resultLong);
                                 }
                                 else{
                                     result = (String) document.getData().get("Result");
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, result.toString()));
+                                    //trialDataList.add(new CountTrial(trialId, trialTitle, result.toString()));
                                 }
 
                             }
@@ -224,6 +222,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -252,7 +251,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
                 } else {
                     Intent statsIntent = new Intent(getApplicationContext(), Statistics.class);
                     statsIntent.putExtra("resultList", (Serializable) resultList);
-                    statsIntent.putExtra("ExperimentId", experimentId);
+                    statsIntent.putExtra("expId", experimentId);
                     startActivity(statsIntent);
                 }
                 break;
@@ -278,9 +277,8 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
 
 
     private void addTrial() {
-
-
-        if (trialType.equals("Count-based") || trialType.equals("Measurement") || trialType.equals("NonNegativeInteger") || trialType.equals("Binomial")) {
+        if (trialType.equals("Count-based") || trialType.equals("Measurement")
+                || trialType.equals("NonNegativeInteger") || trialType.equals("Binomial")) {
             AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(SubscribedExperimentActivity.this);
             View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
 
@@ -391,7 +389,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
                             String trialId = doc.getId();
                             String trialTitle = (String) doc.getData().get("Title");
                             Long trialResult = (Long) doc.getData().get("Result");
-                            trialDataList.add(new CountTrial(trialId, trialTitle, trialResult.toString()));
+                            //  trialDataList.add(new CountTrial(trialId, trialTitle, trialResult.toString()));
                             trialArrayAdapter.notifyDataSetChanged();
                         }
                     } else {
@@ -399,7 +397,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
                             String trialId = doc.getId();
                             String trialTitle = (String) doc.getData().get("Title");
                             String trialResult = (String) doc.getData().get("Result");
-                            trialDataList.add(new CountTrial(trialId, trialTitle, trialResult));
+                            //         trialDataList.add(new CountTrial(trialId, trialTitle, trialResult));
                             trialArrayAdapter.notifyDataSetChanged();
                         }
                     }
@@ -444,12 +442,12 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
                                 trialType = document.getData().get("Title").toString();
                                 if(!trialType.equals("Binomial")) {
                                     resultLong = (Long) document.getData().get("Result");
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
+                                    //   trialDataList.add(new CountTrial(trialId, trialTitle, resultLong.toString()));
                                     resultList.add(resultLong);
                                 }
                                 else{
                                     result = (String) document.getData().get("Result");
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, result.toString()));
+                                    //        trialDataList.add(new CountTrial(trialId, trialTitle, result.toString()));
                                 }
 
                             }

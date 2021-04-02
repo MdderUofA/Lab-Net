@@ -41,7 +41,7 @@ public class Histogram extends AppCompatActivity {
             count();
         }
         if(checkActivity == 2){
-            binom();
+            binomial();
         }
         if(checkActivity == 3){
             measurement();
@@ -112,7 +112,7 @@ public class Histogram extends AppCompatActivity {
         barChart.setDragEnabled(true);
         barChart.setScaleEnabled(true);
     }
-    private void binom() {
+    private void binomial() {
         barChart = (BarChart) findViewById(R.id.barGraph);
 
         Intent intent = getIntent();

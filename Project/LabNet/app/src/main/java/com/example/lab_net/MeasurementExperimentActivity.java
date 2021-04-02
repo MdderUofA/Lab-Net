@@ -1,11 +1,5 @@
 package com.example.lab_net;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +16,12 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -60,10 +60,10 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
     private String trialId;
     private String trialTitle;
     private String result;
-    Button addTrialButton;
+    Button addTrialDialogButton;
     EditText addTrialTitle, addTrialResult;
 
-    Button add_trial_button;
+    Button add_new_trial_button;
     ImageButton edit_experiment_button;
 
     //side menu
@@ -80,7 +80,10 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         //side menu
         setToolbar();
 
-        experimentId = getIntent().getStringExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA);
+        experimentId = getIntent().getStringExtra("experimentId");
+        experiment_title = findViewById(R.id.experimentTitle);
+        experiment_description = findViewById(R.id.experimentDescription);
+        experiment_region = findViewById(R.id.experimentRegion);
 
         trialList = (ListView) findViewById(R.id.trial_list);
         trialDataList = new ArrayList<>();
@@ -88,7 +91,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         trialList.setAdapter(trialArrayAdapter);
         db = FirebaseFirestore.getInstance();
 
-        // fill experiment details textViews
+        // get experiment info
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -114,7 +117,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             }
         });
 
-        // Fills in trialDataList
+        // get trials
         db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -134,6 +137,8 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                     }
 
                 });
+
+        //delete trials
         trialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -143,12 +148,6 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             }
         });
 
-        experiment_title = findViewById(R.id.experimentTitle);
-        experiment_description = findViewById(R.id.experimentDescription);
-        experiment_region = findViewById(R.id.experimentRegion);
-
-
-
         edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
         edit_experiment_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,8 +156,8 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             }
         });
 
-        add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
-        add_trial_button.setOnClickListener(new View.OnClickListener() {
+        add_new_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
+        add_new_trial_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addTrial();
@@ -176,6 +175,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -203,7 +203,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                 } else {
                     Intent intent = new Intent(getApplicationContext(), Statistics.class);
                     intent.putExtra("trialDataList", (Serializable) trialDataList);
-                    intent.putExtra("ExperimentId", experimentId);
+                    intent.putExtra("expId", experimentId);
                     intent.putExtra("check", 1);
                     startActivity(intent);
                 }
@@ -238,6 +238,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         return true;
     }
 
+    //edit experiment details
     private void editExperiment() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(MeasurementExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_experiment_dialog, null);
@@ -289,6 +290,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         });
     }
 
+    //add new trial
     private void addTrial() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(MeasurementExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
@@ -299,11 +301,11 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         setDialog.setCanceledOnTouchOutside(true);
         setDialog.show();
 
-        addTrialButton = (Button) settingsView.findViewById(R.id.addTrial);
+        addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         Toast.makeText(MeasurementExperimentActivity.this, "Enter a double type", Toast.LENGTH_LONG).show();
-        addTrialButton.setEnabled(false);
+        addTrialDialogButton.setEnabled(false);
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
         addTrialResult.addTextChangedListener(addTextWatcher);
@@ -319,7 +321,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             }
         });*/
 
-        addTrialButton.setOnClickListener(new View.OnClickListener() {
+        addTrialDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String result = addTrialResult.getText().toString();
@@ -395,7 +397,6 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
 
     }
 
-
     // method responsible for deleting trials
     public void deleteTrial(int position) {
         MeasurementTrial trial = trialDataList.get(position);
@@ -436,6 +437,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                 });
 
     }
+
     private TextWatcher addTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -445,7 +447,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String checkResult = addTrialResult.getText().toString();
             String checkTitle = addTrialTitle.getText().toString();
-            addTrialButton.setEnabled(!checkResult.isEmpty() && !checkTitle.isEmpty());
+            addTrialDialogButton.setEnabled(!checkResult.isEmpty() && !checkTitle.isEmpty());
         }
 
         @Override
@@ -453,4 +455,8 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
 
         }
     };
+
+    @Override
+    public void onBackPressed() { }
+
 }
