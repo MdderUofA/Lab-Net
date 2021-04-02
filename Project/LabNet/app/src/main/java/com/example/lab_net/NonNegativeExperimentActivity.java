@@ -1,11 +1,5 @@
 package com.example.lab_net;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,12 +17,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.common.graph.Graphs;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -61,10 +60,10 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
     private String trialId;
     private String trialTitle;
     private String result;
-    Button addTrialButton;
+    Button addTrialDialogButton;
     EditText addTrialTitle, addTrialResult;
 
-    Button add_trial_button;
+    Button add_new_trial_button;
     ImageButton edit_experiment_button;
 
     String checkTitle, checkResult;
@@ -83,7 +82,10 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         //side menu
         setToolbar();
 
-        experimentId = getIntent().getStringExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA);
+        experimentId = getIntent().getStringExtra("experimentId");
+        experiment_title = findViewById(R.id.experimentTitle);
+        experiment_description = findViewById(R.id.experimentDescription);
+        experiment_region = findViewById(R.id.experimentRegion);
 
         trialList = (ListView) findViewById(R.id.trial_list);
         trialDataList = new ArrayList<>();
@@ -137,6 +139,8 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
                     }
 
                 });
+
+        //delete trial
         trialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -146,12 +150,6 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
             }
         });
 
-        experiment_title = findViewById(R.id.experimentTitle);
-        experiment_description = findViewById(R.id.experimentDescription);
-        experiment_region = findViewById(R.id.experimentRegion);
-
-
-
         edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
         edit_experiment_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,8 +158,8 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
             }
         });
 
-        add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
-        add_trial_button.setOnClickListener(new View.OnClickListener() {
+        add_new_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
+        add_new_trial_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addTrial();
@@ -179,6 +177,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -206,7 +205,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
                 } else {
                     Intent intent = new Intent(getApplicationContext(), Statistics.class);
                     intent.putExtra("trialDataList", (Serializable) trialDataList);
-                    intent.putExtra("ExperimentId", experimentId);
+                    intent.putExtra("expId", experimentId);
                     intent.putExtra("check",2);
                     startActivity(intent);
                 }
@@ -241,6 +240,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         return true;
     }
 
+    //edit experiment details
     private void editExperiment() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(NonNegativeExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_experiment_dialog, null);
@@ -292,6 +292,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         });
     }
 
+    //add new trial
     private void addTrial() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(NonNegativeExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
@@ -302,11 +303,11 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         setDialog.setCanceledOnTouchOutside(true);
         setDialog.show();
 
-        addTrialButton = (Button) settingsView.findViewById(R.id.addTrial);
+        addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         Toast.makeText(NonNegativeExperimentActivity.this, "Enter a non-negative Integer", Toast.LENGTH_LONG).show();
-        addTrialButton.setEnabled(false);
+        addTrialDialogButton.setEnabled(false);
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
         addTrialResult.addTextChangedListener(addTextWatcher);
@@ -322,7 +323,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
             }
         });*/
 
-        addTrialButton.setOnClickListener(new View.OnClickListener() {
+        addTrialDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String result = addTrialResult.getText().toString();
@@ -355,7 +356,6 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
             }
         });
     }
-
 
     // method responsible for deleting trials
     public void deleteTrial(int position) {
@@ -449,7 +449,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             checkResult = addTrialResult.getText().toString();
             checkTitle = addTrialTitle.getText().toString();
-            addTrialButton.setEnabled(isPositive(checkResult)  && !checkTitle.isEmpty());
+            addTrialDialogButton.setEnabled(isPositive(checkResult)  && !checkTitle.isEmpty());
 
         }
 
@@ -458,6 +458,9 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
 
         }
     };
+
+    @Override
+    public void onBackPressed() { }
 
     /**
      *  Checks if the input is a positive integer
@@ -473,4 +476,5 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
             return false;
         }
     }
+
 }

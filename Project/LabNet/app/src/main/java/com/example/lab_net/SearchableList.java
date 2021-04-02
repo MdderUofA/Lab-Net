@@ -1,7 +1,6 @@
 package com.example.lab_net;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -443,7 +441,7 @@ public class SearchableList {
             SearchableDocumentReference ref = user.getDocumentReference();
             AppCompatActivity parentActivity = this.getAdapter().getSearchableList().getParent();
             Intent intent = new Intent(parentActivity,
-                    UserProfile.class);
+                    SubscribedUserActivity.class);
             intent.putExtra(UserProfile.USER_ID_EXTRA,ref.getDocumentId());
             parentActivity.startActivity(intent);
         }
@@ -490,8 +488,8 @@ public class SearchableList {
 
             name.setText(experiment.getName());
             description.setText(experiment.getDescription());
-            ownerId.setText("owner: " + experiment.getOwnerId());
-            status.setText("status: " + (experiment.getStatus() ? "Open" : "Closed"));
+            ownerId.setText(experiment.getOwnerId());
+            status.setText((experiment.getStatus() ? "Open" : "Closed"));
 
             return view;
         }
@@ -516,7 +514,7 @@ public class SearchableList {
                     .show();*/
             AppCompatActivity parentActivity = this.getAdapter().getSearchableList().getParent();
             Intent intent = new Intent(parentActivity,
-                    ExperimentActivity.class);
+                    SubscribedExperimentActivity.class);
             intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA,ref.getDocumentId());
             parentActivity.startActivity(intent);
         }

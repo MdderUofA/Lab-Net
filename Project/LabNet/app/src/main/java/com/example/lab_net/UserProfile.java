@@ -1,9 +1,5 @@
 package com.example.lab_net;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,17 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseUser;
-//import com.google.firebase.database.DataSnapshot;
-//import com.google.firebase.database.DatabaseError;
-//import com.google.firebase.database.DatabaseReference;
-//import com.google.firebase.database.FirebaseDatabase;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,11 +29,17 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.model.Document;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+//import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.auth.FirebaseUser;
+//import com.google.firebase.database.DataSnapshot;
+//import com.google.firebase.database.DatabaseError;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * This class includes the User Profile activity that displays the user information,
@@ -83,13 +82,14 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         documentReference = db.collection("UserProfile").document(userId);
 
-        //initialize the user information
+        //user information variable
         usernameTextView = (TextView) findViewById(R.id.username);
         firstNameTextView = (TextView) findViewById(R.id.firstName);
         lastNameTextView = (TextView) findViewById(R.id.lastName);
         emailTextView = (TextView) findViewById(R.id.email);
         phoneTextView = (TextView) findViewById(R.id.phone);
 
+        //my experiment variable
         myExpListView = findViewById(R.id.myExpListView);
         myExperimentsDataList = new ArrayList<>();
         myExperimentAdapter = new CustomMyExperimentsList(this, myExperimentsDataList);
@@ -141,8 +141,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     /**
      * Get experiments from the database that were created by the user by matching user ID.
-     *
-     * @author Qasim Akhtar
      */
     public void getExperiments() {
         db.collection("Experiments")
@@ -177,8 +175,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     /**
      * Get user information from the database.
-     *
-     * @author Qasim Akhtar
      */
     public void getUserInfo() {
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -206,8 +202,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     /**
      * Create a dialog with the user information that can be edited.
      * Update the database with the new information, or delete the profile is user requested.
-     *
-     * @author Vidhi Patel, Qasim Akhtar
      */
     private void editUserDialog() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(UserProfile.this);
@@ -229,6 +223,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         setEmail.setText(emailText);
         setPhone.setText(phoneText);
 
+        //update user info
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,6 +252,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             }
         });
 
+        //delete profile and return to main
         deleteProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -273,13 +269,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     /**
      * Create a dialog to create a new experiment with title, description, and location.
      * Select types of trials and if location is required.
-     *
-     * @author Vidhi Patel, Qasim Akhtar
      */
     private void addExpDialog() {
         AlertDialog.Builder addBuilder = new AlertDialog.Builder(UserProfile.this);
         View addView = getLayoutInflater().inflate(R.layout.add_exp_dialog,null);
         final CollectionReference collectionReference = db.collection("Experiments");
+
 
         String trialTypes[] = {"Count-based", "Binomial", "Measurement", "NonNegativeInteger"};
 
@@ -304,14 +299,15 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         AlertDialog addDialog = addBuilder.create();
         addDialog.setCanceledOnTouchOutside(true);
 
+        //trial type dropdown menu
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,trialTypes);
         dropdown.setAdapter(adapter);
 
+        //location dropdown menu
         ArrayAdapter<String> adapter2 =
                 new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,enableLocation);
         dropdown2.setAdapter(adapter2);
-
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -358,8 +354,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     /**
      * The view to display subscribed experiments in the User Profile.
-     *
-     * @author Vidhi Patel
      */
     private void subExpView() {
         subExpListView = findViewById(R.id.subExpListView);
@@ -389,8 +383,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     /**
      * The view to display user created experiments in the User Profile.
-     *
-     * @author Vidhi Patel
      */
     private void myExpView (){
         myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -401,27 +393,25 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 // add condition to check trial type
                 if(experimentTrialType.equals("Binomial")){
                     Intent intent = new Intent(UserProfile.this, BinomialExperimentActivity.class);
-                    intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
+                    intent.putExtra("experimentId", experiment.getExperimentId());
                     startActivity(intent);
                 }
                 if(experimentTrialType.equals("Count-based")) {
                     Intent intent = new Intent(UserProfile.this, CountExperimentActivity.class);
-                    intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
+                    intent.putExtra("experimentId", experiment.getExperimentId());
                     startActivity(intent);
                 }
                 if(experimentTrialType.equals("NonNegativeInteger")) {
                     Intent intent = new Intent(UserProfile.this, NonNegativeExperimentActivity.class);
-                    intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
+                    intent.putExtra("experimentId", experiment.getExperimentId());
                     startActivity(intent);
                 }
                 if(experimentTrialType.equals("Measurement")) {
                     Intent intent = new Intent(UserProfile.this, MeasurementExperimentActivity.class);
-                    intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
+                    intent.putExtra("experimentId", experiment.getExperimentId());
                     startActivity(intent);
                 }
-//                Intent intent = new Intent(UserProfile.this, ExperimentActivity.class);
-//                intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
-//                startActivity(intent);
+
             }
         });
     }
@@ -447,6 +437,26 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     && !checkDescription.isEmpty()
                     && !checkRegion.isEmpty()
                     && !checkMinTrials.isEmpty());
+
+//            if (checkTitle.isEmpty()) {
+//                expTitle.setError("Experiment Title is required!");
+//                expTitle.requestFocus();
+//            }
+//
+//            else if (checkDescription.isEmpty()) {
+//                expDescription.setError("Description is required!");
+//                expDescription.requestFocus();
+//
+//            }
+//            else if (checkRegion.isEmpty()) {
+//                expRegion.setError("Region is required!");
+//                expRegion.requestFocus();
+//            }
+//            else if (checkMinTrials.isEmpty()) {
+//                expMinTrials.setError("Min Trails is required!");
+//                expMinTrials.requestFocus();
+//            }
+
         }
 
         @Override

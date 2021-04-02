@@ -1,11 +1,5 @@
 package com.example.lab_net;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +16,12 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -61,11 +61,11 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
     private String trialId;
     private String trialTitle;
     private String result;
-    Button addTrialButton;
+    Button addTrialDialogButton;
     EditText addTrialTitle, addTrialResult;
 
     //edit experiment
-    Button add_trial_button;
+    Button add_new_trial_button;
     ImageButton edit_experiment_button;
 
     //side menu
@@ -81,7 +81,10 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         //side menu
         setToolbar();
 
-        experimentId = getIntent().getStringExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA);
+        experimentId = getIntent().getStringExtra("experimentId");
+        experiment_title = findViewById(R.id.experimentTitle);
+        experiment_description = findViewById(R.id.experimentDescription);
+        experiment_region = findViewById(R.id.experimentRegion);
 
         trialList = (ListView) findViewById(R.id.trial_list);
         trialDataList = new ArrayList<>();
@@ -135,6 +138,8 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                     }
 
                 });
+
+        //delete trial
         trialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -144,12 +149,6 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
             }
         });
 
-        experiment_title = findViewById(R.id.experimentTitle);
-        experiment_description = findViewById(R.id.experimentDescription);
-        experiment_region = findViewById(R.id.experimentRegion);
-
-
-
         edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
         edit_experiment_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,8 +157,8 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
             }
         });
 
-        add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
-        add_trial_button.setOnClickListener(new View.OnClickListener() {
+        add_new_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
+        add_new_trial_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addTrial();
@@ -169,6 +168,8 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
 
     }
 
+    //side menu created from youtube: Android Navigation Drawer Menu Material Design
+    // by Coding With Tea
     private void setToolbar(){
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -176,6 +177,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -203,7 +205,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                 } else {
                     Intent intent = new Intent(getApplicationContext(), Statistics.class);
                     intent.putExtra("trialDataList", (Serializable) trialDataList);
-                    intent.putExtra("ExperimentId", experimentId);
+                    intent.putExtra("expId", experimentId);
                     intent.putExtra("check",3);
                     startActivity(intent);
                 }
@@ -238,6 +240,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         return true;
     }
 
+    //edit experiment details
     private void editExperiment() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(BinomialExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_experiment_dialog, null);
@@ -289,6 +292,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         });
     }
 
+    //add new trial
     private void addTrial() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(BinomialExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
@@ -299,11 +303,11 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         setDialog.setCanceledOnTouchOutside(true);
         setDialog.show();
 
-        addTrialButton = (Button) settingsView.findViewById(R.id.addTrial);
+        addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         Toast.makeText(BinomialExperimentActivity.this, "Enter pass or fail", Toast.LENGTH_LONG).show();
-        addTrialButton.setEnabled(false);
+        addTrialDialogButton.setEnabled(false);
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
         addTrialResult.addTextChangedListener(addTextWatcher);
@@ -319,7 +323,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
             }
         });*/
 
-        addTrialButton.setOnClickListener(new View.OnClickListener() {
+        addTrialDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String result = addTrialResult.getText().toString();
@@ -352,7 +356,6 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
             }
         });
     }
-
 
     // method responsible for deleting trials
     public void deleteTrial(int position) {
@@ -436,6 +439,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         alert.show();
 
     }
+
     private TextWatcher addTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -445,7 +449,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String checkResult = addTrialResult.getText().toString();
             String checkTitle = addTrialTitle.getText().toString();
-            addTrialButton.setEnabled(checkResult.toLowerCase().equals("pass") || checkResult.toLowerCase().equals("fail") && !checkTitle.isEmpty());
+            addTrialDialogButton.setEnabled(checkResult.toLowerCase().equals("pass") || checkResult.toLowerCase().equals("fail") && !checkTitle.isEmpty());
         }
 
         @Override
@@ -453,4 +457,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
 
         }
     };
+
+    @Override
+    public void onBackPressed() { }
 }

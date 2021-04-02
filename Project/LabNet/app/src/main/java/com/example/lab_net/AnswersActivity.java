@@ -30,8 +30,14 @@ import java.util.HashMap;
 
 public class AnswersActivity extends AppCompatActivity {
 
+    public static final String QUESTION_ID_EXTRA =
+            "com.example.lab_net.answers_activity.question_id";
+
+    public static final String QUESTION_TEXT_EXTRA =
+            "com.example.lab_net.answers_activity.question_text";
+
     private FirebaseFirestore db;
-    final String TAG = "sample";
+    private final String TAG = "sample";
     private ArrayList<Answer> answersDataList;
     private ArrayAdapter<Answer> answerAdapter;
     private ListView answerList;
@@ -45,8 +51,8 @@ public class AnswersActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        questionID = getIntent().getStringExtra("questionID");
-        question_text = getIntent().getStringExtra("question_text");
+        questionID = getIntent().getStringExtra(AnswersActivity.QUESTION_ID_EXTRA);
+        question_text = getIntent().getStringExtra(AnswersActivity.QUESTION_TEXT_EXTRA);
 
         Button addAnswerButton = findViewById(R.id.addAnswerButton);
         answerList = findViewById(R.id.answerList);

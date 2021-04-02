@@ -1,17 +1,4 @@
-/**
- * CMPUT 301
- * @version 1.0
- * March 19, 2021
- *
- */
 package com.example.lab_net;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,6 +17,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,13 +40,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
-import static android.media.CamcorderProfile.get;
-
-// New Version
 
 public class ExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -104,6 +92,8 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
+
+    Button subscribed_users_button;
 
 
     @Override
@@ -203,6 +193,19 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
                 addTrial();
             }
         });
+
+        subscribed_users_button = (Button) findViewById(R.id.subscribedUsersBrowseButton);
+        subscribed_users_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent searchIntent = new Intent(ExperimentActivity.this,
+                                                            SearchableListActivity.class);
+                searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
+                        SearchableList.SEARCH_USERS);
+                startActivity(searchIntent);
+            }
+        });
+
 
 
     }
@@ -575,5 +578,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
         }
     };
 
+    @Override
+    public void onBackPressed() { }
 
 }

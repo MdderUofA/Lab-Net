@@ -15,23 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LabNet"
         tools:ignore="ExtraText">
-        <activity android:name=".Histogram"></activity>
-        <activity android:name=".NonNegativeExperimentActivity" />
-        <activity android:name=".MeasurementExperimentActivity" />
-        <activity android:name=".CountExperimentActivity" />
-        <activity android:name=".BinomialExperimentActivity" />
-        <activity android:name=".MapActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${GOOGLE_API_KEY}" />
 
-        <activity android:name=".AnswersActivity" />
-        <activity android:name=".QuestionsActivity" />
-        <activity android:name=".Statistics" />
-        <activity android:name=".ExperimentActivity" />
-        <activity android:name=".UserProfile" />
-        <activity android:name=".SubscribedExperimentActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,7 +27,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchableListActivity" />
+        <activity android:name=".UserProfile" />
+        <activity android:name=".MapActivity" />
+        <activity android:name=".Statistics" />
+        <activity android:name=".Histogram"/>
+
+        <activity android:name=".ExperimentActivity" />
+        <activity android:name=".SubscribedExperimentActivity" />
+        <activity android:name=".SubscribedUserActivity"/>
+
+        <activity android:name=".NonNegativeExperimentActivity" />
+        <activity android:name=".MeasurementExperimentActivity" />
+        <activity android:name=".CountExperimentActivity" />
+        <activity android:name=".BinomialExperimentActivity" />
+
+        <activity android:name=".AnswersActivity" />
+        <activity android:name=".QuestionsActivity" />
+
+        <activity android:name=".SearchableListActivity"/>
     </application>
 
 </manifest>
