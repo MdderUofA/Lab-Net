@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ic_stats_back">
+    android:background="@drawable/teal_back">
 
     <TextView
         android:id="@+id/experimentStats"
@@ -16,7 +16,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="16dp"
         android:text="Experiment Statistics"
-        android:textSize="30sp"
+        android:textSize="35sp"
         android:textStyle="bold"
         android:paddingBottom="16dp"/>
 

@@ -141,8 +141,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     /**
      * Get experiments from the database that were created by the user by matching user ID.
-     *
-     * @author Qasim Akhtar
      */
     public void getExperiments() {
         db.collection("Experiments")
@@ -177,8 +175,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     /**
      * Get user information from the database.
-     *
-     * @author Qasim Akhtar
      */
     public void getUserInfo() {
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -206,8 +202,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     /**
      * Create a dialog with the user information that can be edited.
      * Update the database with the new information, or delete the profile is user requested.
-     *
-     * @author Vidhi Patel, Qasim Akhtar
      */
     private void editUserDialog() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(UserProfile.this);
@@ -273,8 +267,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     /**
      * Create a dialog to create a new experiment with title, description, and location.
      * Select types of trials and if location is required.
-     *
-     * @author Vidhi Patel, Qasim Akhtar
      */
     private void addExpDialog() {
         AlertDialog.Builder addBuilder = new AlertDialog.Builder(UserProfile.this);
@@ -358,8 +350,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     /**
      * The view to display subscribed experiments in the User Profile.
-     *
-     * @author Vidhi Patel
      */
     private void subExpView() {
         subExpListView = findViewById(R.id.subExpListView);
@@ -389,8 +379,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     /**
      * The view to display user created experiments in the User Profile.
-     *
-     * @author Vidhi Patel
      */
     private void myExpView (){
         myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -447,6 +435,26 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     && !checkDescription.isEmpty()
                     && !checkRegion.isEmpty()
                     && !checkMinTrials.isEmpty());
+
+//            if (checkTitle.isEmpty()) {
+//                expTitle.setError("Experiment Title is required!");
+//                expTitle.requestFocus();
+//            }
+//
+//            else if (checkDescription.isEmpty()) {
+//                expDescription.setError("Description is required!");
+//                expDescription.requestFocus();
+//
+//            }
+//            else if (checkRegion.isEmpty()) {
+//                expRegion.setError("Region is required!");
+//                expRegion.requestFocus();
+//            }
+//            else if (checkMinTrials.isEmpty()) {
+//                expMinTrials.setError("Min Trails is required!");
+//                expMinTrials.requestFocus();
+//            }
+
         }
 
         @Override

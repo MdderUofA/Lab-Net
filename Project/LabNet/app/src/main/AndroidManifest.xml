@@ -15,11 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LabNet"
         tools:ignore="ExtraText">
-        <activity android:name=".Histogram"></activity>
-        <activity android:name=".NonNegativeExperimentActivity" />
-        <activity android:name=".MeasurementExperimentActivity" />
-        <activity android:name=".CountExperimentActivity" />
-        <activity android:name=".BinomialExperimentActivity" />
+        <activity android:name=".SubscribedUserActivity"></activity>
         <activity android:name=".MapActivity" />
 
         <meta-data
@@ -39,7 +35,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchableListActivity" />
+        <activity android:name=".SearchableListActivity"></activity>
     </application>
 
 </manifest>
