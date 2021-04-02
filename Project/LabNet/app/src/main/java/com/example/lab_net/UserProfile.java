@@ -50,7 +50,6 @@ import java.util.Map;
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String USER_ID_EXTRA = "com.example.lab_net.user_profile.user_id";
 
     private String userId,firstNameText,lastNameText,emailText,phoneText;
     private FirebaseFirestore db;
@@ -69,6 +68,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     EditText expTitle, expDescription, expRegion, expMinTrials;
     Button create;
+    String experimentTrialType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         //initialize the database
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
-        userId = intent.getStringExtra(UserProfile.USER_ID_EXTRA);
+        userId = intent.getStringExtra("userID");
 
         documentReference = db.collection("UserProfile").document(userId);
 
@@ -396,9 +396,28 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Experiment experiment = myExperimentsDataList.get(position);
-                Intent intent = new Intent(UserProfile.this, ExperimentActivity.class);
-                intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
-                startActivity(intent);
+                experimentTrialType = experiment.getTrialType();
+                // add condition to check trial type
+                if(experimentTrialType.equals("Binomial")){
+                    Intent intent = new Intent(UserProfile.this, BinomialExperimentActivity.class);
+                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    startActivity(intent);
+                }
+                if(experimentTrialType.equals("Count-based")) {
+                    Intent intent = new Intent(UserProfile.this, CountExperimentActivity.class);
+                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    startActivity(intent);
+                }
+                if(experimentTrialType.equals("NonNegativeInteger")) {
+                    Intent intent = new Intent(UserProfile.this, NonNegativeExperimentActivity.class);
+                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    startActivity(intent);
+                }
+                if(experimentTrialType.equals("Measurement")) {
+                    Intent intent = new Intent(UserProfile.this, MeasurementExperimentActivity.class);
+                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    startActivity(intent);
+                }
             }
         });
     }

@@ -1,3 +1,4 @@
+/*
 package com.example.lab_net;
 
 import androidx.annotation.NonNull;
@@ -176,9 +177,11 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(SubscribedExperimentActivity.this, "Experiment edited", Toast.LENGTH_LONG).show();
                             setDialog.dismiss();
-                            /*TextView experiment_title = (TextView) findViewById(R.id.experimentTitle);
+                            */
+/*TextView experiment_title = (TextView) findViewById(R.id.experimentTitle);
                             TextView experiment_description = (TextView) findViewById(R.id.experimentDescription);
-                            TextView experiment_region = (TextView) findViewById(R.id.experimentRegion);*/
+                            TextView experiment_region = (TextView) findViewById(R.id.experimentRegion);*//*
+
 
                             experimentTitle = edit_title.getText().toString();
                             experimentDescription = edit_description.getText().toString();
@@ -274,3 +277,4 @@ public class SubscribedExperimentActivity extends AppCompatActivity {
 
 }
 
+*/
