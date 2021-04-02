@@ -401,24 +401,27 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 // add condition to check trial type
                 if(experimentTrialType.equals("Binomial")){
                     Intent intent = new Intent(UserProfile.this, BinomialExperimentActivity.class);
-                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
                     startActivity(intent);
                 }
                 if(experimentTrialType.equals("Count-based")) {
                     Intent intent = new Intent(UserProfile.this, CountExperimentActivity.class);
-                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
                     startActivity(intent);
                 }
                 if(experimentTrialType.equals("NonNegativeInteger")) {
                     Intent intent = new Intent(UserProfile.this, NonNegativeExperimentActivity.class);
-                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
                     startActivity(intent);
                 }
                 if(experimentTrialType.equals("Measurement")) {
                     Intent intent = new Intent(UserProfile.this, MeasurementExperimentActivity.class);
-                    intent.putExtra("experimentID", experiment.getExperimentId());
+                    intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
                     startActivity(intent);
                 }
+//                Intent intent = new Intent(UserProfile.this, ExperimentActivity.class);
+//                intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
+//                startActivity(intent);
             }
         });
     }

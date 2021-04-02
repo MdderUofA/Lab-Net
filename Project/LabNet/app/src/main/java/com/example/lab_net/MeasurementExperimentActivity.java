@@ -1,7 +1,10 @@
 package com.example.lab_net;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,6 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -34,7 +39,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MeasurementExperimentActivity extends AppCompatActivity {
+public class MeasurementExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView trialList;
 
@@ -55,18 +60,27 @@ public class MeasurementExperimentActivity extends AppCompatActivity {
     private String trialId;
     private String trialTitle;
     private String result;
-    Button addTrialButton, graphs;
+    Button addTrialButton;
     EditText addTrialTitle, addTrialResult;
 
-    Button add_trial_button, deleteButton, statistics;
+    Button add_trial_button;
     ImageButton edit_experiment_button;
+
+    //side menu
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.experiment_owner_activity);
 
-        experimentId = getIntent().getStringExtra("experimentID");
+        //side menu
+        setToolbar();
+
+        experimentId = getIntent().getStringExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA);
 
         trialList = (ListView) findViewById(R.id.trial_list);
         trialDataList = new ArrayList<>();
@@ -150,18 +164,40 @@ public class MeasurementExperimentActivity extends AppCompatActivity {
                 addTrial();
             }
         });
-        deleteButton = (Button) findViewById(R.id.nav_deleteExp);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteExperiment();
-            }
-        });
 
-        statistics = (Button) findViewById(R.id.nav_statistics);
-        statistics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    }
+
+    //side menu created from youtube: Android Navigation Drawer Menu Material Design
+    // by Coding With Tea
+    private void setToolbar(){
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.bringToFront();
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,
+                toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.app_teal));
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.nav_profile:
+                Intent profileIntent = new Intent(getApplicationContext(),UserProfile.class);
+                profileIntent.putExtra(UserProfile.USER_ID_EXTRA, owner);
+                startActivity(profileIntent);
+                break;
+            case R.id.nav_qr:
+                //TODO
+                break;
+            case R.id.nav_statistics:
                 if (trialArrayAdapter.getCount() == 0) {
                     Toast.makeText(MeasurementExperimentActivity.this, "No stats available for this experiment", Toast.LENGTH_LONG).show();
                 } else {
@@ -171,12 +207,8 @@ public class MeasurementExperimentActivity extends AppCompatActivity {
                     intent.putExtra("check", 1);
                     startActivity(intent);
                 }
-            }
-        });
-        graphs = (Button) findViewById(R.id.graphsButton);
-        graphs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+            case R.id.nav_graphs:
                 if (trialArrayAdapter.getCount() == 0) {
                     Toast.makeText(MeasurementExperimentActivity.this, "No Histograms available for this experiment", Toast.LENGTH_LONG).show();
                 } else {
@@ -186,10 +218,25 @@ public class MeasurementExperimentActivity extends AppCompatActivity {
                     intent.putExtra("check", 3);
                     startActivity(intent);
                 }
-            }
-        });
+                break;
+            case R.id.nav_qa:
+                Intent qaIntent = new Intent(getApplicationContext(), QuestionsActivity.class);
+                qaIntent.putExtra("check", "OwnerActivity");
+                qaIntent.putExtra("experimentID", experimentId);
+                startActivity(qaIntent);
+                break;
+            case R.id.nav_completeExp:
+                //TODO
+                break;
+            case R.id.nav_publishExp:
+                //TODO
+                break;
+            case R.id.nav_deleteExp:
+                deleteExperiment();
+                break;
+        }
+        return true;
     }
-
 
     private void editExperiment() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(MeasurementExperimentActivity.this);
