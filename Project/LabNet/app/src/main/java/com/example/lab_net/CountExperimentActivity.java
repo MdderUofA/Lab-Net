@@ -157,14 +157,15 @@ public class CountExperimentActivity extends AppCompatActivity {
             }
         });
 
-        deleteButton = (Button) findViewById(R.id.deleteExperimentButton);
+        deleteButton = (Button) findViewById(R.id.nav_deleteExp);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deleteExperiment();
             }
         });
-        statistics = (Button) findViewById(R.id.ownerStatisticsButton);
+
+        statistics = (Button) findViewById(R.id.nav_statistics);
         statistics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

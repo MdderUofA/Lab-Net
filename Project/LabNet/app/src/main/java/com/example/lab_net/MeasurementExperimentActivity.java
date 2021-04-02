@@ -58,7 +58,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity {
     Button addTrialButton, graphs;
     EditText addTrialTitle, addTrialResult;
 
-    Button add_trial_button, deleteButton;
+    Button add_trial_button, deleteButton, statistics;
     ImageButton edit_experiment_button;
 
     @Override
@@ -150,14 +150,15 @@ public class MeasurementExperimentActivity extends AppCompatActivity {
                 addTrial();
             }
         });
-        deleteButton = (Button) findViewById(R.id.deleteExperimentButton);
+        deleteButton = (Button) findViewById(R.id.nav_deleteExp);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deleteExperiment();
             }
         });
-        Button statistics = (Button) findViewById(R.id.ownerStatisticsButton);
+
+        statistics = (Button) findViewById(R.id.nav_statistics);
         statistics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
