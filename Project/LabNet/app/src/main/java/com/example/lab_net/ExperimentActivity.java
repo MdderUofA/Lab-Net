@@ -105,6 +105,8 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
     NavigationView navigationView;
     Toolbar toolbar;
 
+    Button subscribed_users_button;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,6 +205,19 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
                 addTrial();
             }
         });
+
+        subscribed_users_button = (Button) findViewById(R.id.subscribedUsersBrowseButton);
+        subscribed_users_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent searchIntent = new Intent(ExperimentActivity.this,
+                                                            SearchableListActivity.class);
+                searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
+                        SearchableList.SEARCH_USERS);
+                startActivity(searchIntent);
+            }
+        });
+
 
 
     }

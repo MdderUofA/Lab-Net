@@ -443,7 +443,7 @@ public class SearchableList {
             SearchableDocumentReference ref = user.getDocumentReference();
             AppCompatActivity parentActivity = this.getAdapter().getSearchableList().getParent();
             Intent intent = new Intent(parentActivity,
-                    UserProfile.class);
+                    SubscribedUser.class);
             intent.putExtra(UserProfile.USER_ID_EXTRA,ref.getDocumentId());
             parentActivity.startActivity(intent);
         }
@@ -490,8 +490,8 @@ public class SearchableList {
 
             name.setText(experiment.getName());
             description.setText(experiment.getDescription());
-            ownerId.setText("owner: " + experiment.getOwnerId());
-            status.setText("status: " + (experiment.getStatus() ? "Open" : "Closed"));
+            ownerId.setText(experiment.getOwnerId());
+            status.setText((experiment.getStatus() ? "Open" : "Closed"));
 
             return view;
         }

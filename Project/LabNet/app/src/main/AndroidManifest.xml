@@ -15,30 +15,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LabNet"
         tools:ignore="ExtraText">
-
+        <activity android:name=".SubscribedUser"></activity>
         <activity android:name=".MapActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${GOOGLE_API_KEY}" />
 
-        // d7589a9ecedae31fc484a00589da6099ce147fc0
-
-
         <activity android:name=".AnswersActivity" />
         <activity android:name=".QuestionsActivity" />
         <activity android:name=".Statistics" />
         <activity android:name=".ExperimentActivity" />
-        <activity android:name=".UserProfile"/>
-        <activity android:name=".SubscribedExperimentActivity"/>
+        <activity android:name=".UserProfile" />
+        <activity android:name=".SubscribedExperimentActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchableListActivity">
-        </activity>
+        <activity android:name=".SearchableListActivity"></activity>
     </application>
 
 </manifest>

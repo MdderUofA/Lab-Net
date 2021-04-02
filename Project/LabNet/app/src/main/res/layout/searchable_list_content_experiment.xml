@@ -4,19 +4,44 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:showDividers="beginning|end"
+    android:divider="@drawable/empty_tall_divider"
     >
-
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         >
         <TextView
-            android:id="@+id/sr_experiment_name"
+            android:id="@+id/sr_experiment_title_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
+            android:text="Title: "
+            android:textStyle="bold"
+            android:textSize="18sp">
+        </TextView>
+        <TextView
+            android:id="@+id/sr_experiment_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="76dp"
             android:text="Name"
+            android:textSize="18sp">
+        </TextView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/sr_experiment_description_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="Description: "
+            android:textStyle="bold"
             android:textSize="18sp">
         </TextView>
         <TextView
@@ -34,18 +59,42 @@
         android:orientation="horizontal"
         >
         <TextView
-            android:id="@+id/sr_experiment_owner_id"
+            android:id="@+id/sr_experiment_owner_id_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
+            android:text="Owner ID: "
+            android:textStyle="bold"
+            android:textSize="18sp">
+        </TextView>
+        <TextView
+            android:id="@+id/sr_experiment_owner_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="39dp"
             android:text="OwnerId"
+            android:textSize="18sp">
+        </TextView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/sr_experiment_status_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="Status: "
+            android:textStyle="bold"
             android:textSize="18sp">
         </TextView>
         <TextView
             android:id="@+id/sr_experiment_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="61dp"
             android:text="Status"
             android:textSize="18sp">
         </TextView>
