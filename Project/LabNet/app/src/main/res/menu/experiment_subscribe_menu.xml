@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_profile"
+            android:title="My Profile"
+            android:icon="@drawable/ic_person"/>
+
+        <item
+            android:id="@+id/nav_qr"
+            android:title="QR Code"
+            android:icon="@drawable/ic_qr"/>
+
+    </group>
+
+    <item
+        android:title="Experiment">
+
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_statistics"
+                    android:title="Statistics"
+                    android:icon="@drawable/ic_stats"/>
+
+                <item
+                    android:id="@+id/nav_graphs"
+                    android:title="Graphs"
+                    android:icon="@drawable/ic_graphs"/>
+
+                <item
+                    android:id="@+id/nav_qa"
+                    android:title="Q and A"
+                    android:icon="@drawable/ic_question_answer"/>
+            </group>
+        </menu>
+
+    </item>
+
+</menu>

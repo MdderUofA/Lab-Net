@@ -412,6 +412,26 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     && !checkDescription.isEmpty()
                     && !checkRegion.isEmpty()
                     && !checkMinTrials.isEmpty());
+
+//            if (checkTitle.isEmpty()) {
+//                expTitle.setError("Experiment Title is required!");
+//                expTitle.requestFocus();
+//            }
+//
+//            else if (checkDescription.isEmpty()) {
+//                expDescription.setError("Description is required!");
+//                expDescription.requestFocus();
+//
+//            }
+//            else if (checkRegion.isEmpty()) {
+//                expRegion.setError("Region is required!");
+//                expRegion.requestFocus();
+//            }
+//            else if (checkMinTrials.isEmpty()) {
+//                expMinTrials.setError("Min Trails is required!");
+//                expMinTrials.requestFocus();
+//            }
+
         }
 
         @Override

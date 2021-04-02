@@ -22,7 +22,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class SubscribedUser extends AppCompatActivity {
+public class SubscribedUserActivity extends AppCompatActivity {
 
     private String userId,firstNameText,lastNameText,emailText,phoneText;
     private FirebaseFirestore db;
@@ -68,7 +68,7 @@ public class SubscribedUser extends AppCompatActivity {
         returnToSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent searchIntent = new Intent(SubscribedUser.this,
+                Intent searchIntent = new Intent(SubscribedUserActivity.this,
                         SearchableListActivity.class);
                 searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
                         SearchableList.SEARCH_USERS);
@@ -176,7 +176,7 @@ public class SubscribedUser extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Experiment experiment = myExperimentsDataList.get(position);
-                Intent intent = new Intent(SubscribedUser.this, ExperimentActivity.class);
+                Intent intent = new Intent(SubscribedUserActivity.this, ExperimentActivity.class);
                 intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
                 startActivity(intent);
             }
