@@ -545,7 +545,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
                 dialog.dismiss();
                 // change to UserProfile
                 Intent intent = new Intent(getApplicationContext(), UserProfile.class);
-                intent.putExtra("userID", owner);
+                intent.putExtra(UserProfile.USER_ID_EXTRA, owner);
                 startActivity(intent);
 
             }

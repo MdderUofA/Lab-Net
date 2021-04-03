@@ -116,6 +116,10 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         trialList.setAdapter(trialArrayAdapter);
         db = FirebaseFirestore.getInstance();
 
+        experiment_title = findViewById(R.id.experimentTitle);
+        experiment_description = findViewById(R.id.experimentDescription);
+        experiment_region = findViewById(R.id.experimentRegion);
+
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -176,9 +180,6 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
 
             }
         });
-        experiment_title = findViewById(R.id.experimentTitle);
-        experiment_description = findViewById(R.id.experimentDescription);
-        experiment_region = findViewById(R.id.experimentRegion);
 
 
         add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
@@ -205,12 +206,8 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         subscribeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
             }
         });
-
-
-
     }
 
     //side menu created from youtube: Android Navigation Drawer Menu Material Design

@@ -61,7 +61,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private Button browse, addExp, qrCode;
     private ListView subExpListView, myExpListView;
     private ArrayList<Experiment> myExperimentsDataList;
+    private ArrayList<SubscribedExperiment> subscribedExperimentsDataList;
     private ArrayAdapter<Experiment> myExperimentAdapter;
+    private ArrayAdapter<SubscribedExperiment> subscribedExperimentsAdapter;
     private TextView usernameTextView, firstNameTextView, lastNameTextView,emailTextView,phoneTextView;
 
     // Make EditTexts in add Experiment global to ensure they aren't empty
@@ -95,8 +97,14 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         myExperimentAdapter = new CustomMyExperimentsList(this, myExperimentsDataList);
         myExpListView.setAdapter(myExperimentAdapter);
 
+        subExpListView = findViewById(R.id.subExpListView);
+        subscribedExperimentsDataList = new ArrayList<>();
+        subscribedExperimentsAdapter = new CustomSubscribedExperimentList(this, subscribedExperimentsDataList);
+        subExpListView.setAdapter(subscribedExperimentsAdapter);
+
         getUserInfo();
-        getExperiments();
+        getMyExperiments();
+        getSubscribedExperiments();
 
         //initialize the buttons
         editUser = (ImageButton) findViewById(R.id.editUserInfo);
@@ -108,9 +116,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         qrCode = (Button) findViewById(R.id.qrButton);
         qrCode.setOnClickListener(this);
 
-        subExpView();
         myExpView();
-
+        /*subExpView();*/
     }
 
     //Set buttons
@@ -139,10 +146,32 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+
+    public void getSubscribedExperiments() {
+        db.collection("SubscribedExperiments")
+                .whereEqualTo("Subscriber", userId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            subscribedExperimentsDataList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String id = document.getData().get("ExperimentId").toString();
+                                String subscriber = document.getData().get("Subscriber").toString();
+                                subscribedExperimentsDataList
+                                        .add(new SubscribedExperiment(id,subscriber));
+                            }
+                            subscribedExperimentsAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+    }
+
     /**
      * Get experiments from the database that were created by the user by matching user ID.
      */
-    public void getExperiments() {
+    public void getMyExperiments() {
         db.collection("Experiments")
                 .whereEqualTo("Owner", userId)
                 .get()
@@ -163,14 +192,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
                                 myExperimentsDataList.add(new Experiment(experimentId,experimentTitle,
                                         experimentDescription,experimentRegion,experimentOwner,experimentMinTrials,experimentTrialType, experimentEnableLocation));
-                                myExperimentAdapter.notifyDataSetChanged();
-
                             }
+                            myExperimentAdapter.notifyDataSetChanged();
                         }
                     }
-
                 });
-
     }
 
     /**
@@ -335,7 +361,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(UserProfile.this, "Experiment created", Toast.LENGTH_LONG).show();
                                 addDialog.dismiss();
-                                getExperiments();
+                                getMyExperiments();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -355,31 +381,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     /**
      * The view to display subscribed experiments in the User Profile.
      */
-    private void subExpView() {
-        subExpListView = findViewById(R.id.subExpListView);
-
-        String[] test1 = new String[]{
-                "Exp1", "Exp2", "Exp3", "Exp4", "Exp5", "Exp6", "Exp7", "Exp8", "Exp9"
-        };
-
-        ArrayAdapter<String> subExpAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, test1);
-        subExpListView.setAdapter(subExpAdapter);
-
-        subExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO
-//                if (position == 0){
-//                    Intent intent = new Intent(view.getContext(), Exp1.class);
-//                    startActivity(intent);
-//                }
-//                if (position == 1){
-//                    Intent intent = new Intent(view.getContext(), Exp2.class);
-//                    startActivity(intent);
-//                }
-            }
-        });
-    }
+/*    private void subExpView() {
+    }*/
 
     /**
      * The view to display user created experiments in the User Profile.
