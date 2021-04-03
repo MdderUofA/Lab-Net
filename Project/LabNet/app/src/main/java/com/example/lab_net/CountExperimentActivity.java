@@ -3,6 +3,7 @@ package com.example.lab_net;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -37,23 +38,34 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class CountExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    private ListView trialList;
+    private ListView trialList, ignoredTrialList;
 
     // Count adapters and lists
     private ArrayAdapter<CountTrial> trialArrayAdapter;
     private ArrayList<CountTrial> trialDataList;
+    private ArrayAdapter<CountTrial> ignoredTrialArrayAdapter;
+    private ArrayList<CountTrial> ignoredTrialDataList;
     private FirebaseFirestore db;
 
     // experiment
     private String experimentId;
     private String experimentTitle, experimentDescription, experimentRegion, trialType;
     private String owner;
+    Date date;
+    String formattedDate;
+    SimpleDateFormat simpleDateFormat;
+    String getDate;
 
     // TextViews
     TextView experiment_title, experiment_description, experiment_region;
@@ -75,6 +87,12 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
     NavigationView navigationView;
     Toolbar toolbar;
 
+    // date
+    private ArrayList<String> dates;
+    View previousSelectedItem;
+
+    Boolean isUnlisted;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,15 +102,26 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         //side menu
         setToolbar();
 
+        // date
+        /*date = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-YYYY", Locale.getDefault());
+        String formattedDate = simpleDateFormat.format(date);*/
+        dates = new ArrayList<>();
+
         experimentId = getIntent().getStringExtra("experimentId");
         experiment_title = findViewById(R.id.experimentTitle);
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
 
         trialList = (ListView) findViewById(R.id.trial_list);
+        ignoredTrialList = (ListView) findViewById(R.id.ignored_trials_list);
         trialDataList = new ArrayList<>();
+        ignoredTrialDataList = new ArrayList<>();
         trialArrayAdapter = new CustomTrialList(this, trialDataList);
+        ignoredTrialArrayAdapter = new CustomTrialList(this, ignoredTrialDataList);
+
         trialList.setAdapter(trialArrayAdapter);
+        ignoredTrialList.setAdapter(ignoredTrialArrayAdapter);
         db = FirebaseFirestore.getInstance();
 
         // get experiment info
@@ -133,22 +162,41 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                 trialTitle = document.getData().get("Title").toString();
                                 trialType = document.getData().get("Title").toString();
                                 getResult = (Long) document.getData().get("Result");
-                                trialDataList.add(new CountTrial(trialId, trialTitle, getResult));
+                                getDate = document.getData().get("Date").toString();
+                                isUnlisted = (Boolean) document.getData().get("isUnlisted");
+                                if(isUnlisted){
+                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, getResult));
+                                }
+                                else {
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, getResult));
+                                }
+                                dates.add(getDate);
+
                             }
+                            ignoredTrialArrayAdapter.notifyDataSetChanged();
+                            trialArrayAdapter.notifyDataSetChanged();
+
 
                         }
-                        trialArrayAdapter.notifyDataSetChanged();
+
                     }
 
                 });
 
         //delete trials
+
         trialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 deleteTrial(position);
                 return true;
-
+            }
+        });
+        ignoredTrialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                moveTrial(position);
+                return true;
             }
         });
 
@@ -218,6 +266,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 } else {
                     Intent intent = new Intent(getApplicationContext(), Histogram.class);
                     intent.putExtra("trialDataList", (Serializable) trialDataList);
+                    intent.putExtra("dateDataList", (Serializable) dates);
                     intent.putExtra("ExperimentId", experimentId);
                     intent.putExtra("check", 1);
                     startActivity(intent);
@@ -317,6 +366,12 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         final CollectionReference collectionReference = db.collection("Trials");
         String trialId = collectionReference.document().getId();
 
+        // date
+        date = Calendar.getInstance().getTime();
+        simpleDateFormat = new SimpleDateFormat("ddMMYYYY", Locale.getDefault());
+        formattedDate = simpleDateFormat.format(date);
+        dates.add(formattedDate);
+
 /*        Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
         getLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,6 +390,8 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 data.put("Title", title);
                 data.put("Result", result);
                 data.put("ExperimentId", experimentId);
+                data.put("Date", formattedDate);
+                data.put("isUnlisted", false);
                 collectionReference
                         .document(trialId)
                         .set(data)
@@ -405,9 +462,30 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
     // method responsible for deleting trials
     public void deleteTrial(int position) {
         CountTrial trial = trialDataList.get(position);
+        //isUnlisted = true;
+        //trialDataList.remove(position);
+        //trialDataList.get(position).setB
+        //trialArrayAdapter.notifyDataSetChanged();
+        ignoredTrialDataList.add(trialDataList.get(position));
+        ignoredTrialArrayAdapter.notifyDataSetChanged();
         trialDataList.remove(position);
         trialArrayAdapter.notifyDataSetChanged();
-        db.collection("Trials").document(trial.getId())
+        isUnlisted = true;
+        DocumentReference updateTrialDoc = db.collection("Trials").document(trial.getId());
+        updateTrialDoc.update("isUnlisted", isUnlisted).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(CountExperimentActivity.this, "Trial moved", Toast.LENGTH_LONG).show();
+
+
+                } else {
+                    Toast.makeText(CountExperimentActivity.this, "Trial not moved", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+       /* db.collection("Trials").document(trial.getId())
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -420,7 +498,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(CountExperimentActivity.this, "Trial not deleted", Toast.LENGTH_LONG).show();
                     }
-                });
+                });*/
         db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -428,15 +506,99 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             trialDataList.clear();
+                            ignoredTrialDataList.clear();
+                            dates.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 trialId = document.getId();
                                 trialTitle = document.getData().get("Title").toString();
                                 trialType = document.getData().get("Title").toString();
-
+                                getDate = document.getData().get("Date").toString();
                                 result = (Long) document.getData().get("Result");
-                                trialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
+                                isUnlisted = (Boolean) document.getData().get("isUnlisted");
+                                if(isUnlisted) {
+                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
+
+                                }
+                                else{
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
+
+                                }
+                                dates.add(getDate);
                             }
                             trialArrayAdapter.notifyDataSetChanged();
+                            ignoredTrialArrayAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+
+    }
+    private void moveTrial(int position) {
+        CountTrial trial = ignoredTrialDataList.get(position);
+        //isUnlisted = true;
+        //trialDataList.remove(position);
+        //trialDataList.get(position).setB
+        //trialArrayAdapter.notifyDataSetChanged();
+        trialDataList.add(ignoredTrialDataList.get(position));
+        trialArrayAdapter.notifyDataSetChanged();
+        ignoredTrialDataList.remove(position);
+        ignoredTrialArrayAdapter.notifyDataSetChanged();
+        isUnlisted = false;
+        DocumentReference updateTrialDoc = db.collection("Trials").document(trial.getId());
+        updateTrialDoc.update("isUnlisted", isUnlisted).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(CountExperimentActivity.this, "Trial moved", Toast.LENGTH_LONG).show();
+
+
+                } else {
+                    Toast.makeText(CountExperimentActivity.this, "Trial not moved", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+       /* db.collection("Trials").document(trial.getId())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(CountExperimentActivity.this, "Trial Deleted", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CountExperimentActivity.this, "Trial not deleted", Toast.LENGTH_LONG).show();
+                    }
+                });*/
+        db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            trialDataList.clear();
+                            ignoredTrialDataList.clear();
+                            dates.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                trialId = document.getId();
+                                trialTitle = document.getData().get("Title").toString();
+                                trialType = document.getData().get("Title").toString();
+                                getDate = document.getData().get("Date").toString();
+                                result = (Long) document.getData().get("Result");
+                                isUnlisted = (Boolean) document.getData().get("isUnlisted");
+                                if(isUnlisted) {
+                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
+
+                                }
+                                else{
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
+
+                                }
+                                dates.add(getDate);
+                            }
+                            trialArrayAdapter.notifyDataSetChanged();
+                            ignoredTrialArrayAdapter.notifyDataSetChanged();
                         }
                     }
                 });
@@ -461,5 +623,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
     @Override
     public void onBackPressed() { }
+
 
 }
