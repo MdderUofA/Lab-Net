@@ -36,12 +36,16 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class MeasurementExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ListView trialList;
+    private ListView trialList, ignoredTrialList;
 
     // Count adapters and lists
     private ArrayAdapter<MeasurementTrial> trialArrayAdapter;
@@ -71,6 +75,17 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
     NavigationView navigationView;
     Toolbar toolbar;
 
+    private ArrayAdapter<MeasurementTrial> ignoredTrialArrayAdapter;
+    private ArrayList<MeasurementTrial> ignoredTrialDataList;
+
+    Date date;
+    String formattedDate;
+    SimpleDateFormat simpleDateFormat;
+    String getDate;
+
+    Boolean isUnlisted;
+    private ArrayList<String> dates;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +106,10 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         trialList.setAdapter(trialArrayAdapter);
         db = FirebaseFirestore.getInstance();
 
+        ignoredTrialList = (ListView) findViewById(R.id.ignored_trials_list);
+        ignoredTrialDataList = new ArrayList<>();
+        ignoredTrialArrayAdapter = new CustomMeasurementTrialList(this, ignoredTrialDataList);
+        ignoredTrialList.setAdapter(ignoredTrialArrayAdapter);
         // get experiment info
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
@@ -116,6 +135,8 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                 }
             }
         });
+        dates = new ArrayList<>();
+
 
         // get trials
         db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
@@ -129,13 +150,22 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                                 trialTitle = document.getData().get("Title").toString();
                                 trialType = document.getData().get("Title").toString();
                                 result = (String) document.getData().get("Result");
-                                trialDataList.add(new MeasurementTrial(trialId, trialTitle,Double.valueOf(result)));
+                                getDate = (String) document.getData().get("Date");
+                                isUnlisted = (Boolean) document.getData().get("isUnlisted");
+                                if(isUnlisted){
+                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+                                }
+                                else {
+                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+                                }
+                                dates.add(getDate);
+
                             }
-
+                            ignoredTrialArrayAdapter.notifyDataSetChanged();
+                            trialArrayAdapter.notifyDataSetChanged();
                         }
-                        trialArrayAdapter.notifyDataSetChanged();
-                    }
 
+                    }
                 });
 
         //delete trials
@@ -144,7 +174,13 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 deleteTrial(position);
                 return true;
-
+            }
+        });
+        ignoredTrialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                moveTrial(position);
+                return true;
             }
         });
 
@@ -313,6 +349,12 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         final CollectionReference collectionReference = db.collection("Trials");
         String trialId = collectionReference.document().getId();
 
+        // date
+        date = Calendar.getInstance().getTime();
+        simpleDateFormat = new SimpleDateFormat("ddMMYYYY", Locale.getDefault());
+        formattedDate = simpleDateFormat.format(date);
+        dates.add(formattedDate);
+
 /*        Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
         getLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -331,6 +373,8 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                 data.put("Title", title);
                 data.put("Result", result);
                 data.put("ExperimentId", experimentId);
+                data.put("Date", formattedDate);
+                data.put("isUnlisted", false);
                 collectionReference
                         .document(trialId)
                         .set(data)
@@ -400,22 +444,29 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
     // method responsible for deleting trials
     public void deleteTrial(int position) {
         MeasurementTrial trial = trialDataList.get(position);
+        //isUnlisted = true;
+        //trialDataList.remove(position);
+        //trialDataList.get(position).setB
+        //trialArrayAdapter.notifyDataSetChanged();
+        ignoredTrialDataList.add(trialDataList.get(position));
+        ignoredTrialArrayAdapter.notifyDataSetChanged();
         trialDataList.remove(position);
         trialArrayAdapter.notifyDataSetChanged();
-        db.collection("Trials").document(trial.getId())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(MeasurementExperimentActivity.this, "Trial Deleted", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MeasurementExperimentActivity.this, "Trial not deleted", Toast.LENGTH_LONG).show();
-                    }
-                });
+        isUnlisted = true;
+        DocumentReference updateTrialDoc = db.collection("Trials").document(trial.getId());
+        updateTrialDoc.update("isUnlisted", isUnlisted).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(MeasurementExperimentActivity.this, "Trial moved", Toast.LENGTH_LONG).show();
+
+
+                } else {
+                    Toast.makeText(MeasurementExperimentActivity.this, "Trial not moved", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
         db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -423,15 +474,83 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             trialDataList.clear();
+                            ignoredTrialDataList.clear();
+                            dates.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 trialId = document.getId();
                                 trialTitle = document.getData().get("Title").toString();
                                 trialType = document.getData().get("Title").toString();
-
+                                getDate = document.getData().get("Date").toString();
                                 result = (String) document.getData().get("Result");
-                                trialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
+                                isUnlisted = (Boolean) document.getData().get("isUnlisted");
+                                if(isUnlisted) {
+                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+                                }
+                                else{
+                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+                                }
+                                dates.add(getDate);
                             }
                             trialArrayAdapter.notifyDataSetChanged();
+                            ignoredTrialArrayAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+
+    }
+    private void moveTrial(int position) {
+        MeasurementTrial trial = ignoredTrialDataList.get(position);
+        //isUnlisted = true;
+        //trialDataList.remove(position);
+        //trialDataList.get(position).setB
+        //trialArrayAdapter.notifyDataSetChanged();
+        trialDataList.add(ignoredTrialDataList.get(position));
+        trialArrayAdapter.notifyDataSetChanged();
+        ignoredTrialDataList.remove(position);
+        ignoredTrialArrayAdapter.notifyDataSetChanged();
+        isUnlisted = false;
+        DocumentReference updateTrialDoc = db.collection("Trials").document(trial.getId());
+        updateTrialDoc.update("isUnlisted", isUnlisted).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(MeasurementExperimentActivity.this, "Trial moved", Toast.LENGTH_LONG).show();
+
+
+                } else {
+                    Toast.makeText(MeasurementExperimentActivity.this, "Trial not moved", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+        db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            trialDataList.clear();
+                            ignoredTrialDataList.clear();
+                            dates.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                trialId = document.getId();
+                                trialTitle = document.getData().get("Title").toString();
+                                trialType = document.getData().get("Title").toString();
+                                getDate = document.getData().get("Date").toString();
+                                result = (String) document.getData().get("Result");
+                                isUnlisted = (Boolean) document.getData().get("isUnlisted");
+                                if(isUnlisted) {
+                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+
+                                }
+                                else{
+                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+
+                                }
+                                dates.add(getDate);
+                            }
+                            trialArrayAdapter.notifyDataSetChanged();
+                            ignoredTrialArrayAdapter.notifyDataSetChanged();
                         }
                     }
                 });
