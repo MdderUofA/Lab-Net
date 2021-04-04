@@ -383,6 +383,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
      * The view to display subscribed experiments in the User Profile.
      */
     private void subExpView() {
+        //change this to for each trialtype
         subExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
