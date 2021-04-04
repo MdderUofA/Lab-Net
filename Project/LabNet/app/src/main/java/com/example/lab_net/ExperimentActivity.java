@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -65,7 +66,6 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
     // Binomial
     private ArrayAdapter<BinomialTrial> binomialTrialArrayAdapter;
     private ArrayList<BinomialTrial> binomialDataList;
-
 
     String trialId, trialTitle;
     Long resultLong;
@@ -234,6 +234,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()){
+
             case R.id.nav_profile:
                 Intent profileIntent = new Intent(getApplicationContext(),UserProfile.class);
                 profileIntent.putExtra(UserProfile.USER_ID_EXTRA, owner);
@@ -256,6 +257,13 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
             case R.id.nav_graphs:
                 //TODO
                 break;
+
+            case R.id.nav_locationPlot:
+                Intent locationIntent = new Intent(getApplicationContext(), plotLocActivity.class);
+                locationIntent.putExtra("ExperimentId", experimentId);
+                startActivity(locationIntent);
+                break;
+
             case R.id.nav_qa:
                 Intent qaIntent = new Intent(getApplicationContext(), QuestionsActivity.class);
                 qaIntent.putExtra("check", "OwnerActivity");
@@ -335,7 +343,6 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
         sendTrialId.putExtra("trialId", trialId);
         startActivity(sendTrialId);
     }
-
 
     private void addTrial() {
 
