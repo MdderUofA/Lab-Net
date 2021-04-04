@@ -40,23 +40,8 @@ public class CustomSubscribedExperimentList extends ArrayAdapter<SubscribedExper
 
         SubscribedExperiment subscribedExperiment = subscribedExperiments.get(position);
         TextView experimentTitleText = view.findViewById(R.id.experiment_title);
-        String subscribedId = subscribedExperiment.getId();
 
-        db.collection("Experiments").document(subscribedId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            if (documentSnapshot.exists()) {
-                                String expTitle = documentSnapshot.getData().get("Title").toString();
-                                experimentTitleText.setText(expTitle);
-                            }
-                        }
-                    }
-                });
-
+        experimentTitleText.setText(subscribedExperiment.getTitle());
 
         return view;
 
