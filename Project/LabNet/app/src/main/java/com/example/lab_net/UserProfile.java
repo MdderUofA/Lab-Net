@@ -117,7 +117,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         qrCode.setOnClickListener(this);
 
         myExpView();
-        /*subExpView();*/
+        subExpView();
     }
 
     //Set buttons
@@ -158,9 +158,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                             subscribedExperimentsDataList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String id = document.getData().get("ExperimentId").toString();
+                                String title = document.getData().get("ExperimentTitle").toString();
                                 String subscriber = document.getData().get("Subscriber").toString();
                                 subscribedExperimentsDataList
-                                        .add(new SubscribedExperiment(id,subscriber));
+                                        .add(new SubscribedExperiment(id,title,subscriber));
                             }
                             subscribedExperimentsAdapter.notifyDataSetChanged();
                         }
@@ -381,8 +382,17 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     /**
      * The view to display subscribed experiments in the User Profile.
      */
-/*    private void subExpView() {
-    }*/
+    private void subExpView() {
+        subExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SubscribedExperiment subsExp = subscribedExperimentsDataList.get(position);
+                Intent intent = new Intent(UserProfile.this,SubscribedExperimentActivity.class);
+                intent.putExtra(SubscribedExperimentActivity.EXPERIMENT_ID_EXTRA,subsExp.getId());
+                startActivity(intent);
+            }
+        });
+    }
 
     /**
      * The view to display user created experiments in the User Profile.

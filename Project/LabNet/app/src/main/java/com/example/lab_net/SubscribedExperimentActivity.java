@@ -41,6 +41,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SubscribedExperimentActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -54,18 +55,6 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
     private ArrayAdapter<CountTrial> trialArrayAdapter;
     private ArrayList<CountTrial> trialDataList;
     private CustomTrialList customTrialList;
-
-    // Measurement
-    private ArrayAdapter<MeasurementTrial> measurementTrialArrayAdapter;
-    private ArrayList<MeasurementTrial> measurementDataList;
-
-    // NonNegative
-    private ArrayAdapter<NonNegativeIntegerTrial> nonNegativeIntegerTrialArrayAdapter;
-    private ArrayList<NonNegativeIntegerTrial> nonNegativeDataList;
-
-    // Binomial
-    private ArrayAdapter<BinomialTrial> binomialTrialArrayAdapter;
-    private ArrayList<BinomialTrial> binomialDataList;
 
 
     String trialId, trialTitle;
@@ -120,6 +109,8 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
 
+        checksubscription();
+
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -144,7 +135,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
             }
         });
         // Fills in trialDataList
-        db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
+  /*      db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -169,7 +160,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
                             trialArrayAdapter.notifyDataSetChanged();
                         }
                     }
-                });
+                });*/
 
         // Delete item from trialDataList upon long click
         trialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -202,10 +193,32 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
             }
         });
 
+        //check if user already subscribed, button grey out
+        //otherwise give option to subscribe
         subscribeButton = (Button) findViewById(R.id.subscribeButton);
         subscribeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Map<String,Object> data = new HashMap<>();
+                data.put("ExperimentId",experimentId);
+                data.put("ExperimentTitle",experimentTitle);
+                data.put("Subscriber",deviceId);
+                db.collection("SubscribedExperiments").document().set(data)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(SubscribedExperimentActivity.this,"Subscribed",Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(SubscribedExperimentActivity.this,"Not Subscribed",Toast.LENGTH_LONG).show();
+                            }
+                        });
+                subscribeButton.setEnabled(false);
+                subscribeButton.setText("Subscribed");
+                add_trial_button.setEnabled(true);
             }
         });
     }
@@ -265,6 +278,30 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         return true;
     }
 
+    private void checksubscription() {
+        db.collection("SubscribedExperiments")
+                .whereEqualTo("ExperimentId",experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Boolean isSubscriber = false;
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String subscriber = document.getData().get("Subscriber").toString();
+                                if (subscriber.equals(deviceId)) {
+                                    isSubscriber = true;
+                                    subscribeButton.setEnabled(false);
+                                    subscribeButton.setText("Subscribed");
+                                }
+                            }
+                            if (! isSubscriber) {
+                                add_trial_button.setEnabled(false);
+                            }
+                        }
+                    }
+                });
+    }
 
     private void getLocation(String trialId) {
         Intent sendTrialId = new Intent(this, MapActivity.class);
