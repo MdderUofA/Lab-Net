@@ -1,6 +1,7 @@
 package com.example.lab_net;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -502,21 +504,47 @@ public class SearchableList {
         public void itemClicked(Searchable searchable) {
             SearchableExperiment experiment = (SearchableExperiment) searchable;
             SearchableDocumentReference ref = experiment.getDocumentReference();
-            /*DialogInterface.OnClickListener listener = (d, which) -> {
+            DialogInterface.OnClickListener listener = (d, which) -> {
                 if(which == DialogInterface.BUTTON_POSITIVE) {
+                    // get our data.
+                    AppCompatActivity parentActivity = this.getAdapter()
+                            .getSearchableList().getParent();
+                    Class<? extends AppCompatActivity> target
+                            = this.getActivityFromType(experiment.getType());
 
+                    // go to the activity.
+                    Intent intent = new Intent(parentActivity, target);
+                    intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA,ref.getDocumentId());
+                    parentActivity.startActivity(intent);
                 }
             };
             AlertDialog.Builder builder = new AlertDialog.Builder(this.getAdapter().getContext());
             builder.setMessage("Subscribe to experiment?")
                     .setPositiveButton("Yes",listener)
                     .setNegativeButton("No",listener)
-                    .show();*/
-            AppCompatActivity parentActivity = this.getAdapter().getSearchableList().getParent();
-            Intent intent = new Intent(parentActivity,
-                    SubscribedExperimentActivity.class);
-            intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA,ref.getDocumentId());
-            parentActivity.startActivity(intent);
+                    .show();
+        }
+
+        /**
+         * Finds the class associated with the experiment to subscribe to.
+         *
+         * @param type The string type of the subscribed experiment.
+         * @throws IllegalArgumentException if the supplied string does not match to a valid class
+         * @return The SubscribedExperiment class represented by the String experimentType
+         */
+        private Class<? extends AppCompatActivity> getActivityFromType(String type) {
+            switch (type) {
+                case("Count-based"):
+                    return SubscribedCountExperimentActivity.class;
+                case("Binomial"):
+                    return SubscribedCountExperimentActivity.class;
+                case("Measurement"):
+                    return SubscribedMeasurementExperimentActivity.class;
+                case("NonNegativeInteger"):
+                    return SubscribedNonNegativeExperimentActivity.class;
+                default:
+                    throw new IllegalArgumentException("Type "+type+" does not match to a valid experiment type.");
+            }
         }
 
         @Override
