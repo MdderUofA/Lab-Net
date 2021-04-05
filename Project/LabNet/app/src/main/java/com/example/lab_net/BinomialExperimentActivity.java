@@ -268,10 +268,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                 qaIntent.putExtra(EXPERIMENT_ID_EXTRA, experimentId);
                 startActivity(qaIntent);
                 break;
-            case R.id.nav_completeExp:
-                //TODO
-                break;
-            case R.id.nav_publishExp:
+            case R.id.nav_endExp:
                 //TODO
                 break;
             case R.id.nav_deleteExp:

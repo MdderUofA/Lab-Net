@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -270,10 +269,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
                 qaIntent.putExtra("experimentID", experimentId);
                 startActivity(qaIntent);
                 break;
-            case R.id.nav_completeExp:
-                //TODO
-                break;
-            case R.id.nav_publishExp:
+            case R.id.nav_endExp:
                 //TODO
                 break;
             case R.id.nav_deleteExp:

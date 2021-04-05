@@ -48,14 +48,9 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
-                    android:id="@+id/nav_completeExp"
-                    android:title="Complete Experiment "
+                    android:id="@+id/nav_endExp"
+                    android:title="End Experiment "
                     android:icon="@drawable/ic_complete"/>
-
-                <item
-                    android:id="@+id/nav_publishExp"
-                    android:title="Publish Experiment"
-                    android:icon="@drawable/ic_publish"/>
 
                 <item
                     android:id="@+id/nav_deleteExp"
