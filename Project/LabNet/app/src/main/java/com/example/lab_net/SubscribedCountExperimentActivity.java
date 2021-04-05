@@ -396,7 +396,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String checkResult = addTrialResult.getText().toString();
             String checkTitle = addTrialTitle.getText().toString();
-            addTrialDialogButton.setEnabled((TextUtils.isDigitsOnly(checkResult))  && !checkTitle.isEmpty());
+            addTrialDialogButton.setEnabled((TextUtils.isDigitsOnly(checkResult))  && !checkTitle.isEmpty() && !checkResult.isEmpty());
         }
 
         @Override
