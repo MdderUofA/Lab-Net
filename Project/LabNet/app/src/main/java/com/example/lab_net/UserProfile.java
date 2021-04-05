@@ -49,6 +49,8 @@ import java.util.Map;
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
+
     public static final  String USER_ID_EXTRA = "com.example.lab_net.user_profile.user_id";
     private final String Tag = "Sample";
     private String userId,firstNameText,lastNameText,emailText,phoneText;
@@ -393,22 +395,23 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 String expId = subsExp.getId();
                 if(checkType.equals("Binomial")){
                     Intent intent = new Intent(UserProfile.this, SubscribedBinomialExperimentActivity.class);
-                    intent.putExtra(SubscribedBinomialExperimentActivity.EXPERIMENT_ID_EXTRA,expId);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
                     startActivity(intent);
                 }
                 if(checkType.equals("Count-based")) {
                     Intent intent = new Intent(UserProfile.this, SubscribedCountExperimentActivity.class);
-                    intent.putExtra("experimentId",expId);
+                    //intent.putExtra("experimentId",expId);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
                     startActivity(intent);
                 }
                 if(checkType.equals("NonNegativeInteger")) {
                     Intent intent = new Intent(UserProfile.this, SubscribedNonNegativeExperimentActivity.class);
-                    intent.putExtra(SubscribedNonNegativeExperimentActivity.EXPERIMENT_ID_EXTRA,expId);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
                     startActivity(intent);
                 }
                 if(checkType.equals("Measurement")) {
                     Intent intent = new Intent(UserProfile.this, SubscribedMeasurementExperimentActivity.class);
-                    intent.putExtra(SubscribedMeasurementExperimentActivity.EXPERIMENT_ID_EXTRA,expId);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
                     startActivity(intent);
                 }
             }
@@ -427,22 +430,24 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 // add condition to check trial type
                 if(experimentTrialType.equals("Binomial")){
                     Intent intent = new Intent(UserProfile.this, BinomialExperimentActivity.class);
-                    intent.putExtra("experimentId", experiment.getExperimentId());
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
                     startActivity(intent);
                 }
                 if(experimentTrialType.equals("Count-based")) {
                     Intent intent = new Intent(UserProfile.this, CountExperimentActivity.class);
-                    intent.putExtra("experimentId", experiment.getExperimentId());
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
                     startActivity(intent);
                 }
                 if(experimentTrialType.equals("NonNegativeInteger")) {
                     Intent intent = new Intent(UserProfile.this, NonNegativeExperimentActivity.class);
-                    intent.putExtra("experimentId", experiment.getExperimentId());
+                    //intent.putExtra("experimentId", experiment.getExperimentId());
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
                     startActivity(intent);
                 }
                 if(experimentTrialType.equals("Measurement")) {
                     Intent intent = new Intent(UserProfile.this, MeasurementExperimentActivity.class);
-                    intent.putExtra("experimentId", experiment.getExperimentId());
+                    //intent.putExtra("experimentId", experiment.getExperimentId());
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
                     startActivity(intent);
                 }
 

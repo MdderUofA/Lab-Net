@@ -65,7 +65,7 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
     Button addTrialDialogButton;
 
     String trialId, trialTitle;
-    Long resultLong;
+    String resultLong;
     String owner;
     Boolean isUnlisted;
     TextView experiment_title, experiment_description, experiment_region;
@@ -158,11 +158,11 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
                                 trialId = document.getId();
                                 trialTitle = document.getData().get("Title").toString();
                                 trialType = document.getData().get("Title").toString();
-                                resultLong = (Long) document.getData().get("Result");
+                                resultLong = (String) document.getData().get("Result");
                                 //getDate = (String) document.getData().get("Date");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(!isUnlisted){
-                                    trialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, resultLong));
+                                    trialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, Long.valueOf(resultLong)));
                                 }
                                 dates.add(getDate);
 
@@ -264,6 +264,7 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
                     statsIntent.putExtra("trialDataList", (Serializable) trialDataList);
                     statsIntent.putExtra("check",2);
                     statsIntent.putExtra("expId", experimentId);
+                    statsIntent.putExtra("subscribed", true);
                     startActivity(statsIntent);
                 }
                 break;

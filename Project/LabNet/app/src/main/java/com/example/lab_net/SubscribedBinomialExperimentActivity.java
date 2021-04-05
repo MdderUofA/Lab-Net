@@ -106,7 +106,9 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
         setToolbar();
         deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        // apps crashing using this line
         experimentId = getIntent().getStringExtra(EXPERIMENT_ID_EXTRA);
+        //experimentId = getIntent().getStringExtra("experimentId");
 
         //count
         trialList = (ListView) findViewById(R.id.trial_list);
@@ -256,7 +258,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                 //TODO
                 break;
             case R.id.nav_statistics:
-                if (trialArrayAdapter.getCount() == 0 || trialType.equals("Binomial")) {
+                if (trialDataList.size() == 0) {
                     Toast.makeText(SubscribedBinomialExperimentActivity.this,
                             "No stats available for this experiment", Toast.LENGTH_LONG).show();
                 } else {
@@ -264,6 +266,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                     statsIntent.putExtra("trialDataList", (Serializable) trialDataList);
                     statsIntent.putExtra("check",3);
                     statsIntent.putExtra("expId", experimentId);
+                    statsIntent.putExtra("subscribed", true);
                     startActivity(statsIntent);
                 }
                 break;

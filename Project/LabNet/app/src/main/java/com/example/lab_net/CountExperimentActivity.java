@@ -48,6 +48,8 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
 
     private ListView trialList, ignoredTrialList;
+    public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
+
 
     // Count adapters and lists
     private ArrayAdapter<CountTrial> trialArrayAdapter;
@@ -106,7 +108,8 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         String formattedDate = simpleDateFormat.format(date);*/
         dates = new ArrayList<>();
 
-        experimentId = getIntent().getStringExtra("experimentId");
+        experimentId = getIntent().getStringExtra(EXPERIMENT_ID_EXTRA);
+        //experimentId = getIntent().getStringExtra("experimentId");
         experiment_title = findViewById(R.id.experimentTitle);
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);

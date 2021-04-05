@@ -46,6 +46,8 @@ import java.util.Locale;
 public class MeasurementExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView trialList, ignoredTrialList;
+    public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
+
 
     // Count adapters and lists
     private ArrayAdapter<MeasurementTrial> trialArrayAdapter;
@@ -95,7 +97,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         //side menu
         setToolbar();
 
-        experimentId = getIntent().getStringExtra("experimentId");
+        experimentId = getIntent().getStringExtra(EXPERIMENT_ID_EXTRA);
         experiment_title = findViewById(R.id.experimentTitle);
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
@@ -153,10 +155,10 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                                 getDate = (String) document.getData().get("Date");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted){
-                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
                                 }
                                 else {
-                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
                                 }
                                 dates.add(getDate);
 
@@ -484,10 +486,10 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                                 result = (String) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
                                 }
                                 else{
-                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
                                 }
                                 dates.add(getDate);
                             }
@@ -540,11 +542,11 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                                 result = (String) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
 
                                 }
                                 else{
-                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Long.valueOf(result)));
+                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
 
                                 }
                                 dates.add(getDate);

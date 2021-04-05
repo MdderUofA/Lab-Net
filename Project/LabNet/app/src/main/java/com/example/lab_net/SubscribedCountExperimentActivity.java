@@ -48,7 +48,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         NavigationView.OnNavigationItemSelectedListener {
 
 
-   // public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
+    public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
 
 
     private ListView trialList;
@@ -102,8 +102,8 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         //side menu
         setToolbar();
         deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        experimentId = getIntent().getStringExtra("experimentId");
-
+        //experimentId = getIntent().getStringExtra("experimentId");
+        experimentId = getIntent().getStringExtra(EXPERIMENT_ID_EXTRA);
         //count
         trialList = (ListView) findViewById(R.id.trial_list);
         trialDataList = new ArrayList<>();

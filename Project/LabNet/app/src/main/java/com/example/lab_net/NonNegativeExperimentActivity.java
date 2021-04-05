@@ -46,6 +46,8 @@ import java.util.Locale;
 public class NonNegativeExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView trialList, ignoredTrialList;
+    public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
+
 
     // Count adapters and lists
     private ArrayAdapter<NonNegativeIntegerTrial> trialArrayAdapter;
@@ -97,7 +99,8 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         //side menu
         setToolbar();
 
-        experimentId = getIntent().getStringExtra("experimentId");
+        experimentId = getIntent().getStringExtra(EXPERIMENT_ID_EXTRA);
+        //experimentId = getIntent().getStringExtra("experimentId");
         experiment_title = findViewById(R.id.experimentTitle);
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);

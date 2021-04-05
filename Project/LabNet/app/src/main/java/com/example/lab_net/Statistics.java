@@ -16,6 +16,8 @@ public class Statistics extends AppCompatActivity {
 
     private TextView meanView, medianView, lowerQuartileView, upperQuartileView, standardDeviationView;
 
+    public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
+
     private double sum = 0;
     private double mean = 0;
     private double median = 0;
@@ -144,12 +146,21 @@ public class Statistics extends AppCompatActivity {
         upperQuartileView.setText(String.format("%.2f", uq));
 
         //go back to experiment
+        Class next;
+        if (subscribed == true) {
+            next = SubscribedBinomialExperimentActivity.class;
+        }
+        else{
+            next = BinomialExperimentActivity.class;
+        }
+
         doneButton = (Button) findViewById(R.id.doneButton);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent doneIntent = new Intent(getApplicationContext(), BinomialExperimentActivity.class);
-                doneIntent.putExtra("experimentId", expId);
+                Intent doneIntent = new Intent(getApplicationContext(), next);
+                //doneIntent.putExtra("experimentId", expId);
+                doneIntent.putExtra(EXPERIMENT_ID_EXTRA, expId);
                 startActivity(doneIntent);
             }
         });
@@ -219,13 +230,22 @@ public class Statistics extends AppCompatActivity {
         upperQuartileView.setText(String.format("%.2f", uq));
 
         //go back to experiment
+        Class next;
+        if (subscribed == true) {
+            next = SubscribedNonNegativeExperimentActivity.class;
+        }
+        else{
+            next = NonNegativeExperimentActivity.class;
+        }
+
         doneButton = (Button) findViewById(R.id.doneButton);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(getApplicationContext(), NonNegativeExperimentActivity.class);
-                intent1.putExtra("experimentId", expId);
-                startActivity(intent1);
+                Intent doneIntent = new Intent(getApplicationContext(), next);
+                //doneIntent.putExtra("experimentId", expId);
+                doneIntent.putExtra(EXPERIMENT_ID_EXTRA, expId);
+                startActivity(doneIntent);
             }
         });
     }
@@ -293,13 +313,22 @@ public class Statistics extends AppCompatActivity {
         upperQuartileView.setText(String.format("%.2f", uq));
 
         //go back to experiment
+        Class next;
+        if (subscribed == true) {
+            next = SubscribedMeasurementExperimentActivity.class;
+        }
+        else{
+            next = MeasurementExperimentActivity.class;
+        }
+
         doneButton = (Button) findViewById(R.id.doneButton);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(getApplicationContext(), MeasurementExperimentActivity.class);
-                intent1.putExtra("experimentId", expId);
-                startActivity(intent1);
+                Intent doneIntent = new Intent(getApplicationContext(), next);
+                //doneIntent.putExtra("experimentId", expId);
+                doneIntent.putExtra(EXPERIMENT_ID_EXTRA, expId);
+                startActivity(doneIntent);
             }
         });
     }
@@ -382,7 +411,8 @@ public class Statistics extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent doneIntent = new Intent(getApplicationContext(), next);
-                doneIntent.putExtra("experimentId", expId);
+                //doneIntent.putExtra("experimentId", expId);
+                doneIntent.putExtra(EXPERIMENT_ID_EXTRA, expId);
                 startActivity(doneIntent);
             }
         });
