@@ -14,10 +14,15 @@ Citations:
 
 4) 'Select Current Place and Show Details on a Map' by Google Developers (03/17/2021, Apache 2.0) - https://developers.google.com/maps/documentation/android-sdk/current-place-tutorial
 
+5) 'Creating a Simple Bar Graph for your Android Application (part 1/2)' by CodingWithMitch (May 5, 2016, Youtube) - https://www.youtube.com/watch?v=pi1tq-bp7uA
+
 APIs used (or to be fully used):
 
 1) Google Maps SDK for Android API
 2) Google Geolocation API 
 3) Google Geocoding API 
+
+Libraries used for graphs
+1) https://github.com/PhilJay/MPAndroidChart
 
 NOTE - IN ORDER TO USE API, YOU MUST HAVE THE CORRECT LOCAL.PROPERTIES FILE WITH YOU!

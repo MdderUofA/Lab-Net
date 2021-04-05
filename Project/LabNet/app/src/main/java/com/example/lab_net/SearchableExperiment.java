@@ -7,6 +7,7 @@ import java.util.Date;
 public class SearchableExperiment extends Searchable {
 
     private boolean open = true;
+    private String type = "NOT_YET_DEFINED";
     private String ownerId = "NOT_YET_DEFINED";
 
     @Override
@@ -18,6 +19,7 @@ public class SearchableExperiment extends Searchable {
                 snapshot.getId());
         this.ownerId = (String)snapshot.get("Owner");
         this.open=true;
+        this.type = (String)snapshot.get("TrialType");
         return this;
     }
 
@@ -35,5 +37,13 @@ public class SearchableExperiment extends Searchable {
      */
     public String getOwnerId() {
         return this.ownerId;
+    }
+
+    /**
+     * Getter for the String type of the Experiment. One of {}
+     * @return
+     */
+    public String getType() {
+        return this.type;
     }
 }
