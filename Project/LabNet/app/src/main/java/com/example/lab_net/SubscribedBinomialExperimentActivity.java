@@ -131,7 +131,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
         experiment_title = findViewById(R.id.experimentTitle);
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
-        addTrialDialogButton.setEnabled(false);
+
 
         checksubscription();
 
@@ -379,7 +379,9 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         Toast.makeText(SubscribedBinomialExperimentActivity.this, "Enter a pass or fail", Toast.LENGTH_LONG).show();
-
+        if (!trialButtonEnabled){
+            addTrialDialogButton.setEnabled(false);
+        }
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
         addTrialResult.addTextChangedListener(addTextWatcher);

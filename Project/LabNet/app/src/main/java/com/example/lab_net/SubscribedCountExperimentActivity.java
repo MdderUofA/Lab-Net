@@ -125,7 +125,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         experiment_title = findViewById(R.id.experimentTitle);
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
-        addTrialDialogButton.setEnabled(false);
+
 
         checksubscription();
 
@@ -377,7 +377,9 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         Toast.makeText(SubscribedCountExperimentActivity.this, "Enter any integer", Toast.LENGTH_LONG).show();
-
+        if (!trialButtonEnabled){
+            addTrialDialogButton.setEnabled(false);
+        }
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
         addTrialResult.addTextChangedListener(addTextWatcher);

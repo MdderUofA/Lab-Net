@@ -126,7 +126,7 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
         experiment_title = findViewById(R.id.experimentTitle);
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
-        addTrialDialogButton.setEnabled(false);
+
 
         checksubscription();
 
@@ -373,7 +373,9 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         Toast.makeText(SubscribedMeasurementExperimentActivity.this, "Enter a double type", Toast.LENGTH_LONG).show();
-
+        if (!trialButtonEnabled){
+            addTrialDialogButton.setEnabled(false);
+        }
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
         addTrialResult.addTextChangedListener(addTextWatcher);
