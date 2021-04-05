@@ -48,17 +48,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class SubscribedExperimentActivity extends AppCompatActivity implements
+public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
-
 
     public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
 
 
     private ListView trialList;
     // Count adapters and lists
-    private ArrayAdapter<CountTrial> trialArrayAdapter;
-    private ArrayList<CountTrial> trialDataList;
+    private ArrayAdapter<NonNegativeIntegerTrial> trialArrayAdapter;
+    private ArrayList<NonNegativeIntegerTrial> trialDataList;
     private CustomTrialList customTrialList;
     private ArrayList<String> dates;
 
@@ -112,7 +111,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         //count
         trialList = (ListView) findViewById(R.id.trial_list);
         trialDataList = new ArrayList<>();
-        trialArrayAdapter = new CustomTrialList(this, trialDataList);
+        trialArrayAdapter = new CustomNonNegativeTrialList(this, trialDataList);
         trialList.setAdapter(trialArrayAdapter);
         db = FirebaseFirestore.getInstance();
 
@@ -160,21 +159,18 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
                                 trialTitle = document.getData().get("Title").toString();
                                 trialType = document.getData().get("Title").toString();
                                 resultLong = (Long) document.getData().get("Result");
-                                //getDate = document.getData().get("Date").toString();
+                                //getDate = (String) document.getData().get("Date");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(!isUnlisted){
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, resultLong));
+                                    trialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, resultLong));
                                 }
                                 dates.add(getDate);
 
                             }
                             trialArrayAdapter.notifyDataSetChanged();
-
-
                         }
 
                     }
-
                 });
 
         add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
@@ -189,7 +185,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         subscribed_users_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent searchIntent = new Intent(SubscribedExperimentActivity.this,
+                Intent searchIntent = new Intent(SubscribedNonNegativeExperimentActivity.this,
                         SearchableListActivity.class);
                 searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
                         SearchableList.SEARCH_USERS);
@@ -211,13 +207,13 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(SubscribedExperimentActivity.this,"Subscribed",Toast.LENGTH_LONG).show();
+                                Toast.makeText(SubscribedNonNegativeExperimentActivity.this,"Subscribed",Toast.LENGTH_LONG).show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(SubscribedExperimentActivity.this,"Not Subscribed",Toast.LENGTH_LONG).show();
+                                Toast.makeText(SubscribedNonNegativeExperimentActivity.this,"Not Subscribed",Toast.LENGTH_LONG).show();
                             }
                         });
                 subscribeButton.setEnabled(false);
@@ -260,7 +256,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
                 break;
             case R.id.nav_statistics:
                 if (trialArrayAdapter.getCount() == 0 || trialType.equals("Binomial")) {
-                    Toast.makeText(SubscribedExperimentActivity.this,
+                    Toast.makeText(SubscribedNonNegativeExperimentActivity.this,
                             "No stats available for this experiment", Toast.LENGTH_LONG).show();
                 } else {
                     Intent statsIntent = new Intent(getApplicationContext(), Statistics.class);
@@ -317,7 +313,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
 
     //add new trial
     private void addTrial() {
-        AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(SubscribedExperimentActivity.this);
+        AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(SubscribedNonNegativeExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
 
 
@@ -329,7 +325,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
-        Toast.makeText(SubscribedExperimentActivity.this, "Enter any integer", Toast.LENGTH_LONG).show();
+        Toast.makeText(SubscribedNonNegativeExperimentActivity.this, "Enter a double type", Toast.LENGTH_LONG).show();
         addTrialDialogButton.setEnabled(false);
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
@@ -355,7 +351,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         addTrialDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Long result = (Long) Long.valueOf(addTrialResult.getText().toString());
+                String result = addTrialResult.getText().toString();
                 String title = addTrialTitle.getText().toString();
                 // add to firebase
                 HashMap<String, Object> data = new HashMap<>();
@@ -370,16 +366,16 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                trialDataList.add(new CountTrial(trialId, title, result));
+                                trialDataList.add(new NonNegativeIntegerTrial(trialId, title, Long.valueOf(result)));
                                 trialArrayAdapter.notifyDataSetChanged();
-                                Toast.makeText(SubscribedExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
+                                Toast.makeText(SubscribedNonNegativeExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
                                 setDialog.dismiss();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(SubscribedExperimentActivity.this, "Trial not added", Toast.LENGTH_LONG).show();
+                                Toast.makeText(SubscribedNonNegativeExperimentActivity.this, "Trial not added", Toast.LENGTH_LONG).show();
                             }
                         });
 
@@ -387,6 +383,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
             }
         });
     }
+
 
 
 
@@ -399,7 +396,8 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String checkResult = addTrialResult.getText().toString();
             String checkTitle = addTrialTitle.getText().toString();
-            addTrialDialogButton.setEnabled((TextUtils.isDigitsOnly(checkResult))  && !checkTitle.isEmpty());
+            addTrialDialogButton.setEnabled(isPositive(checkResult)  && !checkTitle.isEmpty());
+
         }
 
         @Override
@@ -407,6 +405,24 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
 
         }
     };
+
+    @Override
+    public void onBackPressed() { }
+
+    /**
+     *  Checks if the input is a positive integer
+     * @param check
+     * @return Boolean(true or false)
+     *
+     */
+    private boolean isPositive(String check) {
+        try {
+            return Integer.parseInt(check) > 0;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
 
 }
 
