@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -399,7 +398,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 }
                 if(checkType.equals("Count-based")) {
                     Intent intent = new Intent(UserProfile.this, SubscribedCountExperimentActivity.class);
-                    intent.putExtra(SubscribedCountExperimentActivity.EXPERIMENT_ID_EXTRA,expId);
+                    intent.putExtra("experimentId",expId);
                     startActivity(intent);
                 }
                 if(checkType.equals("NonNegativeInteger")) {

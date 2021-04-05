@@ -42,7 +42,7 @@ public class Statistics extends AppCompatActivity {
     private int i;
 
     private Button doneButton;
-
+    private boolean subscribed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,9 @@ public class Statistics extends AppCompatActivity {
 
         Intent intent = getIntent();
         expId = intent.getStringExtra("expId");
+
+        subscribed = intent.getBooleanExtra("subscribed", false);
+
 
         meanView = (TextView) findViewById(R.id.mean_value);
 
@@ -366,11 +369,19 @@ public class Statistics extends AppCompatActivity {
         upperQuartileView.setText(String.format("%.2f", uq));
 
         //go back to experiment
+        Class next;
+        if (subscribed == true) {
+            next = SubscribedCountExperimentActivity.class;
+        }
+        else{
+            next = CountExperimentActivity.class;
+        }
+
         doneButton = (Button) findViewById(R.id.doneButton);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent doneIntent = new Intent(getApplicationContext(), CountExperimentActivity.class);
+                Intent doneIntent = new Intent(getApplicationContext(), next);
                 doneIntent.putExtra("experimentId", expId);
                 startActivity(doneIntent);
             }

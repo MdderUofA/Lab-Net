@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -32,9 +30,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -52,7 +48,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         NavigationView.OnNavigationItemSelectedListener {
 
 
-    public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
+   // public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
 
 
     private ListView trialList;
@@ -106,8 +102,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         //side menu
         setToolbar();
         deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        experimentId = getIntent().getStringExtra(EXPERIMENT_ID_EXTRA);
+        experimentId = getIntent().getStringExtra("experimentId");
 
         //count
         trialList = (ListView) findViewById(R.id.trial_list);
@@ -268,6 +263,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                     statsIntent.putExtra("trialDataList", (Serializable) trialDataList);
                     statsIntent.putExtra("check",0);
                     statsIntent.putExtra("expId", experimentId);
+                    statsIntent.putExtra("subscribed", true);
                     startActivity(statsIntent);
                 }
                 break;
