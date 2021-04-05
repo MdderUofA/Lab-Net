@@ -68,6 +68,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private ArrayAdapter<SubscribedExperiment> subscribedExperimentsAdapter;
     private TextView usernameTextView, firstNameTextView, lastNameTextView,emailTextView,phoneTextView;
 
+    private String status;
+
     // Make EditTexts in add Experiment global to ensure they aren't empty
 
     EditText expTitle, expDescription, expRegion, expMinTrials;
@@ -84,7 +86,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         Intent intent = getIntent();
         userId = intent.getStringExtra(UserProfile.USER_ID_EXTRA);
 
-
+        status = "open";
         documentReference = db.collection("UserProfile").document(userId);
 
         //user information variable
@@ -358,6 +360,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 data.put("TrialType",trialType);
                 data.put("Owner",userId);
                 data.put("EnableLocation", enableLocation);
+                data.put("Status", status);
 
                 experimentId = collectionReference.document().getId();
                 collectionReference.document(experimentId).set(data)
