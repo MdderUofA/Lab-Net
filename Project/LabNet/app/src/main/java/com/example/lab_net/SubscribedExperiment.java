@@ -4,11 +4,13 @@ public class SubscribedExperiment {
     private String id;
     private String title;
     private String subscriber;
+    private String TrialType;
 
-    public SubscribedExperiment(String id, String title, String subscriber) {
+    public SubscribedExperiment(String id, String title, String subscriber, String trialType) {
         this.id = id;
         this.title = title;
         this.subscriber = subscriber;
+        TrialType = trialType;
     }
 
     public String getId() {
@@ -33,5 +35,13 @@ public class SubscribedExperiment {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getTrialType() {
+        return TrialType;
+    }
+
+    public void setTrialType(String trialType) {
+        TrialType = trialType;
     }
 }

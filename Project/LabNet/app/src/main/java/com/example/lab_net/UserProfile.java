@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -49,8 +50,8 @@ import java.util.Map;
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String USER_ID_EXTRA = "com.example.lab_net.user_profile.user_id";
-
+    public static final  String USER_ID_EXTRA = "com.example.lab_net.user_profile.user_id";
+    private final String Tag = "Sample";
     private String userId,firstNameText,lastNameText,emailText,phoneText;
     private FirebaseFirestore db;
     private DocumentReference documentReference;
@@ -81,6 +82,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
         userId = intent.getStringExtra(UserProfile.USER_ID_EXTRA);
+
 
         documentReference = db.collection("UserProfile").document(userId);
 
@@ -160,8 +162,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                                 String id = document.getData().get("ExperimentId").toString();
                                 String title = document.getData().get("ExperimentTitle").toString();
                                 String subscriber = document.getData().get("Subscriber").toString();
+                                String type = document.getData().get("TrialType").toString();
                                 subscribedExperimentsDataList
-                                        .add(new SubscribedExperiment(id,title,subscriber));
+                                        .add(new SubscribedExperiment(id,title,subscriber,type));
                             }
                             subscribedExperimentsAdapter.notifyDataSetChanged();
                         }
@@ -383,14 +386,32 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
      * The view to display subscribed experiments in the User Profile.
      */
     private void subExpView() {
-        //change this to for each trialtype
         subExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SubscribedExperiment subsExp = subscribedExperimentsDataList.get(position);
-                Intent intent = new Intent(UserProfile.this,SubscribedExperimentActivity.class);
-                intent.putExtra(SubscribedExperimentActivity.EXPERIMENT_ID_EXTRA,subsExp.getId());
-                startActivity(intent);
+                String checkType = subsExp.getTrialType();
+                String expId = subsExp.getId();
+                if(checkType.equals("Binomial")){
+                    Intent intent = new Intent(UserProfile.this, SubscribedBinomialExperimentActivity.class);
+                    intent.putExtra(SubscribedBinomialExperimentActivity.EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
+                if(checkType.equals("Count-based")) {
+                    Intent intent = new Intent(UserProfile.this, SubscribedCountExperimentActivity.class);
+                    intent.putExtra(SubscribedCountExperimentActivity.EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
+                if(checkType.equals("NonNegativeInteger")) {
+                    Intent intent = new Intent(UserProfile.this, SubscribedNonNegativeExperimentActivity.class);
+                    intent.putExtra(SubscribedNonNegativeExperimentActivity.EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
+                if(checkType.equals("Measurement")) {
+                    Intent intent = new Intent(UserProfile.this, SubscribedMeasurementExperimentActivity.class);
+                    intent.putExtra(SubscribedMeasurementExperimentActivity.EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
             }
         });
     }
