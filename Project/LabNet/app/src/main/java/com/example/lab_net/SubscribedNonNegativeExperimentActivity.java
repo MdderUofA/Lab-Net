@@ -203,6 +203,7 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
                 data.put("ExperimentId",experimentId);
                 data.put("ExperimentTitle",experimentTitle);
                 data.put("Subscriber",deviceId);
+                data.put("TrialType",trialType);
                 db.collection("SubscribedExperiments").document().set(data)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -261,7 +262,7 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
                 } else {
                     Intent statsIntent = new Intent(getApplicationContext(), Statistics.class);
                     statsIntent.putExtra("trialDataList", (Serializable) trialDataList);
-                    statsIntent.putExtra("check",0);
+                    statsIntent.putExtra("check",2);
                     statsIntent.putExtra("expId", experimentId);
                     startActivity(statsIntent);
                 }

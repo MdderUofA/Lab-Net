@@ -207,6 +207,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                 data.put("ExperimentId",experimentId);
                 data.put("ExperimentTitle",experimentTitle);
                 data.put("Subscriber",deviceId);
+                data.put("TrialType",trialType);
                 db.collection("SubscribedExperiments").document().set(data)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override

@@ -529,7 +529,7 @@ public class SearchableList {
                 case("Count-based"):
                     return SubscribedCountExperimentActivity.class;
                 case("Binomial"):
-                    return SubscribedCountExperimentActivity.class;
+                    return SubscribedBinomialExperimentActivity.class;
                 case("Measurement"):
                     return SubscribedMeasurementExperimentActivity.class;
                 case("NonNegativeInteger"):
