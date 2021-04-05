@@ -70,7 +70,6 @@ public class plotLocActivity extends AppCompatActivity implements Serializable {
                     }
                 });
 
-
         Fragment fragment = new plotLocFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("latitude",latitude);

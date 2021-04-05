@@ -147,6 +147,10 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
                             }
                         });*/
 
+                Intent intent = new Intent();
+                intent.putExtra("latitude", trialLatitude);
+                intent.putExtra("longitude", trialLongitude);
+                setResult(2, intent);
                 finish();
             }
         });
