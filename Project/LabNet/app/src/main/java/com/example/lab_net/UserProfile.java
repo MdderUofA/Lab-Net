@@ -49,7 +49,7 @@ import java.util.Map;
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String USER_ID_EXTRA = "com.example.lab_net.user_profile.user_id";
+    public static final  String USER_ID_EXTRA = "com.example.lab_net.user_profile.user_id";
 
     private String userId,firstNameText,lastNameText,emailText,phoneText;
     private FirebaseFirestore db;
@@ -81,6 +81,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
         userId = intent.getStringExtra(UserProfile.USER_ID_EXTRA);
+
 
         documentReference = db.collection("UserProfile").document(userId);
 
