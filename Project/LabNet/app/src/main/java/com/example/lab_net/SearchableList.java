@@ -504,25 +504,17 @@ public class SearchableList {
         public void itemClicked(Searchable searchable) {
             SearchableExperiment experiment = (SearchableExperiment) searchable;
             SearchableDocumentReference ref = experiment.getDocumentReference();
-            DialogInterface.OnClickListener listener = (d, which) -> {
-                if(which == DialogInterface.BUTTON_POSITIVE) {
-                    // get our data.
-                    AppCompatActivity parentActivity = this.getAdapter()
-                            .getSearchableList().getParent();
-                    Class<? extends AppCompatActivity> target
-                            = this.getActivityFromType(experiment.getType());
 
-                    // go to the activity.
-                    Intent intent = new Intent(parentActivity, target);
-                    intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA,ref.getDocumentId());
-                    parentActivity.startActivity(intent);
-                }
-            };
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.getAdapter().getContext());
-            builder.setMessage("Subscribe to experiment?")
-                    .setPositiveButton("Yes",listener)
-                    .setNegativeButton("No",listener)
-                    .show();
+            // get our data.
+            AppCompatActivity parentActivity = this.getAdapter()
+                    .getSearchableList().getParent();
+            Class<? extends AppCompatActivity> target
+                    = this.getActivityFromType(experiment.getType());
+
+            // go to the activity.
+            Intent intent = new Intent(parentActivity, target);
+            intent.putExtra(ExperimentActivity.EXPERIMENT_ID_EXTRA,ref.getDocumentId());
+            parentActivity.startActivity(intent);
         }
 
         /**
