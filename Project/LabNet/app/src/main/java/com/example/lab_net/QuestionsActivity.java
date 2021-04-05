@@ -31,8 +31,8 @@ import java.util.HashMap;
 
 public class QuestionsActivity extends AppCompatActivity {
 
-    public static final String EXPERIMENT_ID_EXTRA =
-            "com.example.lab_net.questions_activity.experiment_id";
+    public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
+
 
     public static final String CHECK_EXTRA = "com.example.lab_net.questions_activity.check";
 
@@ -50,7 +50,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        experimentID = getIntent().getStringExtra(QuestionsActivity.EXPERIMENT_ID_EXTRA);
+        experimentID = getIntent().getStringExtra(EXPERIMENT_ID_EXTRA);
         String check = getIntent().getStringExtra(QuestionsActivity.CHECK_EXTRA);
 
         Button addQuestion = findViewById(R.id.addQuestionButton);

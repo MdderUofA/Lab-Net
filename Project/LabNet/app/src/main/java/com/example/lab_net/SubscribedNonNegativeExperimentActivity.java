@@ -273,8 +273,8 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
                 break;
             case R.id.nav_qa:
                 Intent qaIntent = new Intent(getApplicationContext(), QuestionsActivity.class);
-                qaIntent.putExtra("check", "OwnerActivity");
-                qaIntent.putExtra("experimentID", experimentId);
+                qaIntent.putExtra("check", "SubscriberActivity");
+                qaIntent.putExtra(EXPERIMENT_ID_EXTRA, experimentId);
                 startActivity(qaIntent);
                 break;
         }
