@@ -261,6 +261,11 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
                     startActivity(intent);
                 }
                 break;
+            case R.id.nav_locationPlot:
+                Intent locationIntent = new Intent(getApplicationContext(), plotLocActivity.class);
+                locationIntent.putExtra("ExperimentId", experimentId);
+                startActivity(locationIntent);
+                break;
             case R.id.nav_qa:
                 Intent qaIntent = new Intent(getApplicationContext(), QuestionsActivity.class);
                 qaIntent.putExtra("check", "OwnerActivity");
