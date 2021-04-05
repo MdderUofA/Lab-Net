@@ -79,6 +79,12 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
     EditText addTrialTitle, addTrialResult;
 
+    //location
+    private Double trialLatitude;
+    private Double trialLongitude;
+    private String isLocationEnabled;
+
+
     //side menu
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -133,6 +139,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                         owner = documentSnapshot.getData().get("Owner").toString();
                         //get trialtype to make respective dialog box appear
                         trialType = documentSnapshot.getData().get("TrialType").toString();
+                        isLocationEnabled = documentSnapshot.getData().get("EnableLocation").toString();
 
                         // set textviews in experiment_owner_activity to experiment details
                         experiment_title.setText(experimentTitle);
@@ -308,7 +315,32 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
     private void getLocation(String trialId) {
         Intent sendTrialId = new Intent(this, MapActivity.class);
         sendTrialId.putExtra("trialId", trialId);
-        startActivity(sendTrialId);
+        startActivityForResult(sendTrialId, 2);
+    }
+
+    private boolean checkLocationReq(){
+        if (isLocationEnabled.equalsIgnoreCase("No")){
+            return true;
+        } else {
+            if ((trialLatitude == null) || (trialLongitude) == null){
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==2)
+        {
+            trialLatitude = data.getDoubleExtra("latitude", 0);
+            trialLongitude = data.getDoubleExtra("longitude", 0);
+
+        }
     }
 
 
@@ -341,13 +373,13 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         formattedDate = simpleDateFormat.format(date);
         dates.add(formattedDate);
 
-/*        Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
+        Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
         getLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getLocation(trialId);
             }
-        });*/
+        });
 
         addTrialDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -361,6 +393,8 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                 data.put("ExperimentId", experimentId);
                 data.put("Date", formattedDate);
                 data.put("isUnlisted", false);
+                data.put("Lat", trialLatitude);
+                data.put("Long", trialLongitude);
                 collectionReference
                         .document(trialId)
                         .set(data)
@@ -396,7 +430,10 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String checkResult = addTrialResult.getText().toString();
             String checkTitle = addTrialTitle.getText().toString();
-            addTrialDialogButton.setEnabled((TextUtils.isDigitsOnly(checkResult))  && !checkTitle.isEmpty() && !checkResult.isEmpty());
+            addTrialDialogButton.setEnabled((TextUtils.isDigitsOnly(checkResult))
+                    && !checkTitle.isEmpty()
+                    && !checkResult.isEmpty()
+                    && (checkLocationReq() == true));
         }
 
         @Override
