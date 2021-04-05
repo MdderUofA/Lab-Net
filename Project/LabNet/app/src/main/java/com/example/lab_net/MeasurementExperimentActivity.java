@@ -260,7 +260,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             case R.id.nav_qa:
                 Intent qaIntent = new Intent(getApplicationContext(), QuestionsActivity.class);
                 qaIntent.putExtra("check", "OwnerActivity");
-                qaIntent.putExtra("experimentID", experimentId);
+                qaIntent.putExtra(EXPERIMENT_ID_EXTRA, experimentId);
                 startActivity(qaIntent);
                 break;
             case R.id.nav_completeExp:
