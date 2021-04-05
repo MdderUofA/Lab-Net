@@ -151,6 +151,8 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
                 intent.putExtra("latitude", trialLatitude);
                 intent.putExtra("longitude", trialLongitude);
                 setResult(2, intent);
+                Log.d(TAG, "onClick: LAT SENT " + trialLatitude);
+                Log.d(TAG, "onClick: LONG SENT " + trialLongitude);
                 finish();
             }
         });

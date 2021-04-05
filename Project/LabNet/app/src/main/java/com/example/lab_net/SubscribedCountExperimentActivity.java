@@ -7,6 +7,7 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -49,6 +50,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
 
     public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
+    private static final String TAG = "TESTING";
 
 
     private ListView trialList;
@@ -83,6 +85,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
     private Double trialLatitude;
     private Double trialLongitude;
     private String isLocationEnabled;
+    private Boolean trialButtonEnabled = false;
 
 
     //side menu
@@ -122,6 +125,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         experiment_title = findViewById(R.id.experimentTitle);
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
+        addTrialDialogButton.setEnabled(false);
 
         checksubscription();
 
@@ -277,6 +281,12 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
             case R.id.nav_graphs:
                 //TODO
                 break;
+            case R.id.nav_locationPlot:
+                Intent locationIntent = new Intent(getApplicationContext(), plotLocActivity.class);
+                locationIntent.putExtra("ExperimentId", experimentId);
+                startActivity(locationIntent);
+                break;
+
             case R.id.nav_qa:
                 Intent qaIntent = new Intent(getApplicationContext(), QuestionsActivity.class);
                 qaIntent.putExtra("check", "SubscriberActivity");
@@ -318,17 +328,23 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         startActivityForResult(sendTrialId, 2);
     }
 
-    private boolean checkLocationReq(){
+    private void checkLocationReq(){
+        Log.d(TAG, "checkLocationReq: ISLOCATIONENABLED " + isLocationEnabled);
+        Log.d(TAG, "checkLocationReq: Latitude " + trialLatitude);
+        Log.d(TAG, "checkLocationReq: Longitude " + trialLatitude);
+
         if (isLocationEnabled.equalsIgnoreCase("No")){
-            return true;
+            //add_trial_button.setEnabled(true);
+            trialButtonEnabled = true;
         } else {
             if ((trialLatitude == null) || (trialLongitude) == null){
-                return false;
+                trialButtonEnabled = false;
+                addTrialDialogButton.setEnabled(false);
             } else {
-                return true;
+                trialButtonEnabled = true;
+                addTrialDialogButton.setEnabled(true);
             }
         }
-
     }
 
     @Override
@@ -339,8 +355,10 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         {
             trialLatitude = data.getDoubleExtra("latitude", 0);
             trialLongitude = data.getDoubleExtra("longitude", 0);
-
+            Log.d(TAG, "onActivityResult: LAT RECIEVED " + trialLatitude);
+            Log.d(TAG, "onActivityResult: LONG RECIEVED " + trialLongitude);
         }
+        checkLocationReq();
     }
 
 
@@ -359,7 +377,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         Toast.makeText(SubscribedCountExperimentActivity.this, "Enter any integer", Toast.LENGTH_LONG).show();
-        addTrialDialogButton.setEnabled(false);
+
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
         addTrialResult.addTextChangedListener(addTextWatcher);
@@ -393,8 +411,13 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                 data.put("ExperimentId", experimentId);
                 data.put("Date", formattedDate);
                 data.put("isUnlisted", false);
-                data.put("Lat", trialLatitude);
-                data.put("Long", trialLongitude);
+                if ((trialLatitude != null) && (trialLongitude != null)){
+                    if ((trialLatitude != 0) && (trialLongitude != 0)){
+                        data.put("Lat", trialLatitude);
+                        data.put("Long", trialLongitude);
+                    }
+                }
+
                 collectionReference
                         .document(trialId)
                         .set(data)
@@ -430,9 +453,13 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String checkResult = addTrialResult.getText().toString();
             String checkTitle = addTrialTitle.getText().toString();
+
+            checkLocationReq();
+            if (trialButtonEnabled){
             addTrialDialogButton.setEnabled((TextUtils.isDigitsOnly(checkResult))
                     && !checkTitle.isEmpty()
                     && !checkResult.isEmpty());
+            }
         }
 
         @Override
