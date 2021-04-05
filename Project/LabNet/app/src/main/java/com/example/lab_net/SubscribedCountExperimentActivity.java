@@ -432,8 +432,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
             String checkTitle = addTrialTitle.getText().toString();
             addTrialDialogButton.setEnabled((TextUtils.isDigitsOnly(checkResult))
                     && !checkTitle.isEmpty()
-                    && !checkResult.isEmpty()
-                    && (checkLocationReq() == true));
+                    && !checkResult.isEmpty());
         }
 
         @Override
