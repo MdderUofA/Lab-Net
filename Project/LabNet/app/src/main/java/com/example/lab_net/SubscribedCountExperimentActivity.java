@@ -102,6 +102,8 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
     SimpleDateFormat simpleDateFormat;
     String getDate;
 
+    String status;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +146,6 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                         //get trialtype to make respective dialog box appear
                         trialType = documentSnapshot.getData().get("TrialType").toString();
                         isLocationEnabled = documentSnapshot.getData().get("EnableLocation").toString();
-
                         // set textviews in experiment_owner_activity to experiment details
                         experiment_title.setText(experimentTitle);
                         experiment_description.setText("Description: " + experimentDescription);
