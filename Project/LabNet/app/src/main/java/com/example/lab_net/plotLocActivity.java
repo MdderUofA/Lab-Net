@@ -28,7 +28,6 @@ public class plotLocActivity extends AppCompatActivity implements Serializable {
     private ArrayList<Double> longitude = new ArrayList<>();
     private ArrayList<String> trialName = new ArrayList<>();
     private String experimentId;
-    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,42 +38,9 @@ public class plotLocActivity extends AppCompatActivity implements Serializable {
         experimentId = intent.getStringExtra("ExperimentId");
         Log.d(TAG, "onCreate: EXPERIMENTID " + experimentId);
 
-        db = FirebaseFirestore.getInstance();
-
-        CollectionReference collectionReference = db.collection("Trials");
-
-        collectionReference.whereEqualTo("ExperimentId", experimentId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    private static final String TAG = "Error";
-
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                latitude.add((Double)document.getData().get("Lat"));
-                                longitude.add((Double)document.getData().get("Long"));
-                                trialName.add(document.getData().get("Title").toString());
-                                Log.d(TAG, "onComplete: " + document.getData().get("Lat"));
-                                Log.d(TAG, "onComplete: " + document.getData().get("Long"));
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-
-                        if (latitude.get(0) == null || longitude.get(0) == null){
-                            Toast.makeText(plotLocActivity.this, "No geolocations available", Toast.LENGTH_LONG).show();
-                            finish();
-                        }
-
-                    }
-                });
-
         Fragment fragment = new plotLocFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("latitude",latitude);
-        bundle.putSerializable("longitude", longitude);
-        bundle.putSerializable("trialName", trialName);
+        bundle.putString("experimentId", experimentId);
 
         fragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.map_layout_PL,fragment).commit();
