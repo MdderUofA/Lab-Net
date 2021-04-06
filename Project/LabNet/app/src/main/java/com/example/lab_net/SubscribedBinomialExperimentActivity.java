@@ -7,6 +7,7 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -52,6 +53,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
         NavigationView.OnNavigationItemSelectedListener {
 
     public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
+    private static final String TAG = "TESTING";
 
 
     private ListView trialList;
@@ -81,6 +83,13 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
     List<Long> resultList = new ArrayList<Long>();
 
     EditText addTrialTitle, addTrialResult;
+
+    //location
+    private Double trialLatitude;
+    private Double trialLongitude;
+    private String isLocationEnabled;
+    private Boolean trialButtonEnabled = false;
+
 
     //side menu
     DrawerLayout drawerLayout;
@@ -123,6 +132,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
 
+
         checksubscription();
 
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
@@ -140,6 +150,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                         //get trialtype to make respective dialog box appear
                         trialType = documentSnapshot.getData().get("TrialType").toString();
                         status = documentSnapshot.getData().get("Status").toString();
+                        isLocationEnabled = documentSnapshot.getData().get("EnableLocation").toString();
 
                         // set textviews in experiment_owner_activity to experiment details
                         experiment_title.setText(experimentTitle);
@@ -276,6 +287,11 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
             case R.id.nav_graphs:
                 //TODO
                 break;
+            case R.id.nav_locationPlot:
+                Intent locationIntent = new Intent(getApplicationContext(), plotLocActivity.class);
+                locationIntent.putExtra("ExperimentId", experimentId);
+                startActivity(locationIntent);
+                break;
             case R.id.nav_qa:
                 Intent qaIntent = new Intent(getApplicationContext(), QuestionsActivity.class);
                 qaIntent.putExtra("check", "SubscriberActivity");
@@ -322,7 +338,40 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
     private void getLocation(String trialId) {
         Intent sendTrialId = new Intent(this, MapActivity.class);
         sendTrialId.putExtra("trialId", trialId);
-        startActivity(sendTrialId);
+        startActivityForResult(sendTrialId, 2);
+    }
+
+    private void checkLocationReq(){
+        Log.d(TAG, "checkLocationReq: ISLOCATIONENABLED " + isLocationEnabled);
+        Log.d(TAG, "checkLocationReq: Latitude " + trialLatitude);
+        Log.d(TAG, "checkLocationReq: Longitude " + trialLatitude);
+
+        if (isLocationEnabled.equalsIgnoreCase("No")){
+            //add_trial_button.setEnabled(true);
+            trialButtonEnabled = true;
+        } else {
+            if ((trialLatitude == null) || (trialLongitude) == null){
+                trialButtonEnabled = false;
+                addTrialDialogButton.setEnabled(false);
+            } else {
+                trialButtonEnabled = true;
+                addTrialDialogButton.setEnabled(true);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==2)
+        {
+            trialLatitude = data.getDoubleExtra("latitude", 0);
+            trialLongitude = data.getDoubleExtra("longitude", 0);
+            Log.d(TAG, "onActivityResult: LAT RECIEVED " + trialLatitude);
+            Log.d(TAG, "onActivityResult: LONG RECIEVED " + trialLongitude);
+        }
+        checkLocationReq();
     }
 
 
@@ -341,7 +390,9 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         Toast.makeText(SubscribedBinomialExperimentActivity.this, "Enter a pass or fail", Toast.LENGTH_LONG).show();
-        addTrialDialogButton.setEnabled(false);
+        if (!trialButtonEnabled){
+            addTrialDialogButton.setEnabled(false);
+        }
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
         addTrialResult.addTextChangedListener(addTextWatcher);
@@ -355,13 +406,13 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
         formattedDate = simpleDateFormat.format(date);
         dates.add(formattedDate);
 
-/*        Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
+        Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
         getLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getLocation(trialId);
             }
-        });*/
+        });
 
         addTrialDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -375,6 +426,12 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                 data.put("ExperimentId", experimentId);
                 data.put("Date", formattedDate);
                 data.put("isUnlisted", false);
+                if ((trialLatitude != null) && (trialLongitude != null)){
+                    if ((trialLatitude != 0) && (trialLongitude != 0)){
+                        data.put("Lat", trialLatitude);
+                        data.put("Long", trialLongitude);
+                    }
+                }
                 collectionReference
                         .document(trialId)
                         .set(data)
@@ -407,7 +464,12 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String checkResult = addTrialResult.getText().toString();
             String checkTitle = addTrialTitle.getText().toString();
-            addTrialDialogButton.setEnabled(checkResult.toLowerCase().equals("pass") || checkResult.toLowerCase().equals("fail") && !checkTitle.isEmpty());
+
+            checkLocationReq();
+            if (trialButtonEnabled){
+                addTrialDialogButton.setEnabled(checkResult.toLowerCase().equals("pass") || checkResult.toLowerCase().equals("fail") && !checkTitle.isEmpty());
+            }
+
         }
 
         @Override
