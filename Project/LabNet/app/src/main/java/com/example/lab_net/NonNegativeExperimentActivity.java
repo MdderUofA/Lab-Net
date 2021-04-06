@@ -90,6 +90,8 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
     Boolean isUnlisted;
     private ArrayList<String> dates;
 
+    private String status;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +131,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
                         experimentDescription = documentSnapshot.getData().get("Description").toString();
                         experimentRegion = documentSnapshot.getData().get("Region").toString();
                         owner = documentSnapshot.getData().get("Owner").toString();
-
+                        status = documentSnapshot.getData().get("Status").toString();
                         //get trialtype to make respective dialog box appear
                         trialType = documentSnapshot.getData().get("TrialType").toString();
 
@@ -273,7 +275,38 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
                 startActivity(qaIntent);
                 break;
             case R.id.nav_endExp:
-                //TODO
+                Toast.makeText(this, "Experiment already " + status, Toast.LENGTH_LONG).show();
+                if(status.equals("open")) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(NonNegativeExperimentActivity.this);
+                    alert.setTitle("Alert");
+                    alert.setMessage("Confirm end Experiment?");
+                    alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            status = "closed";
+                            DocumentReference updateExperimentDoc = db.collection("Experiments").document(experimentId);
+                            updateExperimentDoc.update("Status", status).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(NonNegativeExperimentActivity.this, "Experiment Ended", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(NonNegativeExperimentActivity.this, "Experiment not Ended", Toast.LENGTH_LONG).show();
+                                    }
+
+                                }
+                            });
+                            dialog.dismiss();
+                        }
+                    });
+                    alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alert.show();
+                }
                 break;
             case R.id.nav_deleteExp:
                 deleteExperiment();

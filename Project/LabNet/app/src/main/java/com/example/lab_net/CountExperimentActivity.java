@@ -294,7 +294,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 if(status.equals("open")) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(CountExperimentActivity.this);
                     alert.setTitle("Alert");
-                    alert.setMessage("Confirm end experiment?");
+                    alert.setMessage("Confirm end Experiment?");
                     alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -304,9 +304,9 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(CountExperimentActivity.this, "Experiment ended", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(CountExperimentActivity.this, "Experiment Ended", Toast.LENGTH_LONG).show();
                                     } else {
-                                        Toast.makeText(CountExperimentActivity.this, "experiment not ended", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(CountExperimentActivity.this, "Experiment already Ended", Toast.LENGTH_LONG).show();
                                     }
 
                                 }
