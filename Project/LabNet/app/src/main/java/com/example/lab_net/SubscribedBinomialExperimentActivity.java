@@ -72,7 +72,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
 
     // Experiment
     Experiment experiment;
-    String experimentId, experimentTitle, experimentDescription, experimentRegion, trialType;
+    String experimentId, experimentTitle, experimentDescription, experimentRegion, trialType, status;
 
     FirebaseFirestore db;
     Button add_trial_button;
@@ -139,6 +139,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                         owner = documentSnapshot.getData().get("Owner").toString();
                         //get trialtype to make respective dialog box appear
                         trialType = documentSnapshot.getData().get("TrialType").toString();
+                        status = documentSnapshot.getData().get("Status").toString();
 
                         // set textviews in experiment_owner_activity to experiment details
                         experiment_title.setText(experimentTitle);
@@ -158,8 +159,8 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 trialId = document.getId();
-                                trialTitle = document.getData().get("Title").toString();
-                                trialType = document.getData().get("Title").toString();
+                                trialTitle = document.getData().get("Title").toString();/*
+                                trialType = document.getData().get("Title").toString();*/
                                 resultLong = (String) document.getData().get("Result");
                                 //getDate = (String) document.getData().get("Date");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
@@ -174,6 +175,8 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
 
                     }
                 });
+
+        checkExperimentEnded();
 
         add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
         add_trial_button.setOnClickListener(new View.OnClickListener() {
@@ -281,6 +284,14 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                 break;
         }
         return true;
+    }
+
+    private void checkExperimentEnded() {
+        if (status.equals("closed")) {
+            add_trial_button.setEnabled(false);
+            subscribeButton.setEnabled(false);
+            Toast.makeText(this, "This experiment has ended", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void checksubscription() {

@@ -69,7 +69,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
     // Experiment
     Experiment experiment;
-    String experimentId, experimentTitle, experimentDescription, experimentRegion, trialType;
+    String experimentId, experimentTitle, experimentDescription, experimentRegion, trialType, status;
 
     FirebaseFirestore db;
     Button add_trial_button;
@@ -123,7 +123,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
 
-        checksubscription();
+        checkSubscription();
 
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
@@ -140,6 +140,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                         //get trialtype to make respective dialog box appear
                         trialType = documentSnapshot.getData().get("TrialType").toString();
                         isLocationEnabled = documentSnapshot.getData().get("EnableLocation").toString();
+                        status = documentSnapshot.getData().get("Status").toString();
 
                         // set textviews in experiment_owner_activity to experiment details
                         experiment_title.setText(experimentTitle);
@@ -159,8 +160,8 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 trialId = document.getId();
-                                trialTitle = document.getData().get("Title").toString();
-                                trialType = document.getData().get("Title").toString();
+                                trialTitle = document.getData().get("Title").toString();/*
+                                trialType = document.getData().get("Title").toString();*/
                                 resultLong = (Long) document.getData().get("Result");
                                 //getDate = document.getData().get("Date").toString();
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
@@ -178,6 +179,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                     }
 
                 });
+        checkExperimentEnded();
 
         add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
         add_trial_button.setOnClickListener(new View.OnClickListener() {
@@ -287,7 +289,15 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         return true;
     }
 
-    private void checksubscription() {
+    private void checkExperimentEnded() {
+        if (status.equals("closed")) {
+            add_trial_button.setEnabled(false);
+            subscribeButton.setEnabled(false);
+            Toast.makeText(this, "This experiment has ended", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void checkSubscription() {
         db.collection("SubscribedExperiments")
                 .whereEqualTo("ExperimentId",experimentId)
                 .get()
