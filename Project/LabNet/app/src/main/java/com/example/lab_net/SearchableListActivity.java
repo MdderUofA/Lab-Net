@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,10 +49,16 @@ public class SearchableListActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(searchText.getWindowToken(), 0);
 
             this.searchableList.performSearch(this.searchText.getText().toString());
+
+            Toast.makeText(this.listView.getContext(),
+                    "Searching...",
+                    Toast.LENGTH_SHORT)
+                    .show();
         });
 
         int filters = getIntent().getIntExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
                     SearchableList.SEARCH_ALL);
         this.searchableList.setSearchFilters(filters);
+        this.searchableList.performSearch(""); // populate the list
     }
 }

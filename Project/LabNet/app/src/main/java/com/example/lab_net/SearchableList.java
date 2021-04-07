@@ -103,10 +103,6 @@ public class SearchableList {
         ArrayList<String> keywords = new ArrayList<>();
         keywords.addAll(list);
 
-        Toast.makeText(this.listView.getContext(),
-                "Searching...",
-                Toast.LENGTH_SHORT)
-                .show();
         final SearchProgressListener listener =
                 new SearchProgressListener(this.getNumQueries()) {
             @Override
