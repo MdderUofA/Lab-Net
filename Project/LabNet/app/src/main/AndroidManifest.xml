@@ -45,6 +45,7 @@
         <activity android:name=".AnswersActivity" />
         <activity android:name=".QuestionsActivity" />
         <activity android:name=".SearchableListActivity" />
+        <activity android:name=".QRScanner" />
     </application>
 
 </manifest>

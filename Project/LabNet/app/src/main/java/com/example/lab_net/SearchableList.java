@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A utility class which will allows a list to be referenced and fed results from a database query.
+ * @author Marcus
  */
 public class SearchableList {
 

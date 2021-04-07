@@ -143,9 +143,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 addExpDialog();
                 break;
             case R.id.qrButton:
-                //TODO
-                //startActivity(new Intent());
-                //should it just lead to camera/scanner?
+                startActivity(new Intent(this, QRScanner.class));
                 break;
 
         }
