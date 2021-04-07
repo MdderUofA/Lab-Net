@@ -47,7 +47,7 @@ import java.util.Locale;
 public class CountExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    private ListView trialList, ignoredTrialList;
+    private ListView trialList, ignoredTrialList, subUsersList;
     public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
 
 
@@ -86,6 +86,12 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
+
+    Button subscribed_users_button;
+    private String subUserId;
+    private ArrayList<String> subUsersDataList;
+    private ArrayAdapter<String> subUsersArrayAdapter;
+
 
     // date
     private ArrayList<String> dates;
@@ -188,6 +194,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
                 });
 
+
         //delete trials
 
         trialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -220,6 +227,24 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 addTrial();
             }
         });
+
+        subscribed_users_button = (Button) findViewById(R.id.subscribedUsersBrowseButton);
+        subscribed_users_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent searchIntent = new Intent(CountExperimentActivity.this,
+                        SearchableListActivity.class);
+                searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
+                        SearchableList.SEARCH_USERS);
+                startActivity(searchIntent);
+            }
+        });
+
+        subUsersList = (ListView) findViewById(R.id.subscribed_Users_list);
+        subUsersDataList = new ArrayList<>();
+        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersDataList);
+        subUsersList.setAdapter(subUsersArrayAdapter);
+        getSubscribedUsers();
 
     }
 
@@ -329,6 +354,38 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 break;
         }
         return true;
+    }
+
+    //get subscribed users
+    private void getSubscribedUsers(){
+        db.collection("SubscribedExperiments").whereEqualTo("ExperimentId", experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                subUserId = document.getData().get("Subscriber").toString();
+                                subUsersDataList.add(subUserId);
+                            }
+                            subUsersArrayAdapter.notifyDataSetChanged();
+
+                        }
+
+                    }
+
+                });
+
+        subUsersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String subscriber = subUsersDataList.get(position);
+                Intent intent = new Intent(CountExperimentActivity.this, SubscribedUserActivity.class);
+                intent.putExtra(UserProfile.USER_ID_EXTRA, subscriber);
+                startActivity(intent);
+
+            }
+        });
     }
 
     //edit experiment info
@@ -572,6 +629,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 });
 
     }
+
     private void moveTrial(int position) {
         CountTrial trial = ignoredTrialDataList.get(position);
         //isUnlisted = true;
@@ -644,6 +702,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 });
 
     }
+
     private TextWatcher addTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {

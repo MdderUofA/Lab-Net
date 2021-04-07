@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -32,9 +30,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -96,6 +92,10 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
 
     Button subscribed_users_button;
     Button subscribeButton;
+    private String subUserId;
+    private ListView subUsersList;
+    private ArrayList<String> subUsersDataList;
+    private ArrayAdapter<String> subUsersArrayAdapter;
 
     Date date;
     String formattedDate;
@@ -202,6 +202,12 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
             }
         });
 
+        subUsersList = (ListView) findViewById(R.id.subscribed_Users_list);
+        subUsersDataList = new ArrayList<>();
+        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersDataList);
+        subUsersList.setAdapter(subUsersArrayAdapter);
+        getSubscribedUsers();
+
         //check if user already subscribed, button grey out
         //otherwise give option to subscribe
         subscribeButton = (Button) findViewById(R.id.subscribeButton);
@@ -278,7 +284,15 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                 }
                 break;
             case R.id.nav_graphs:
-                //TODO
+                if (trialArrayAdapter.getCount() == 0) {
+                    Toast.makeText(SubscribedMeasurementExperimentActivity.this, "No Histograms available for this experiment", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), Histogram.class);
+                    intent.putExtra("trialDataList", (Serializable) trialDataList);
+                    intent.putExtra("ExperimentId", experimentId);
+                    intent.putExtra("check", 3);
+                    startActivity(intent);
+                }
                 break;
             case R.id.nav_locationPlot:
                 Intent locationIntent = new Intent(getApplicationContext(), plotLocActivity.class);
@@ -294,6 +308,37 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                 break;
         }
         return true;
+    }
+
+    private void getSubscribedUsers(){
+        db.collection("SubscribedExperiments").whereEqualTo("ExperimentId", experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                subUserId = document.getData().get("Subscriber").toString();
+                                subUsersDataList.add(subUserId);
+                            }
+                            subUsersArrayAdapter.notifyDataSetChanged();
+
+                        }
+
+                    }
+
+                });
+
+        subUsersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String subscriber = subUsersDataList.get(position);
+                Intent intent = new Intent(SubscribedMeasurementExperimentActivity.this, SubscribedUserActivity.class);
+                intent.putExtra(UserProfile.USER_ID_EXTRA, subscriber);
+                startActivity(intent);
+
+            }
+        });
     }
 
     private void checksubscription() {

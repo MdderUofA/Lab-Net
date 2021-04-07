@@ -31,7 +31,7 @@
                 <item
                     android:id="@+id/nav_locationPlot"
                     android:title="Geolocation Plot"
-                    android:icon="@drawable/ic_graphs"/>
+                    android:icon="@drawable/ic_location"/>
 
                 <item
                     android:id="@+id/nav_qa"

@@ -93,6 +93,10 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
     Toolbar toolbar;
 
     Button subscribed_users_button;
+    private String subUserId;
+    private ListView subUsersList;
+    private ArrayList<String> subUsersDataList;
+    private ArrayAdapter<String> subUsersArrayAdapter;
 
 
     @Override
@@ -205,6 +209,11 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
             }
         });
 
+        subUsersList = (ListView) findViewById(R.id.subscribed_Users_list);
+        subUsersDataList = new ArrayList<>();
+        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersDataList);
+        subUsersList.setAdapter(subUsersArrayAdapter);
+        getSubscribedUsers();
 
 
     }
@@ -277,6 +286,37 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
                 break;
         }
         return true;
+    }
+
+    private void getSubscribedUsers(){
+        db.collection("SubscribedExperiments").whereEqualTo("ExperimentId", experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                subUserId = document.getData().get("Subscriber").toString();
+                                subUsersDataList.add(subUserId);
+                            }
+                            subUsersArrayAdapter.notifyDataSetChanged();
+
+                        }
+
+                    }
+
+                });
+
+        subUsersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String subscriber = subUsersDataList.get(position);
+                Intent intent = new Intent(ExperimentActivity.this, SubscribedUserActivity.class);
+                intent.putExtra(UserProfile.USER_ID_EXTRA, subscriber);
+                startActivity(intent);
+
+            }
+        });
     }
 
     private void editExperiment() {
