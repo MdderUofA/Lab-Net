@@ -523,5 +523,8 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
         }
     };
 
+    @Override
+    public void onBackPressed() { }
+
 }
 

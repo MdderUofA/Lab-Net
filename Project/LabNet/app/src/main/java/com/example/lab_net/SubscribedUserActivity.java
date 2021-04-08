@@ -2,6 +2,7 @@ package com.example.lab_net;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,8 +26,7 @@ import java.util.ArrayList;
 public class SubscribedUserActivity extends AppCompatActivity {
 
     public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
-
-    public static final  String USER_ID_EXTRA = "com.example.lab_net.user_profile.user_id";
+    public static final String USER_ID_EXTRA = "com.example.lab_net.user_profile.user_id";
     private final String Tag = "Sample";
     private String userId,firstNameText,lastNameText,emailText,phoneText;
     private FirebaseFirestore db;
@@ -42,6 +42,7 @@ public class SubscribedUserActivity extends AppCompatActivity {
     private TextView usernameTextView, firstNameTextView, lastNameTextView,emailTextView,phoneTextView;
 
     private String status;
+    private String deviceId;
 
     String experimentTrialType;
 
@@ -81,6 +82,7 @@ public class SubscribedUserActivity extends AppCompatActivity {
         getSubscribedExperiments();
         subExpView();
         myExpView();
+        deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         //initialize button
         returnToSearch = (Button)findViewById(R.id.returnToSearchButton);
@@ -88,9 +90,10 @@ public class SubscribedUserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent searchIntent = new Intent(SubscribedUserActivity.this,
-                        SearchableListActivity.class);
+                        UserProfile.class);
                 searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
                         SearchableList.SEARCH_USERS);
+                searchIntent.putExtra(USER_ID_EXTRA, deviceId);
                 startActivity(searchIntent);
             }
         });
@@ -214,6 +217,7 @@ public class SubscribedUserActivity extends AppCompatActivity {
         });
     }
 
+
     /**
      * The view to display user created experiments in the User Profile.
      */
@@ -225,23 +229,23 @@ public class SubscribedUserActivity extends AppCompatActivity {
                     experimentTrialType = experiment.getTrialType();
                     // add condition to check trial type
                     if(experimentTrialType.equals("Binomial")){
-                        Intent intent = new Intent(SubscribedUserActivity.this, BinomialExperimentActivity.class);
+                        Intent intent = new Intent(SubscribedUserActivity.this, SubscribedBinomialExperimentActivity.class);
                         intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
                         startActivity(intent);
                     }
                     if(experimentTrialType.equals("Count-based")) {
-                        Intent intent = new Intent(SubscribedUserActivity.this, CountExperimentActivity.class);
+                        Intent intent = new Intent(SubscribedUserActivity.this, SubscribedCountExperimentActivity.class);
                         intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
                         startActivity(intent);
                     }
                     if(experimentTrialType.equals("NonNegativeInteger")) {
-                        Intent intent = new Intent(SubscribedUserActivity.this, NonNegativeExperimentActivity.class);
+                        Intent intent = new Intent(SubscribedUserActivity.this, SubscribedNonNegativeExperimentActivity.class);
                         //intent.putExtra("experimentId", experiment.getExperimentId());
                         intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
                         startActivity(intent);
                     }
                     if(experimentTrialType.equals("Measurement")) {
-                        Intent intent = new Intent(SubscribedUserActivity.this, MeasurementExperimentActivity.class);
+                        Intent intent = new Intent(SubscribedUserActivity.this, SubscribedMeasurementExperimentActivity.class);
                         //intent.putExtra("experimentId", experiment.getExperimentId());
                         intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
                         startActivity(intent);

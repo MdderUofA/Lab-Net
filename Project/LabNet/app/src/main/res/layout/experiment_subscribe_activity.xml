@@ -236,7 +236,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:text="Subscribe"
-            app:backgroundTint="#DFC7C1"
+            app:backgroundTint="@color/app_teal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

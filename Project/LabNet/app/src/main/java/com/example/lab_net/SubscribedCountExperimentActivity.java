@@ -536,6 +536,9 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
         }
     };
+    @Override
+    public void onBackPressed() { }
+
 
 }
 
