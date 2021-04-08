@@ -399,6 +399,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
                     startActivity(intent);
                 }
+
                 if(checkType.equals("Count-based")) {
                     Intent intent = new Intent(UserProfile.this, SubscribedCountExperimentActivity.class);
                     //intent.putExtra("experimentId",expId);
