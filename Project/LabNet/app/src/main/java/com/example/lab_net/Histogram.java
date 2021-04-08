@@ -1,13 +1,15 @@
 package com.example.lab_net;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -15,7 +17,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ public class Histogram extends AppCompatActivity {
     private ArrayList <MeasurementTrial> measurementTrials;
     private ArrayList <BinomialTrial> binomialTrials;
     private ArrayList<Double> frequency;
+
+    TextView xAxisTitle, yAxisTitle;
     private int i;
     int checkActivity;
     float j;
@@ -43,6 +47,10 @@ public class Histogram extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_histogram);
+
+         xAxisTitle = (TextView)findViewById(R.id.xAxisTitle);
+         yAxisTitle = (TextView)findViewById(R.id.tyAxisTitle);
+
         Intent intent = getIntent();
         checkActivity = intent.getExtras().getInt("check");
         if(checkActivity == 0){
@@ -138,6 +146,7 @@ public class Histogram extends AppCompatActivity {
         lineChart.setScaleEnabled(true);
 
     }
+
     private void binomial() {
         barChart = (BarChart) findViewById(R.id.barGraph);
 
@@ -156,19 +165,49 @@ public class Histogram extends AppCompatActivity {
 
         }
         barEntries = new ArrayList<>();
-        frequency = new ArrayList<>();
+        int passFrequency = 0;
+        int failFrequency = 0;
 
-        /*for (i = 0; i < results.size(); i++) {
-            frequency.add()
-        }*/
-        Collections.sort(results);
         for (i = 0; i < results.size(); i++) {
-            barEntries.add(new BarEntry(Float.valueOf(String.valueOf(results.get(i))), Collections.frequency(results, results.get(i))));
+            //if pass
+            if (results.get(i) == 1.0){
+                passFrequency++;
+            }
+            else if (results.get(i) == 0.0){
+                failFrequency++;
+            }
+
         }
-        BarDataSet barDataSet = new BarDataSet(barEntries, "results");
+
+        xAxisTitle.setText("Results");
+        yAxisTitle.setText("Frequency");
+
+        barEntries.add(new BarEntry(0f, passFrequency));
+        barEntries.add(new BarEntry(1f, failFrequency));
+
+        BarDataSet barDataSet = new BarDataSet(barEntries,null);
+        barDataSet.setColors(new int[] {Color.rgb(132, 180, 200),
+                                        Color.rgb(244, 220, 214)});
 
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
+
+        final String[] xAxisLabels = new String[] { "Pass", "Fail"};
+        ValueFormatter formatter = new ValueFormatter() {
+            @Override
+            public String getAxisLabel(float value, AxisBase axis) {
+                return xAxisLabels[(int) value];
+            }
+        };
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+        xAxis.setValueFormatter(formatter);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(20);
+        barChart.getAxisRight().setEnabled(false);
+        barChart.getLegend().setEnabled(false);
+        barChart.getDescription().setEnabled(false);
+        barChart.setExtraBottomOffset(10);
 
         barChart.setTouchEnabled(true);
         barChart.setDragEnabled(true);

@@ -1,8 +1,8 @@
 package com.example.lab_net;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +14,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -479,11 +482,51 @@ public class SearchableList {
             }
 
             SearchableExperiment experiment = (SearchableExperiment) data.get(position);
-
+            String experimentId = experiment.getDocumentReference().getDocumentId();
+            String userId = Settings.Secure.getString(this.adapter.context.getContentResolver(), Settings.Secure.ANDROID_ID);
             TextView name = view.findViewById(R.id.sr_experiment_name);
             TextView description = view.findViewById(R.id.sr_experiment_description);
             TextView ownerId = view.findViewById(R.id.sr_experiment_owner_id);
             TextView status = view.findViewById(R.id.sr_experiment_status);
+            TextView subscribed = view.findViewById(R.id.sr_experiment_subscribe);
+
+            //check if subscribed to experiment
+            db.collection("SubscribedExperiments")
+                    .whereEqualTo("ExperimentId", experimentId)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String subscriber = document.getData().get("Subscriber").toString();
+                                    if (subscriber.equals(userId)) {
+                                        subscribed.setText("SUBSCRIBED");
+                                    }
+                                }
+
+                            }
+                        }
+                    });
+
+            //check if owned experiment
+            db.collection("Experiments")
+                    .whereEqualTo(FieldPath.documentId(), experimentId)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String owner = document.getData().get("Owner").toString();
+                                    if (owner.equals(userId)) {
+                                        subscribed.setText("OWNED");
+                                    }
+                                }
+
+                            }
+                        }
+                    });
 
             name.setText(experiment.getName());
             description.setText(experiment.getDescription());

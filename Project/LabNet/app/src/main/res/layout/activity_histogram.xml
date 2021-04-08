@@ -9,14 +9,15 @@
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barGraph"
         android:layout_width="329dp"
-        android:layout_height="392dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginLeft="80dp"
+        android:layout_height="360dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
         android:layout_marginTop="30dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="60dp"
         android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:paddingRight="15dp"
         app:layout_constraintBottom_toTopOf="@+id/lineChart"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +26,7 @@
         tools:ignore="MissingConstraints"></com.github.mikephil.charting.charts.BarChart>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/xAxisTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="161dp"
@@ -40,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@+id/barGraph" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tyAxisTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="-20dp"
