@@ -186,7 +186,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         trialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                deleteTrial(position);
+                moveToUnlisted(position);
                 return true;
             }
         });
@@ -232,10 +232,16 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         subUsersList.setAdapter(subUsersArrayAdapter);
         getSubscribedUsers();
 
+        Toast.makeText(this, "Long hold to list or un-list trials", Toast.LENGTH_LONG).show();
+
     }
+
 
     //side menu created from youtube: Android Navigation Drawer Menu Material Design
     // by Coding With Tea
+    /**
+     * set side menu on owner experiment activity
+     */
     private void setToolbar(){
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -253,6 +259,11 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     * Handle clicks on the side menu
+     * @param item
+     * @return boolean(true or false)
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -339,6 +350,9 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         return true;
     }
 
+    /**
+     * gets subscribed users from firebase collection called SubscribedExperiments
+     */
     private void getSubscribedUsers(){
         db.collection("SubscribedExperiments").whereEqualTo("ExperimentId", experimentId)
                 .get()
@@ -370,7 +384,9 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         });
     }
 
-    //edit experiment details
+    /**
+     * Allows owner to edit experiment details(i.e. name, description, region)
+     */
     private void editExperiment() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(NonNegativeExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_experiment_dialog, null);
@@ -422,7 +438,9 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         });
     }
 
-    //add new trial
+    /**
+     * enables adding trials for experiments
+     */
     private void addTrial() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(NonNegativeExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
@@ -495,8 +513,11 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         });
     }
 
-    // method responsible for deleting trials
-    public void deleteTrial(int position) {
+    /**
+     * method responsible for un-listing trials
+     * @param position
+     */
+    public void moveToUnlisted(int position) {
         NonNegativeIntegerTrial trial = trialDataList.get(position);
         //isUnlisted = true;
         //trialDataList.remove(position);
@@ -552,6 +573,10 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
                 });
 
     }
+    /**
+     * method responsible for listing un-listed
+     * @param position
+     */
     private void moveTrial(int position) {
         NonNegativeIntegerTrial trial = ignoredTrialDataList.get(position);
         //isUnlisted = true;
@@ -611,7 +636,9 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
 
     }
 
-    // invoked upon delete experiment button click
+    /**
+     * allows owner of experiment to permanently delete experiment from the app and firebase
+     */
     private void deleteExperiment() {
         final CollectionReference collectionReference = db.collection("Experiments");
 
@@ -653,6 +680,9 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
 
     }
 
+    /**
+     * Responsible for the validation of values used for adding trial
+     */
     private TextWatcher addTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -672,6 +702,9 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         }
     };
 
+    /**
+     * Disables going back using androids back button
+     */
     @Override
     public void onBackPressed() { }
 

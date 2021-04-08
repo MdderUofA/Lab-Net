@@ -81,6 +81,9 @@ public class Statistics extends AppCompatActivity {
         }
     }
 
+    /**
+     * called if experiment's trial type is binomial
+     */
     private void binomial() {
 
         Intent intent = getIntent();
@@ -167,6 +170,9 @@ public class Statistics extends AppCompatActivity {
 
     }
 
+    /**
+     * called if experiment's trial type is non-negative
+     */
     private void nonNegative() {
 
         Intent intent = getIntent();
@@ -250,6 +256,9 @@ public class Statistics extends AppCompatActivity {
         });
     }
 
+    /**
+     * called if experiment's trial type is measurement
+     */
     private void measurement() {
 
         Intent intent = getIntent();
@@ -333,6 +342,9 @@ public class Statistics extends AppCompatActivity {
         });
     }
 
+    /**
+     * called if experiment's trial type is count
+     */
     private void count() {
 
         Intent intent = getIntent();
