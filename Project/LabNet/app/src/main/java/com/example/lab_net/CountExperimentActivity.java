@@ -236,6 +236,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         add_new_trial_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                trialButtonEnabled = false;
                 addTrial();
             }
         });
@@ -490,8 +491,15 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 trialButtonEnabled = false;
                 addTrialDialogButton.setEnabled(false);
             } else {
-                trialButtonEnabled = true;
-                addTrialDialogButton.setEnabled(true);
+                String checkResult = addTrialResult.getText().toString();
+                String checkTitle = addTrialTitle.getText().toString();
+                if (checkResult.isEmpty() || checkTitle.isEmpty()){
+                    trialButtonEnabled = false;
+                    addTrialDialogButton.setEnabled(false);
+                } else {
+                    trialButtonEnabled = true;
+                    addTrialDialogButton.setEnabled(true);
+                }
             }
         }
     }
@@ -509,8 +517,10 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==2)
         {
-            trialLatitude = data.getDoubleExtra("latitude", 0);
-            trialLongitude = data.getDoubleExtra("longitude", 0);
+            if (data != null) {
+                trialLatitude = data.getDoubleExtra("latitude", 0);
+                trialLongitude = data.getDoubleExtra("longitude", 0);
+            }
 
         }
         checkLocationReq();

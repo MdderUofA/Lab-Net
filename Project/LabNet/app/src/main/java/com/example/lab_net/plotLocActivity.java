@@ -32,10 +32,8 @@ import java.util.ArrayList;
 public class plotLocActivity extends AppCompatActivity implements Serializable {
 
     private static final String TAG = "TESTING" ;
-    private ArrayList<Double> latitude = new ArrayList<>();
-    private ArrayList<Double> longitude = new ArrayList<>();
-    private ArrayList<String> trialName = new ArrayList<>();
     private String experimentId;
+    private Fragment plotLocFragment;
 
     /**
      * Creates plotLocFragment instance and send experiment ID to it.
@@ -51,7 +49,9 @@ public class plotLocActivity extends AppCompatActivity implements Serializable {
         experimentId = intent.getStringExtra("ExperimentId");
         Log.d(TAG, "onCreate: EXPERIMENTID " + experimentId);
 
+
         Fragment fragment = new plotLocFragment();
+        plotLocFragment = fragment;
         Bundle bundle = new Bundle();
         bundle.putString("experimentId", experimentId);
 
@@ -59,4 +59,5 @@ public class plotLocActivity extends AppCompatActivity implements Serializable {
         getSupportFragmentManager().beginTransaction().replace(R.id.map_layout_PL,fragment).commit();
 
     }
+
 }

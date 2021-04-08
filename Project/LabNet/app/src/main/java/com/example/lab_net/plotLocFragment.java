@@ -44,6 +44,7 @@ public class plotLocFragment extends Fragment {
     private ArrayList<String> trialName = new ArrayList<>();
     private FirebaseFirestore db;
     private String experimentId;
+    private ArrayList<LatLng> locations = new ArrayList<>();
 
     /**
      * Using latitude, longitude, trialName and googleMap instance, location coordinates
@@ -59,6 +60,7 @@ public class plotLocFragment extends Fragment {
         //by Android Coding (09/12/2020, YouTube) - https://www.youtube.com/watch?v=YCFPClPjDIQ
 
         LatLng location = new LatLng(latitude, longitude);
+        locations.add(location);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(location);
         markerOptions.title(trialName);
@@ -69,6 +71,7 @@ public class plotLocFragment extends Fragment {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 location, 12
         ));
+
     }
 
     /**
@@ -142,19 +145,14 @@ public class plotLocFragment extends Fragment {
                         @SuppressLint("MissingPermission")
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
-                            int nullValues = 0;
+                            checkIfAllNull();
                             for (int i = 0; i < (latitude.size()); i++) {
                                 Log.d(TAG, "onMapReady: PLOTTING" + latitude.get(i) + longitude.get(i));
                                 if (latitude.get(i) == null || longitude.get(i) == null){
-                                    nullValues++;
                                     continue;
                                 } else {
                                     putLocationOnMap(latitude.get(i), longitude.get(i), googleMap, trialName.get(i));
                                 }
-                             if (nullValues == latitude.size()){
-                                 Toast.makeText(getActivity(), "No GeoLocations available. Please go back.", Toast.LENGTH_LONG).show();
-                             }
-
                             }
                         }
                     });
@@ -163,6 +161,65 @@ public class plotLocFragment extends Fragment {
         }, 5000);
 
         return view;
+    }
+
+    /**
+     * Checks if all latitude and longitude values are null.
+     * @return void
+     */
+    public void checkIfAllNull(){
+        int nullValues = 0;
+        for (int i = 0; i < (latitude.size()); i++) {
+            if (latitude.get(i) == null || longitude.get(i) == null){
+                nullValues++;
+            }
+            if (nullValues == latitude.size()){
+                Toast.makeText(getActivity(), "No GeoLocations available. Please go back.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    public ArrayList<LatLng> getLocations() {
+        return locations;
+    }
+
+    public ArrayList<Double> getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(ArrayList<Double> latitude) {
+        this.latitude = latitude;
+    }
+
+    public ArrayList<Double> getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(ArrayList<Double> longitude) {
+        this.longitude = longitude;
+    }
+
+    public ArrayList<String> getTrialName() {
+        return trialName;
+    }
+
+    public void setTrialName(ArrayList<String> trialName) {
+        this.trialName = trialName;
+    }
+
+    public FirebaseFirestore getDb() {
+        return db;
+    }
+
+    public void setDb(FirebaseFirestore db) {
+        this.db = db;
+    }
+
+    public String getExperimentId() {
+        return experimentId;
+    }
+
+    public void setExperimentId(String experimentId) {
+        this.experimentId = experimentId;
     }
 }
 
