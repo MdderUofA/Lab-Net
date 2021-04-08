@@ -127,8 +127,8 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
 
-
-        checksubscription();
+        checkExperimentEnded();
+        checkSubscription();
 
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
@@ -182,8 +182,6 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
 
                     }
                 });
-
-        checkExperimentEnded();
 
         add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
         add_trial_button.setOnClickListener(new View.OnClickListener() {
@@ -268,7 +266,7 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                 //TODO
                 break;
             case R.id.nav_statistics:
-                if (trialArrayAdapter.getCount() == 0 || trialType.equals("Binomial")) {
+                if (trialArrayAdapter.getCount() == 0) {
                     Toast.makeText(SubscribedMeasurementExperimentActivity.this,
                             "No stats available for this experiment", Toast.LENGTH_LONG).show();
                 } else {
@@ -300,14 +298,27 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
     }
 
     private void checkExperimentEnded() {
-        if (status.equals("closed")) {
-            add_trial_button.setEnabled(false);
-            subscribeButton.setEnabled(false);
-            Toast.makeText(this, "This experiment has ended", Toast.LENGTH_LONG).show();
-        }
+        db.collection("Experiments").document(experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.exists()) {
+                                status = documentSnapshot.getData().get("Status").toString();
+                                if ("closed".equals(status)) {
+                                    subscribeButton.setEnabled(false);
+                                    add_trial_button.setEnabled(false);
+                                    Toast.makeText(SubscribedMeasurementExperimentActivity.this, "Experiment has Ended", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
-    private void checksubscription() {
+    private void checkSubscription() {
         db.collection("SubscribedExperiments")
                 .whereEqualTo("ExperimentId",experimentId)
                 .get()
@@ -315,17 +326,12 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            Boolean isSubscriber = false;
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String subscriber = document.getData().get("Subscriber").toString();
                                 if (subscriber.equals(deviceId)) {
-                                    isSubscriber = true;
                                     subscribeButton.setEnabled(false);
                                     subscribeButton.setText("Subscribed");
                                 }
-                            }
-                            if (! isSubscriber) {
-                                add_trial_button.setEnabled(false);
                             }
                         }
                     }
