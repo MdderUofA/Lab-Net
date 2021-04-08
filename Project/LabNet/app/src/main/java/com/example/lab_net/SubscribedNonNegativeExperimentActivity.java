@@ -240,6 +240,9 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
 
     //side menu created from youtube: Android Navigation Drawer Menu Material Design
     // by Coding With Tea
+    /**
+     * set side menu on owner experiment activity
+     */
     private void setToolbar(){
         drawerLayout = findViewById(R.id.subscribe_drawer_layout);
         navigationView = findViewById(R.id.subscribe_nav_view);
@@ -257,6 +260,11 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     * Handle clicks on the side menu
+     * @param item
+     * @return boolean(true or false)
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -308,6 +316,9 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
         return true;
     }
 
+    /**
+     * checks if the experiment has already ended.
+     */
     private void checkExperimentEnded() {
         db.collection("Experiments").document(experimentId)
                 .get()
@@ -329,6 +340,9 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
                 });
     }
 
+    /**
+     * gets subscribed users from firebase collection called SubscribedExperiments
+     */
     private void getSubscribedUsers(){
         db.collection("SubscribedExperiments").whereEqualTo("ExperimentId", experimentId)
                 .get()
@@ -360,6 +374,9 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
         });
     }
 
+    /**
+     * checks if the user is a subscriber or not.
+     */
     private void checkSubscription() {
         db.collection("SubscribedExperiments")
                 .whereEqualTo("ExperimentId",experimentId)
@@ -435,6 +452,9 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
 
 
     //add new trial
+    /**
+     * enables adding trials for experiments
+     */
     private void addTrial() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(SubscribedNonNegativeExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
@@ -517,7 +537,9 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
 
 
 
-
+    /**
+     * Responsible for the validation of values used for adding trial
+     */
     private TextWatcher addTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -540,6 +562,9 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
         }
     };
 
+    /**
+     * Disables going back using androids back button
+     */
     @Override
     public void onBackPressed() { }
 
