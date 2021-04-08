@@ -57,8 +57,6 @@ public class CustomMeasurementTrialList extends ArrayAdapter<MeasurementTrial> {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        System.out.println(FieldPath.documentId());
-                        System.out.println("Trial " + trial.getId());
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if (document.getData().get("Lat") != null) {
