@@ -323,13 +323,22 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                     }
                 });
     }
-
+    /**
+     * Launches MapActivity so user can retrieve their device location for experiment. Needs trialId.
+     * @param trialId
+     * @return void
+     */
     private void getLocation(String trialId) {
         Intent sendTrialId = new Intent(this, MapActivity.class);
         sendTrialId.putExtra("trialId", trialId);
         startActivityForResult(sendTrialId, 2);
     }
-
+    /**
+     * Checks to see if experiment requires location, or if latitude and longitude is provided. Based
+     * on this it enables/disables the addTrialDialogButton. So user must get location if required, else
+     * not a must.
+     * @return void
+     */
     private void checkLocationReq(){
         Log.d(TAG, "checkLocationReq: ISLOCATIONENABLED " + isLocationEnabled);
         Log.d(TAG, "checkLocationReq: Latitude " + trialLatitude);
@@ -348,7 +357,14 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
             }
         }
     }
-
+    /**
+     * Retrieves and saves location coordinates from MapActivity once user has selected their location.
+     * Checks to see if location requirements have been met by calling checkLocationReq.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     * @return void
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {

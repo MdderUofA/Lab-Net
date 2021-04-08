@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
@@ -93,6 +94,12 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
 
     private String status;
 
+    //location
+    private Double trialLatitude;
+    private Double trialLongitude;
+    private String isLocationEnabled;
+    private Boolean trialButtonEnabled = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +148,8 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                         experiment_title.setText(experimentTitle);
                         experiment_description.setText("Description: " + experimentDescription);
                         experiment_region.setText("Region: " + experimentRegion);
+
+                        isLocationEnabled = documentSnapshot.getData().get("EnableLocation").toString();
                     }
                 }
             }
@@ -368,6 +377,57 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
 
         });
     }
+    /**
+     * Launches MapActivity so user can retrieve their device location for experiment. Needs trialId.
+     * @param trialId
+     * @return void
+     */
+    private void getLocation(String trialId) {
+        Intent sendTrialId = new Intent(this, MapActivity.class);
+        sendTrialId.putExtra("trialId", trialId);
+        startActivityForResult(sendTrialId, 2);
+    }
+    /**
+     * Checks to see if experiment requires location, or if latitude and longitude is provided. Based
+     * on this it enables/disables the addTrialDialogButton. So user must get location if required, else
+     * not a must.
+     * @return void
+     */
+    private void checkLocationReq(){
+
+        if (isLocationEnabled.equalsIgnoreCase("No")){
+            //add_trial_button.setEnabled(true);
+            trialButtonEnabled = true;
+        } else {
+            if ((trialLatitude == null) || (trialLongitude) == null){
+                trialButtonEnabled = false;
+                addTrialDialogButton.setEnabled(false);
+            } else {
+                trialButtonEnabled = true;
+                addTrialDialogButton.setEnabled(true);
+            }
+        }
+    }
+    /**
+     * Retrieves and saves location coordinates from MapActivity once user has selected their location.
+     * Checks to see if location requirements have been met by calling checkLocationReq.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     * @return void
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==2)
+        {
+            trialLatitude = data.getDoubleExtra("latitude", 0);
+            trialLongitude = data.getDoubleExtra("longitude", 0);
+
+        }
+        checkLocationReq();
+    }
 
     //add new trial
     private void addTrial() {
@@ -384,7 +444,9 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         Toast.makeText(BinomialExperimentActivity.this, "Enter pass or fail", Toast.LENGTH_LONG).show();
-        addTrialDialogButton.setEnabled(false);
+        if (!trialButtonEnabled){
+            addTrialDialogButton.setEnabled(false);
+        }
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
         addTrialResult.addTextChangedListener(addTextWatcher);
@@ -398,13 +460,13 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         formattedDate = simpleDateFormat.format(date);
         dates.add(formattedDate);
 
-/*        Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
+        Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
         getLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getLocation(trialId);
             }
-        });*/
+        });
 
         addTrialDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -418,6 +480,12 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                 data.put("ExperimentId", experimentId);
                 data.put("Date", formattedDate);
                 data.put("isUnlisted", false);
+                if ((trialLatitude != null) && (trialLongitude != null)){
+                    if ((trialLatitude != 0) && (trialLongitude != 0)){
+                        data.put("Lat", trialLatitude);
+                        data.put("Long", trialLongitude);
+                    }
+                }
 
                 collectionReference
                         .document(trialId)
@@ -610,7 +678,11 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String checkResult = addTrialResult.getText().toString();
             String checkTitle = addTrialTitle.getText().toString();
-            addTrialDialogButton.setEnabled(checkResult.toLowerCase().equals("pass") || checkResult.toLowerCase().equals("fail") && !checkTitle.isEmpty());
+            checkLocationReq();
+            if(trialButtonEnabled){
+                addTrialDialogButton.setEnabled(checkResult.toLowerCase().equals("pass") || checkResult.toLowerCase().equals("fail") && !checkTitle.isEmpty());
+            }
+
         }
 
         @Override

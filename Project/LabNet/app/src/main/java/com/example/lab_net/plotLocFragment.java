@@ -28,6 +28,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * plotLocFragment loads up Google Map and gets location coordinates of all trials of an experiment
+ * based on experiment ID from plotLocActivity,and plots all coordinates on map for user to see.
+ * If location coordinates are not available then user is informed via toasts.
+ * @author gurjogsingh
+ * @version 1.0
+ * @see plotLocActivity
+ */
 public class plotLocFragment extends Fragment {
 
     private static final String TAG = "TESTING";
@@ -37,6 +45,15 @@ public class plotLocFragment extends Fragment {
     private FirebaseFirestore db;
     private String experimentId;
 
+    /**
+     * Using latitude, longitude, trialName and googleMap instance, location coordinates
+     * are plotted on map. Marker and title are added on coordinate as well.
+     * @param latitude
+     * @param longitude
+     * @param trialName
+     * @param googleMap
+     * @return void
+     */
     public void putLocationOnMap(double latitude, double longitude, GoogleMap googleMap, String trialName) {
         //Help from 'How to Implement Google Map Inside Fragment in Android Studio | GoogleMap | Android Coding'
         //by Android Coding (09/12/2020, YouTube) - https://www.youtube.com/watch?v=YCFPClPjDIQ
@@ -54,10 +71,20 @@ public class plotLocFragment extends Fragment {
         ));
     }
 
+    /**
+     * Creates map fragment and displays map and allows user to see location of trials of experiment.
+     * Launches firebase to retrieve location coordinates of trials of an experiment.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        //Help from 'How to Implement Google Map Inside Fragment in Android Studio | GoogleMap | Android Coding'
+        //by Android Coding (09/12/2020, YouTube) - https://www.youtube.com/watch?v=YCFPClPjDIQ
+
         View view = inflater.inflate(R.layout.fragment_plot_loc, container, false);
 
         experimentId = this.getArguments().getString("experimentId");
@@ -91,17 +118,27 @@ public class plotLocFragment extends Fragment {
                 getChildFragmentManager().findFragmentById(R.id.google_map);
 
         Toast.makeText(getActivity(), "Getting locations. Please wait for 5 seconds.", Toast.LENGTH_LONG).show();
-        //CITE THIS
-        //https://stackoverflow.com/questions/23430839/how-to-make-app-wait-and-then-start-activity-or-go-back
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
+            //Help from 'How to make app wait and then start activity or go back?' answer by Raghunandan (05/02/2014, CC BY-SA 4.0)
+            //from https://stackoverflow.com/a/23430910
+            /**
+             * Waits 5 seconds before allowing map to work to allow all data from firebase to
+             * appropriately be retrieved, in order to avoid any delay errors.
+             * @return void
+             */
             @Override
             public void run() {
                 if (latitude.isEmpty() || longitude.isEmpty()) {
                     Toast.makeText(getActivity(), "No GeoLocations available. Please go back.", Toast.LENGTH_LONG).show();
                 } else {
                     supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-
+                        /**
+                         * Generates the map. Permission not needed because not getting user's location, just displaying data.
+                         * @param googleMap
+                         * @return void
+                         */
                         @SuppressLint("MissingPermission")
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
