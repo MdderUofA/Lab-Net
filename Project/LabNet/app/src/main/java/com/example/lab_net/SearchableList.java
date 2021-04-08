@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A utility class which will allows a list to be referenced and fed results from a database query.
+ * @author Marcus
  */
 public class SearchableList {
 
@@ -103,10 +104,6 @@ public class SearchableList {
         ArrayList<String> keywords = new ArrayList<>();
         keywords.addAll(list);
 
-        Toast.makeText(this.listView.getContext(),
-                "Searching...",
-                Toast.LENGTH_SHORT)
-                .show();
         final SearchProgressListener listener =
                 new SearchProgressListener(this.getNumQueries()) {
             @Override

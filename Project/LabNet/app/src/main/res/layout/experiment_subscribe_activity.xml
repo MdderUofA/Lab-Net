@@ -47,6 +47,16 @@
                 android:layout_gravity="start"/>
         </androidx.appcompat.widget.Toolbar>
 
+        <ImageView
+            android:id="@+id/contactInfo"
+            android:layout_width="360dp"
+            android:layout_height="70dp"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            android:layout_marginTop="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="10dp"
+            android:background="@color/sand"/>
+
 
         <TextView
             android:id="@+id/experimentDescription"
@@ -76,7 +86,7 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="30dp"
             android:background="?android:attr/listDivider"
             android:backgroundTint="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
@@ -172,7 +182,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:text="@string/browse_button"
-            app:backgroundTint="#009688"
+            app:backgroundTint="@color/app_teal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider3" />
 
@@ -226,7 +236,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:text="Subscribe"
-            app:backgroundTint="#009698"
+            app:backgroundTint="#DFC7C1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

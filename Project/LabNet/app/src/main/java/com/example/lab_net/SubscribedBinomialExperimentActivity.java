@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -33,9 +31,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -99,6 +95,10 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
 
     Button subscribed_users_button;
     Button subscribeButton;
+    private String subUserId;
+    private ListView subUsersList;
+    private ArrayList<String> subUsersDataList;
+    private ArrayAdapter<String> subUsersArrayAdapter;
 
     Date date;
     String formattedDate;
@@ -149,7 +149,6 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                         owner = documentSnapshot.getData().get("Owner").toString();
                         //get trialtype to make respective dialog box appear
                         trialType = documentSnapshot.getData().get("TrialType").toString();
-                        status = documentSnapshot.getData().get("Status").toString();
                         isLocationEnabled = documentSnapshot.getData().get("EnableLocation").toString();
 
                         // set textviews in experiment_owner_activity to experiment details
@@ -173,7 +172,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                                 trialTitle = document.getData().get("Title").toString();/*
                                 trialType = document.getData().get("Title").toString();*/
                                 resultLong = (String) document.getData().get("Result");
-                                //getDate = (String) document.getData().get("Date");
+                                getDate = (String) document.getData().get("Date");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(!isUnlisted){
                                     trialDataList.add(new BinomialTrial(trialId, trialTitle, resultLong));
@@ -186,8 +185,6 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
 
                     }
                 });
-
-        checkExperimentEnded();
 
         add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
         add_trial_button.setOnClickListener(new View.OnClickListener() {
@@ -208,6 +205,12 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                 startActivity(searchIntent);
             }
         });
+
+        subUsersList = (ListView) findViewById(R.id.subscribed_Users_list);
+        subUsersDataList = new ArrayList<>();
+        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersDataList);
+        subUsersList.setAdapter(subUsersArrayAdapter);
+        getSubscribedUsers();
 
         //check if user already subscribed, button grey out
         //otherwise give option to subscribe
@@ -285,7 +288,15 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                 }
                 break;
             case R.id.nav_graphs:
-                //TODO
+                if (trialArrayAdapter.getCount() == 0) {
+                    Toast.makeText(SubscribedBinomialExperimentActivity.this, "No Histograms available for this experiment", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), Histogram.class);
+                    intent.putExtra("trialDataList", (Serializable) trialDataList);
+                    intent.putExtra("ExperimentId", experimentId);
+                    intent.putExtra("check", 2);
+                    startActivity(intent);
+                }
                 break;
             case R.id.nav_locationPlot:
                 Intent locationIntent = new Intent(getApplicationContext(), plotLocActivity.class);
@@ -321,6 +332,37 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                         }
                     }
                 });
+    }
+
+    private void getSubscribedUsers(){
+        db.collection("SubscribedExperiments").whereEqualTo("ExperimentId", experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                subUserId = document.getData().get("Subscriber").toString();
+                                subUsersDataList.add(subUserId);
+                            }
+                            subUsersArrayAdapter.notifyDataSetChanged();
+
+                        }
+
+                    }
+
+                });
+
+        subUsersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String subscriber = subUsersDataList.get(position);
+                Intent intent = new Intent(SubscribedBinomialExperimentActivity.this, SubscribedUserActivity.class);
+                intent.putExtra(UserProfile.USER_ID_EXTRA, subscriber);
+                startActivity(intent);
+
+            }
+        });
     }
 
     private void checkSubscription() {

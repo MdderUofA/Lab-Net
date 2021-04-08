@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -96,6 +97,10 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
     Button subscribed_users_button;
     Button subscribeButton;
+    private String subUserId;
+    private ListView subUsersList;
+    private ArrayList<String> subUsersDataList;
+    private ArrayAdapter<String> subUsersArrayAdapter;
 
     Date date;
     String formattedDate;
@@ -111,6 +116,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         //side menu
         setToolbar();
         deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
         //experimentId = getIntent().getStringExtra("experimentId");
         experimentId = getIntent().getStringExtra(EXPERIMENT_ID_EXTRA);
         //count
@@ -169,7 +175,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                                 trialTitle = document.getData().get("Title").toString();/*
                                 trialType = document.getData().get("Title").toString();*/
                                 resultLong = (Long) document.getData().get("Result");
-                                //getDate = document.getData().get("Date").toString();
+                                getDate = document.getData().get("Date").toString();
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(!isUnlisted){
                                     trialDataList.add(new CountTrial(trialId, trialTitle, resultLong));
@@ -178,8 +184,6 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
                             }
                             trialArrayAdapter.notifyDataSetChanged();
-
-
                         }
 
                     }
@@ -204,6 +208,12 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                 startActivity(searchIntent);
             }
         });
+
+        subUsersList = (ListView) findViewById(R.id.subscribed_Users_list);
+        subUsersDataList = new ArrayList<>();
+        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersDataList);
+        subUsersList.setAdapter(subUsersArrayAdapter);
+        getSubscribedUsers();
 
         //check if user already subscribed, button grey out
         //otherwise give option to subscribe
@@ -280,7 +290,16 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                 }
                 break;
             case R.id.nav_graphs:
-                //TODO
+                if (trialArrayAdapter.getCount() == 0) {
+                    Toast.makeText(SubscribedCountExperimentActivity.this, "No Histograms available for this experiment", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), Histogram.class);
+                    intent.putExtra("trialDataList", (Serializable) trialDataList);
+                    intent.putExtra("dateDataList", (Serializable) dates);
+                    intent.putExtra("ExperimentId", experimentId);
+                    intent.putExtra("check", 1);
+                    startActivity(intent);
+                }
                 break;
             case R.id.nav_locationPlot:
                 Intent locationIntent = new Intent(getApplicationContext(), plotLocActivity.class);
@@ -317,6 +336,37 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                         }
                     }
                 });
+    }
+
+    private void getSubscribedUsers(){
+        db.collection("SubscribedExperiments").whereEqualTo("ExperimentId", experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                subUserId = document.getData().get("Subscriber").toString();
+                                subUsersDataList.add(subUserId);
+                            }
+                            subUsersArrayAdapter.notifyDataSetChanged();
+
+                        }
+
+                    }
+
+                });
+
+        subUsersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String subscriber = subUsersDataList.get(position);
+                Intent intent = new Intent(SubscribedCountExperimentActivity.this, SubscribedUserActivity.class);
+                intent.putExtra(UserProfile.USER_ID_EXTRA, subscriber);
+                startActivity(intent);
+
+            }
+        });
     }
 
     private void checkSubscription() {

@@ -2,6 +2,10 @@ package com.example.lab_net;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+/**
+ * A Searchable which represents a user.
+ * @author Marcus
+ */
 public class SearchableUser extends Searchable {
 
     @Override

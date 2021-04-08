@@ -9,6 +9,7 @@ import java.util.Date;
  * An interface that represents an object that can be searched for. Note that anything that
  * implements this must contian a null constructor as applyFromDatabase is invoked reflectively.
  * @see SearchableList
+ * @author Marcus
  */
 public abstract class Searchable {
 

@@ -4,6 +4,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.Date;
 
+/**
+ * A Searchable which represents an experiment.
+ * @author Marcus
+ */
 public class SearchableExperiment extends Searchable {
 
     private boolean open = true;

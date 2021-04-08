@@ -14,7 +14,7 @@
         android:layout_marginTop="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="20dp"
-        android:background="@color/app_teal"/>
+        android:background="@color/sand"/>
 
     <TextView
         android:id="@+id/usernameTag"
@@ -25,7 +25,6 @@
         android:layout_marginTop="40dp"
         android:text="Id:"
         android:textStyle="bold"
-        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +35,6 @@
         android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="40dp"
-        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@+id/usernameTag"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,7 +47,6 @@
         android:layout_marginTop="10dp"
         android:text="Name: "
         android:textStyle="bold"
-        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usernameTag" />
 
@@ -60,7 +57,6 @@
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
-        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@+id/nameTag"
         app:layout_constraintTop_toBottomOf="@+id/usernameTag" />
 
@@ -71,7 +67,6 @@
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@+id/firstName"
         app:layout_constraintTop_toBottomOf="@+id/username" />
 
@@ -84,7 +79,6 @@
         android:layout_marginTop="10dp"
         android:text="Email:"
         android:textStyle="bold"
-        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameTag" />
 
@@ -95,7 +89,6 @@
         android:layout_marginStart="25dp"
         android:layout_marginLeft="25dp"
         android:layout_marginTop="10dp"
-        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@+id/emailTag"
         app:layout_constraintTop_toBottomOf="@+id/lastName" />
 
@@ -108,7 +101,6 @@
         android:layout_marginTop="10dp"
         android:text="Phone: "
         android:textStyle="bold"
-        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailTag" />
 
@@ -119,7 +111,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="10dp"
-        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@+id/phoneTag"
         app:layout_constraintTop_toBottomOf="@+id/email" />
 

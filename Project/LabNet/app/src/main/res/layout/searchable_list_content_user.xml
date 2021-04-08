@@ -4,54 +4,66 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:showDividers="beginning|end"
-    android:divider="@drawable/empty_tall_divider"
     >
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         >
-        <TextView
-            android:id="@+id/sr_name_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Name: "
-            android:textStyle="bold"
-            android:textSize="18sp">
-        </TextView>
-        <TextView
-            android:id="@+id/sr_user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Full Name"
-            android:textSize="18sp">
-        </TextView>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:id="@+id/sr_userid_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="User ID: "
-            android:textStyle="bold"
-            android:textSize="18sp">
-        </TextView>
-        <TextView
-            android:id="@+id/sr_user_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="decription"
-            android:textSize="18sp">
-        </TextView>
-    </LinearLayout>
+        <ImageView
+            android:background="@drawable/ic_stats_back"
+            android:layout_width="64dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="left|center_vertical"
+            android:src="@drawable/ic_person" />
 
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:showDividers="beginning|end"
+            android:divider="@drawable/empty_tall_divider"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/sr_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="120dp"
+
+                    android:text="NAME"
+                    android:textColor="@color/app_teal"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/sr_user_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_below="@+id/sr_user_name"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="0dp"
+                    android:text="DESCRIPTION"
+                    android:textColor="@color/app_teal"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>
+

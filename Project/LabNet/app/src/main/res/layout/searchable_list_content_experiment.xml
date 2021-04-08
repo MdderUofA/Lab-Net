@@ -4,100 +4,109 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:showDividers="beginning|end"
-    android:divider="@drawable/empty_tall_divider"
     >
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         >
-        <TextView
-            android:id="@+id/sr_experiment_title_tag"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:background="@drawable/ic_stats_back"
+            android:layout_width="64dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="left|center_vertical"
+            android:src="@drawable/ic_baseline_science_24" />
+
+        <LinearLayout
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Title: "
-            android:textStyle="bold"
-            android:textSize="18sp">
-        </TextView>
-        <TextView
-            android:id="@+id/sr_experiment_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="76dp"
-            android:text="Name"
-            android:textSize="18sp">
-        </TextView>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:id="@+id/sr_experiment_description_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Description: "
-            android:textStyle="bold"
-            android:textSize="18sp">
-        </TextView>
-        <TextView
-            android:id="@+id/sr_experiment_description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Description"
-            android:textSize="18sp">
-        </TextView>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:id="@+id/sr_experiment_owner_id_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Owner ID: "
-            android:textStyle="bold"
-            android:textSize="18sp">
-        </TextView>
-        <TextView
-            android:id="@+id/sr_experiment_owner_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="39dp"
-            android:text="OwnerId"
-            android:textSize="18sp">
-        </TextView>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:id="@+id/sr_experiment_status_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Status: "
-            android:textStyle="bold"
-            android:textSize="18sp">
-        </TextView>
-        <TextView
-            android:id="@+id/sr_experiment_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="61dp"
-            android:text="Status"
-            android:textSize="18sp">
-        </TextView>
+            android:orientation="vertical"
+            android:showDividers="beginning|end"
+            android:divider="@drawable/empty_tall_divider"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/sr_experiment_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="120dp"
+
+                    android:text="TITLE"
+                    android:textColor="@color/app_teal"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/sr_experiment_owner_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginStart="-112dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@+id/sr_experiment_name"
+                    android:gravity="right"
+                    android:text="OWNER ID"
+                    android:textColor="@color/app_teal"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/sr_experiment_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_below="@+id/sr_experiment_name"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="0dp"
+                    android:text="DESCRIPTION"
+                    android:textColor="@color/app_teal"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/sr_experiment_status"
+                    android:layout_below="@+id/sr_experiment_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="0dp"
+                    android:text="STATUS"
+                    android:textColor="@color/app_teal"
+                    android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/sr_experiment_subscribe"
+                    android:layout_below="@+id/sr_experiment_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="0dp"
+                    android:text="SUBSCRIBED?"
+                    android:textColor="@color/app_teal"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>
 

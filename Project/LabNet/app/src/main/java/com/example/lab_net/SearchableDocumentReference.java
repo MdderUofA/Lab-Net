@@ -3,6 +3,7 @@ package com.example.lab_net;
 /**
  * A container class to hold information about a search. This information is used when
  * clicking on a result to help the program navigate to the correct activity.
+ * @author Marcus
  */
 public class SearchableDocumentReference {
 

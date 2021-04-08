@@ -77,6 +77,12 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
     NavigationView navigationView;
     Toolbar toolbar;
 
+    private Button subscribed_users_button;
+    private String subUserId;
+    private ListView subUsersList;
+    private ArrayList<String> subUsersDataList;
+    private ArrayAdapter<String> subUsersArrayAdapter;
+
     private ArrayAdapter<MeasurementTrial> ignoredTrialArrayAdapter;
     private ArrayList<MeasurementTrial> ignoredTrialDataList;
 
@@ -203,6 +209,24 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             }
         });
 
+        subscribed_users_button = (Button) findViewById(R.id.subscribedUsersBrowseButton);
+        subscribed_users_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent searchIntent = new Intent(MeasurementExperimentActivity.this,
+                        SearchableListActivity.class);
+                searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
+                        SearchableList.SEARCH_USERS);
+                startActivity(searchIntent);
+            }
+        });
+
+        subUsersList = (ListView) findViewById(R.id.subscribed_Users_list);
+        subUsersDataList = new ArrayList<>();
+        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersDataList);
+        subUsersList.setAdapter(subUsersArrayAdapter);
+        getSubscribedUsers();
+
     }
 
     //side menu created from youtube: Android Navigation Drawer Menu Material Design
@@ -308,6 +332,37 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                 break;
         }
         return true;
+    }
+
+    private void getSubscribedUsers(){
+        db.collection("SubscribedExperiments").whereEqualTo("ExperimentId", experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                subUserId = document.getData().get("Subscriber").toString();
+                                subUsersDataList.add(subUserId);
+                            }
+                            subUsersArrayAdapter.notifyDataSetChanged();
+
+                        }
+
+                    }
+
+                });
+
+        subUsersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String subscriber = subUsersDataList.get(position);
+                Intent intent = new Intent(MeasurementExperimentActivity.this, SubscribedUserActivity.class);
+                intent.putExtra(UserProfile.USER_ID_EXTRA, subscriber);
+                startActivity(intent);
+
+            }
+        });
     }
 
     //edit experiment details
