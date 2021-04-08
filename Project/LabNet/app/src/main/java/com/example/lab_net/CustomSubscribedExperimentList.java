@@ -10,9 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -34,14 +31,27 @@ public class CustomSubscribedExperimentList extends ArrayAdapter<SubscribedExper
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
+        SubscribedExperiment subexperiment= subscribedExperiments.get(position);
+        String type = subexperiment.getTrialType();
         if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.content_experiment, parent,false);
+            if (type.equals("Binomial")){
+                view = LayoutInflater.from(context).inflate(R.layout.content_binomial_experiment, parent,false);
+            }
+            if (type.equals("Count-based")){
+                view = LayoutInflater.from(context).inflate(R.layout.content_count_experiment, parent,false);
+            }
+            if (type.equals("Measurement")){
+                view = LayoutInflater.from(context).inflate(R.layout.content_measuremnt_experiment, parent,false);
+            }
+            if (type.equals("NonNegativeInteger")){
+                view = LayoutInflater.from(context).inflate(R.layout.content_nonnegative_experiment, parent,false);
+            }
+
         }
 
-        SubscribedExperiment subscribedExperiment = subscribedExperiments.get(position);
         TextView experimentTitleText = view.findViewById(R.id.experiment_title);
 
-        experimentTitleText.setText(subscribedExperiment.getTitle());
+        experimentTitleText.setText(subexperiment.getTitle());
 
         return view;
 
