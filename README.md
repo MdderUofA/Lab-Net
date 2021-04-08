@@ -16,6 +16,8 @@ Citations:
 
 5) 'Creating a Simple Bar Graph for your Android Application (part 1/2)' by CodingWithMitch (May 5, 2016, Youtube) - https://www.youtube.com/watch?v=pi1tq-bp7uA
 
+6) 'How to make app wait and then start activity or go back?' answer by Raghunandan (05/02/2014, CC BY-SA 4.0) from https://stackoverflow.com/a/23430910
+
 APIs used (or to be fully used):
 
 1) Google Maps SDK for Android API

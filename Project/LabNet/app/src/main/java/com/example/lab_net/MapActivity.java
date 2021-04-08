@@ -126,27 +126,6 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
             public void onClick(View v) {
                 HashMap<String, Object> data = new HashMap<>();
 
-                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                //put location coordinates into firebase trial
-                //trialId, trialLatitude and trialLongitude are here,
-                //data.put("Location", )
-
-                /*collectionReference
-                        .document(trialId)
-                        .set(data)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(Signup.this, "Location added", Toast.LENGTH_LONG).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(Signup.this, "Location not added", Toast.LENGTH_LONG).show();
-                            }
-                        });*/
-
                 Intent intent = new Intent();
                 intent.putExtra("latitude", trialLatitude);
                 intent.putExtra("longitude", trialLongitude);
