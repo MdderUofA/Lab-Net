@@ -43,6 +43,7 @@ public class Histogram extends AppCompatActivity {
     private int i;
     int checkActivity;
     float j;
+    private ArrayList<String> dateDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,17 +132,25 @@ public class Histogram extends AppCompatActivity {
 
         //line chart
         lineChart = (LineChart) findViewById(R.id.lineChart);
+
         //get data
         entries = new ArrayList<>();
-        for(i = 0; i < results.size(); i++){
-            entries.add(new Entry(i,Float.valueOf(String.valueOf(results.get(i)))));
+//        for(i = 0; i < results.size(); i++){
+//            entries.add(new Entry(i,Float.valueOf(String.valueOf(results.get(i)))));
+//        }
+        dateDataList = new ArrayList<>();
+        dateDataList = (ArrayList<String>) intent.getSerializableExtra("dateDataList");
+        for(i = 0; i < dateDataList.size(); i++){
+            entries.add(new Entry(Float.valueOf(dateDataList.get(i)),i));
         }
+
         //set data
         LineDataSet lineDataSet = new LineDataSet(entries, null);
         iLineDataSets = new ArrayList<>();
         iLineDataSets.add(lineDataSet);
         LineData lineData = new LineData(iLineDataSets);
         lineChart.setData(lineData);
+
         //set color of line
         lineDataSet.setColor(Color.rgb(132, 180, 200));
 
@@ -223,8 +232,13 @@ public class Histogram extends AppCompatActivity {
 
         //get data
         entries = new ArrayList<>();
-        for(i = 0; i < results.size(); i++){
-            entries.add(new Entry(i,Float.valueOf(String.valueOf(results.get(i)))));
+//        for(i = 0; i < results.size(); i++){
+//            entries.add(new Entry(i,Float.valueOf(String.valueOf(results.get(i)))));
+//        }
+        dateDataList = new ArrayList<>();
+        dateDataList = (ArrayList<String>) intent.getSerializableExtra("dateDataList");
+        for(i = 0; i < dateDataList.size(); i++){
+            entries.add(new Entry(Float.valueOf(dateDataList.get(i)),i));
         }
 
         //set data
@@ -351,5 +365,25 @@ public class Histogram extends AppCompatActivity {
         barChart.setTouchEnabled(true);
         barChart.setDragEnabled(true);
         barChart.setScaleEnabled(true);
+
+        lineChart = (LineChart) findViewById(R.id.lineChart);
+        entries = new ArrayList<>();
+        dateDataList = new ArrayList<>();
+        dateDataList = (ArrayList<String>) intent.getSerializableExtra("dateDataList");
+        for(i = 0; i < dateDataList.size(); i++){
+            entries.add(new Entry(Float.valueOf(dateDataList.get(i)),i));
+        }
+        LineDataSet lineDataSet = new LineDataSet(entries, "dateDataList");
+
+        iLineDataSets = new ArrayList<>();
+        iLineDataSets.add(lineDataSet);
+
+        LineData lineData = new LineData(iLineDataSets);
+        lineChart.setData(lineData);
+
+        lineChart.setTouchEnabled(true);
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleEnabled(true);
+
     }
 }
