@@ -91,8 +91,8 @@ public class SubscribedUserActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent searchIntent = new Intent(SubscribedUserActivity.this,
                         UserProfile.class);
-                searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
-                        SearchableList.SEARCH_USERS);
+/*                searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
+                        SearchableList.SEARCH_USERS);*/
                 searchIntent.putExtra(USER_ID_EXTRA, deviceId);
                 startActivity(searchIntent);
             }
