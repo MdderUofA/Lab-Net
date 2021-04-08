@@ -72,7 +72,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
     // Experiment
     Experiment experiment;
-    String experimentId, experimentTitle, experimentDescription, experimentRegion, trialType;
+    private String experimentId, experimentTitle, experimentDescription, experimentRegion, trialType, status;
 
     FirebaseFirestore db;
     Button add_trial_button;
@@ -107,8 +107,6 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
     SimpleDateFormat simpleDateFormat;
     String getDate;
 
-    String status;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,8 +132,11 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
 
+        add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
+        subscribeButton = (Button) findViewById(R.id.subscribeButton);
 
-        checksubscription();
+        checkExperimentEnded();
+        checkSubscription();
 
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
@@ -149,9 +150,9 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                         experimentDescription = documentSnapshot.getData().get("Description").toString();
                         experimentRegion = documentSnapshot.getData().get("Region").toString();
                         owner = documentSnapshot.getData().get("Owner").toString();
-                        //get trialtype to make respective dialog box appear
                         trialType = documentSnapshot.getData().get("TrialType").toString();
                         isLocationEnabled = documentSnapshot.getData().get("EnableLocation").toString();
+
                         // set textviews in experiment_owner_activity to experiment details
                         experiment_title.setText(experimentTitle);
                         experiment_description.setText("Description: " + experimentDescription);
@@ -160,6 +161,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                 }
             }
         });
+
         // Fills in trialDataList
         //get trials
         db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
@@ -170,10 +172,10 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 trialId = document.getId();
-                                trialTitle = document.getData().get("Title").toString();
-                                trialType = document.getData().get("Title").toString();
+                                trialTitle = document.getData().get("Title").toString();/*
+                                trialType = document.getData().get("Title").toString();*/
                                 resultLong = (Long) document.getData().get("Result");
-                                //getDate = document.getData().get("Date").toString();
+                                getDate = document.getData().get("Date").toString();
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(!isUnlisted){
                                     trialDataList.add(new CountTrial(trialId, trialTitle, resultLong));
@@ -182,15 +184,12 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
                             }
                             trialArrayAdapter.notifyDataSetChanged();
-
-
                         }
 
                     }
 
                 });
 
-        add_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
         add_trial_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -218,7 +217,6 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
         //check if user already subscribed, button grey out
         //otherwise give option to subscribe
-        subscribeButton = (Button) findViewById(R.id.subscribeButton);
         subscribeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -279,7 +277,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                 //TODO
                 break;
             case R.id.nav_statistics:
-                if (trialArrayAdapter.getCount() == 0 || trialType.equals("Binomial")) {
+                if (trialArrayAdapter.getCount() == 0) {
                     Toast.makeText(SubscribedCountExperimentActivity.this,
                             "No stats available for this experiment", Toast.LENGTH_LONG).show();
                 } else {
@@ -319,6 +317,27 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         return true;
     }
 
+    private void checkExperimentEnded() {
+        db.collection("Experiments").document(experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.exists()) {
+                                status = documentSnapshot.getData().get("Status").toString();
+                                if ("closed".equals(status)) {
+                                    subscribeButton.setEnabled(false);
+                                    add_trial_button.setEnabled(false);
+                                    Toast.makeText(SubscribedCountExperimentActivity.this, "Experiment has Ended", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
     private void getSubscribedUsers(){
         db.collection("SubscribedExperiments").whereEqualTo("ExperimentId", experimentId)
                 .get()
@@ -350,7 +369,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         });
     }
 
-    private void checksubscription() {
+    private void checkSubscription() {
         db.collection("SubscribedExperiments")
                 .whereEqualTo("ExperimentId",experimentId)
                 .get()
@@ -358,17 +377,12 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            Boolean isSubscriber = false;
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String subscriber = document.getData().get("Subscriber").toString();
                                 if (subscriber.equals(deviceId)) {
-                                    isSubscriber = true;
                                     subscribeButton.setEnabled(false);
                                     subscribeButton.setText("Subscribed");
                                 }
-                            }
-                            if (! isSubscriber) {
-                                add_trial_button.setEnabled(false);
                             }
                         }
                     }
