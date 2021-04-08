@@ -25,24 +25,24 @@ import java.util.Collections;
 
 public class Histogram extends AppCompatActivity {
 
+    TextView xAxisTitle, yAxisTitle;
+
     BarChart barChart;
     ArrayList<BarEntry> barEntries;
     LineChart lineChart;
     ArrayList<ILineDataSet> iLineDataSets;
     ArrayList<Entry> entries;
-    private ArrayList<Double> results;
+    ArrayList<Double> results;
     ArrayList<String> trialTitles;
+
     private ArrayList<NonNegativeIntegerTrial> nonNegativeTrials;
     private ArrayList <CountTrial> countTrials;
     private ArrayList <MeasurementTrial> measurementTrials;
     private ArrayList <BinomialTrial> binomialTrials;
-    private ArrayList<Double> frequency;
 
-    TextView xAxisTitle, yAxisTitle;
     private int i;
     int checkActivity;
     float j;
-    private ArrayList<String> dateDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +69,16 @@ public class Histogram extends AppCompatActivity {
     }
 
     public void nonNegative() {
-        barChart = (BarChart) findViewById(R.id.barGraph);
 
-        Intent intent = getIntent();
+        //bar chart
+        barChart = (BarChart) findViewById(R.id.barGraph);
+        //y-axis
         trialTitles = new ArrayList<>();
+        //x-axis
         results = new ArrayList<>();
 
+        //get values
+        Intent intent = getIntent();
         nonNegativeTrials = new ArrayList<>();
         nonNegativeTrials = (ArrayList<NonNegativeIntegerTrial>) intent.getSerializableExtra("trialDataList");
         for (i = 0; i < nonNegativeTrials.size(); i++) {
@@ -87,29 +91,35 @@ public class Histogram extends AppCompatActivity {
         xAxisTitle.setText("Trials");
         yAxisTitle.setText("Results");
 
+        //add values to bar entries
         barEntries = new ArrayList<>();
-
         for (i = 0; i < results.size(); i++) {
             barEntries.add(new BarEntry(i, Float.valueOf(String.valueOf(results.get(i)))));
         }
         BarDataSet barDataSet = new BarDataSet(barEntries, null);
+
+        //set color of the bars
         barDataSet.setColors(new int[] {Color.rgb(132, 180, 200),
                                         Color.rgb(244, 220, 214)});
 
+        //set data to chart
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
 
+        //set x-axis to trial titles
         ValueFormatter formatter = new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, AxisBase axis) {
                 return trialTitles.get((int) value);
             }
         };
+
         XAxis xAxis = barChart.getXAxis();
         xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
         xAxis.setValueFormatter(formatter);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(5);
+
         barChart.getAxisRight().setEnabled(false);
         barChart.getLegend().setEnabled(false);
         barChart.getDescription().setEnabled(false);
@@ -121,20 +131,23 @@ public class Histogram extends AppCompatActivity {
 
         //line chart
         lineChart = (LineChart) findViewById(R.id.lineChart);
+        //get data
         entries = new ArrayList<>();
         for(i = 0; i < results.size(); i++){
             entries.add(new Entry(i,Float.valueOf(String.valueOf(results.get(i)))));
         }
-
+        //set data
         LineDataSet lineDataSet = new LineDataSet(entries, null);
-
         iLineDataSets = new ArrayList<>();
         iLineDataSets.add(lineDataSet);
-        lineDataSet.setColor(Color.rgb(132, 180, 200));
         LineData lineData = new LineData(iLineDataSets);
         lineChart.setData(lineData);
+        //set color of line
+        lineDataSet.setColor(Color.rgb(132, 180, 200));
+
         XAxis lxAxis = lineChart.getXAxis();
         lxAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
         lineChart.getAxisRight().setEnabled(false);
         lineChart.getLegend().setEnabled(false);
         lineChart.getDescription().setEnabled(false);
@@ -147,14 +160,17 @@ public class Histogram extends AppCompatActivity {
     }
 
     public void count() {
+        //bar chart
         barChart = (BarChart) findViewById(R.id.barGraph);
-
-        Intent intent = getIntent();
+        //y-axis
         trialTitles = new ArrayList<>();
+        //x-axis
         results = new ArrayList<>();
+
+        //get values
+        Intent intent = getIntent();
         countTrials = new ArrayList<>();
         countTrials = (ArrayList<CountTrial>) intent.getSerializableExtra("trialDataList");
-
         for (i = 0; i < countTrials.size(); i++) {
             results.add(Double.valueOf(countTrials.get(i).getCount()));
         }
@@ -165,29 +181,34 @@ public class Histogram extends AppCompatActivity {
         xAxisTitle.setText("Trials");
         yAxisTitle.setText("Results");
 
+        //add values to bar entries
         barEntries = new ArrayList<>();
         for (i = 0; i < results.size(); i++) {
             barEntries.add(new BarEntry(i, Float.valueOf(String.valueOf(results.get(i)))));
         }
-
+        //set data
         BarDataSet barDataSet = new BarDataSet(barEntries,null);
-        barDataSet.setColors(new int[] {Color.rgb(132, 180, 200),
-                Color.rgb(244, 220, 214)});
-
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
 
+        //set color of bars
+        barDataSet.setColors(new int[] {Color.rgb(132, 180, 200),
+                Color.rgb(244, 220, 214)});
+
+        //set x-axis to trial titles
         ValueFormatter formatter = new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, AxisBase axis) {
                 return trialTitles.get((int) value);
             }
         };
+
         XAxis xAxis = barChart.getXAxis();
         xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
         xAxis.setValueFormatter(formatter);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(5);
+
         barChart.getAxisRight().setEnabled(false);
         barChart.getLegend().setEnabled(false);
         barChart.getDescription().setEnabled(false);
@@ -199,18 +220,23 @@ public class Histogram extends AppCompatActivity {
 
         //line chart
         lineChart = (LineChart) findViewById(R.id.lineChart);
+
+        //get data
         entries = new ArrayList<>();
         for(i = 0; i < results.size(); i++){
             entries.add(new Entry(i,Float.valueOf(String.valueOf(results.get(i)))));
         }
 
+        //set data
         LineDataSet lineDataSet = new LineDataSet(entries, null);
-
         iLineDataSets = new ArrayList<>();
         iLineDataSets.add(lineDataSet);
-        lineDataSet.setColor(Color.rgb(132, 180, 200));
         LineData lineData = new LineData(iLineDataSets);
         lineChart.setData(lineData);
+
+        //set color of line
+        lineDataSet.setColor(Color.rgb(132, 180, 200));
+
         XAxis lxAxis = lineChart.getXAxis();
         lxAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         lineChart.getAxisRight().setEnabled(false);
@@ -225,11 +251,12 @@ public class Histogram extends AppCompatActivity {
     }
 
     private void binomial() {
+        //bar chart
         barChart = (BarChart) findViewById(R.id.barGraph);
-
-        Intent intent = getIntent();
         results = new ArrayList<>();
 
+        //get values
+        Intent intent = getIntent();
         binomialTrials = new ArrayList<>();
         binomialTrials = (ArrayList<BinomialTrial>) intent.getSerializableExtra("trialDataList");
         for (i = 0; i < binomialTrials.size(); i++) {
@@ -241,7 +268,7 @@ public class Histogram extends AppCompatActivity {
             }
 
         }
-        barEntries = new ArrayList<>();
+
         int passFrequency = 0;
         int failFrequency = 0;
 
@@ -259,16 +286,20 @@ public class Histogram extends AppCompatActivity {
         xAxisTitle.setText("Results");
         yAxisTitle.setText("Frequency");
 
+        barEntries = new ArrayList<>();
         barEntries.add(new BarEntry(0f, passFrequency));
         barEntries.add(new BarEntry(1f, failFrequency));
 
+        //set data
         BarDataSet barDataSet = new BarDataSet(barEntries,null);
-        barDataSet.setColors(new int[] {Color.rgb(132, 180, 200),
-                                        Color.rgb(244, 220, 214)});
-
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
 
+        //set color of bars
+        barDataSet.setColors(new int[] {Color.rgb(132, 180, 200),
+                Color.rgb(244, 220, 214)});
+
+        //set x-axis to pass or fail
         final String[] xAxisLabels = new String[] { "Pass", "Fail"};
         ValueFormatter formatter = new ValueFormatter() {
             @Override
@@ -281,6 +312,7 @@ public class Histogram extends AppCompatActivity {
         xAxis.setValueFormatter(formatter);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(20);
+
         barChart.getAxisRight().setEnabled(false);
         barChart.getLegend().setEnabled(false);
         barChart.getDescription().setEnabled(false);
@@ -303,7 +335,6 @@ public class Histogram extends AppCompatActivity {
             results.add(Double.valueOf(measurementTrials.get(i).getMeasurement()));
         }
         barEntries = new ArrayList<>();
-        frequency = new ArrayList<>();
 
         /*for (i = 0; i < results.size(); i++) {
             frequency.add()
