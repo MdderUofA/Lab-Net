@@ -3,7 +3,6 @@ package com.example.lab_net;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,8 +42,8 @@ import java.util.Map;
 //import com.google.firebase.database.FirebaseDatabase;
 
 /**
- * This class includes the User Profile activity that displays the user information,
- * as well as buttons for editing user info, browsing and creating experiments, and QR codes.
+ * The User Profile activity that displays the user information,
+ * as well as buttons for editing user info, browsing and creating experiments.
  *
  * @author Vidhi Patel, Qasim Akhtar
  */
@@ -70,8 +69,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private TextView usernameTextView, firstNameTextView, lastNameTextView,emailTextView,phoneTextView;
 
     private String status;
-
-    // Make EditTexts in add Experiment global to ensure they aren't empty
 
     EditText expTitle, expDescription, expRegion, expMinTrials;
     Button create;
@@ -119,8 +116,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         browse.setOnClickListener(this);
         addExp = (Button) findViewById(R.id.addExpButton);
         addExp.setOnClickListener(this);
-        qrCode = (Button) findViewById(R.id.qrButton);
-        qrCode.setOnClickListener(this);
 
         myExpView();
         subExpView();
@@ -133,24 +128,24 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             case R.id.editUserInfo:
                 editUserDialog();
                 break;
+
             case R.id.browseButton:
                 Intent searchIntent = new Intent(this, SearchableListActivity.class);
                 searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
                         SearchableList.SEARCH_EXPERIMENTS);
                 startActivity(searchIntent);
-
                 break;
+
             case R.id.addExpButton:
                 addExpDialog();
-                break;
-            case R.id.qrButton:
-                startActivity(new Intent(this, QRScanner.class));
                 break;
 
         }
     }
 
-
+    /**
+     * Get the User's subscribed Experiments
+     */
     public void getSubscribedExperiments() {
         db.collection("SubscribedExperiments")
                 .whereEqualTo("Subscriber", userId)
@@ -175,7 +170,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     /**
-     * Get experiments from the database that were created by the user by matching user ID.
+     * Get experiments from the database that were created by the user.
      */
     public void getMyExperiments() {
         db.collection("Experiments")
@@ -233,7 +228,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     /**
      * Create a dialog with the user information that can be edited.
-     * Update the database with the new information, or delete the profile is user requested.
+     * Update the database with the new information, or delete the profile if user requested.
      */
     private void editUserDialog() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(UserProfile.this);
@@ -342,6 +337,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         ArrayAdapter<String> adapter2 =
                 new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,enableLocation);
         dropdown2.setAdapter(adapter2);
+
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -387,8 +383,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     }
 
+
     /**
-     * The view to display subscribed experiments in the User Profile.
+     * Display subscribed experiments in the User Profile.
      */
     private void subExpView() {
         subExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -424,7 +421,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     /**
-     * The view to display user created experiments in the User Profile.
+     * Display user created experiments in the User Profile.
      */
     private void myExpView (){
         myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -490,6 +487,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         }
     };
+
     /**
      *  Checks if the input is a positive integer
      * @param check

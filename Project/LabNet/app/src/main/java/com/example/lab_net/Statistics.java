@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * The statistical analysis of all the trials in a given experiment
+ */
 public class Statistics extends AppCompatActivity {
 
     private TextView meanView, medianView, lowerQuartileView, upperQuartileView, standardDeviationView;

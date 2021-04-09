@@ -1,5 +1,8 @@
 package com.example.lab_net;
 
+/**
+ * Defining the Count Trial
+ */
 public class CountTrial extends Trial{
     private Long count;
 

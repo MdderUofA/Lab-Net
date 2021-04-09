@@ -20,6 +20,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * Custom listview for Measurement Trials
+ */
 public class CustomMeasurementTrialList extends ArrayAdapter<MeasurementTrial> {
 
     private ArrayList<MeasurementTrial> trials;

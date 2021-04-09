@@ -2,6 +2,9 @@ package com.example.lab_net;
 
 import java.io.Serializable;
 
+/**
+ * This class defines the Trial and its attributes.
+ */
 public class Trial implements Serializable {
     private String id;
     private String title;

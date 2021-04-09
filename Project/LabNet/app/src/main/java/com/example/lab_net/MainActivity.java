@@ -20,6 +20,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Acitivity that appears upon starting the app to show logo.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
@@ -59,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * user created based on device Id with no personal information
+     */
     private void createUser(){
 
         Map<String,Object> dataSet= new HashMap<>();

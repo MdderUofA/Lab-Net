@@ -19,9 +19,8 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 /**
- * This class is for displaying the experiments created by the user.
- *
- * @author  Qasim Akhtar
+ * Custom listview to display experiments created by the user
+ * @author Qasim Akhtar
  */
 public class CustomMyExperimentsList extends ArrayAdapter<Experiment> {
     private ArrayList<Experiment> experiments;

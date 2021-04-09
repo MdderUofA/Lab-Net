@@ -1,5 +1,8 @@
 package com.example.lab_net;
 
+/**
+ * Defining the Non-negative Integer Trial.
+ */
 public class NonNegativeIntegerTrial extends Trial{
     private Long nonNegativeCount;
 

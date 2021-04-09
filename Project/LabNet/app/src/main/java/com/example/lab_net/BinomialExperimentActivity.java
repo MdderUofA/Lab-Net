@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +31,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -44,6 +44,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+/**
+ * Activity for Experiments with Binomial Trials
+ */
 public class BinomialExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView trialList, ignoredTrialList;
@@ -92,6 +95,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
     private Button subscribed_users_button;
     private String subUserId;
     private ListView subUsersList;
+    private ArrayList<String> subUsersNameList;
     private ArrayList<String> subUsersDataList;
     private ArrayAdapter<String> subUsersArrayAdapter;
 
@@ -270,7 +274,8 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
 
         subUsersList = (ListView) findViewById(R.id.subscribed_Users_list);
         subUsersDataList = new ArrayList<>();
-        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersDataList);
+        subUsersNameList = new ArrayList<>();
+        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersNameList);
         subUsersList.setAdapter(subUsersArrayAdapter);
         getSubscribedUsers();
 
@@ -301,9 +306,9 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                     }
                 });
     }
+
     //side menu created from youtube: Android Navigation Drawer Menu Material Design
     // by Coding With Tea
-
     /**
      * set side menu on owner experiment activity
      */
@@ -431,8 +436,25 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 subUserId = document.getData().get("Subscriber").toString();
                                 subUsersDataList.add(subUserId);
+
+                                db.collection("UserProfile")
+                                        .whereEqualTo(FieldPath.documentId(),subUserId).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        String userFirstName = document.getData().get("firstName").toString();
+                                                        String userLastName = document.getData().get("lastName").toString();
+                                                        String fullname = userFirstName + " " + userLastName;
+
+                                                        subUsersNameList.add(fullname);
+                                                    }
+                                                    subUsersArrayAdapter.notifyDataSetChanged();
+                                                }
+                                            }
+                                        });
                             }
-                            subUsersArrayAdapter.notifyDataSetChanged();
 
                         }
 
@@ -505,6 +527,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
 
         });
     }
+
     /**
      * Launches MapActivity so user can retrieve their device location for experiment. Needs trialId.
      * @param trialId
@@ -515,6 +538,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         sendTrialId.putExtra("trialId", trialId);
         startActivityForResult(sendTrialId, 2);
     }
+
     /**
      * Checks to see if experiment requires location, or if latitude and longitude is provided. Based
      * on this it enables/disables the addTrialDialogButton. So user must get location if required, else
@@ -543,6 +567,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
             }
         }
     }
+
     /**
      * Retrieves and saves location coordinates from MapActivity once user has selected their location.
      * Checks to see if location requirements have been met by calling checkLocationReq.
@@ -841,6 +866,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                     }
                 });
     }
+
     /**
      * Responsible for the validation of values used for adding trial
      */

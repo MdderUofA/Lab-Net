@@ -1,5 +1,8 @@
 package com.example.lab_net;
 
+/**
+ * Defining the Answer class with its attributes.
+ */
 public class Answer {
     private String questionID;
     private String answerID;

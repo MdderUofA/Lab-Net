@@ -33,6 +33,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -43,6 +44,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Defining the standard experiment Activity.
+ */
 public class ExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
@@ -52,7 +56,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
     // Count adapters and lists
     private ArrayAdapter<CountTrial> trialArrayAdapter;
     private ArrayList<CountTrial> trialDataList;
-    private CustomTrialList customTrialList;
+    private CustomCountTrialList customCountTrialList;
 
     // Measurement
     private ArrayAdapter<MeasurementTrial> measurementTrialArrayAdapter;
@@ -95,6 +99,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
     Button subscribed_users_button;
     private String subUserId;
     private ListView subUsersList;
+    private ArrayList<String> subUsersNameList;
     private ArrayList<String> subUsersDataList;
     private ArrayAdapter<String> subUsersArrayAdapter;
 
@@ -112,7 +117,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
         //count
         trialList = (ListView) findViewById(R.id.trial_list);
         trialDataList = new ArrayList<>();
-        trialArrayAdapter = new CustomTrialList(this, trialDataList);
+        trialArrayAdapter = new CustomCountTrialList(this, trialDataList);
         trialList.setAdapter(trialArrayAdapter);
         db = FirebaseFirestore.getInstance();
 
@@ -211,7 +216,8 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
 
         subUsersList = (ListView) findViewById(R.id.subscribed_Users_list);
         subUsersDataList = new ArrayList<>();
-        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersDataList);
+        subUsersNameList = new ArrayList<>();
+        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersNameList);
         subUsersList.setAdapter(subUsersArrayAdapter);
         getSubscribedUsers();
 
@@ -249,7 +255,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
                 startActivity(profileIntent);
                 break;
             case R.id.nav_qr:
-                //TODO
+                //Done
                 break;
             case R.id.nav_statistics:
                 if (trialArrayAdapter.getCount() == 0 || trialType.equals("Binomial")) {
@@ -263,7 +269,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
                 }
                 break;
             case R.id.nav_graphs:
-                //TODO
+                //Done
                 break;
 
             case R.id.nav_locationPlot:
@@ -279,7 +285,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
                 startActivity(qaIntent);
                 break;
             case R.id.nav_endExp:
-                //TODO
+                //Done
                 break;
             case R.id.nav_deleteExp:
                 deleteExperiment();
@@ -298,8 +304,25 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 subUserId = document.getData().get("Subscriber").toString();
                                 subUsersDataList.add(subUserId);
+
+                                db.collection("UserProfile")
+                                        .whereEqualTo(FieldPath.documentId(),subUserId).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        String userFirstName = document.getData().get("firstName").toString();
+                                                        String userLastName = document.getData().get("lastName").toString();
+                                                        String fullname = userFirstName + " " + userLastName;
+
+                                                        subUsersNameList.add(fullname);
+                                                    }
+                                                    subUsersArrayAdapter.notifyDataSetChanged();
+                                                }
+                                            }
+                                        });
                             }
-                            subUsersArrayAdapter.notifyDataSetChanged();
 
                         }
 

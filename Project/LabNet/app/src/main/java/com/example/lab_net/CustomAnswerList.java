@@ -12,6 +12,9 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * Custom listview for answers
+ */
 public class CustomAnswerList extends ArrayAdapter<Answer> {
     private ArrayList<Answer> answers;
     private Context context;

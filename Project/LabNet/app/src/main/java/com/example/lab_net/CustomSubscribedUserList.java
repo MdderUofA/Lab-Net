@@ -12,7 +12,9 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-
+/**
+ * Custom Listview for Subscribed Users.
+ */
 public class CustomSubscribedUserList extends ArrayAdapter<String> {
 
     private ArrayList<String> subscribers;

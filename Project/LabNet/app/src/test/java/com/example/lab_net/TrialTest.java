@@ -4,6 +4,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * Testing the different types of Trials
+ */
 public class TrialTest {
 
     @Test

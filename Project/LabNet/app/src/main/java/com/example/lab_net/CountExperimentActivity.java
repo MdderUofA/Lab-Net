@@ -32,6 +32,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -44,6 +45,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+/**
+ * Activity for Experiments with Count Trials
+ */
 public class CountExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -97,6 +101,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
     private Button subscribed_users_button;
     private String subUserId;
+    private ArrayList<String> subUsersNameList;
     private ArrayList<String> subUsersDataList;
     private ArrayAdapter<String> subUsersArrayAdapter;
 
@@ -137,8 +142,8 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         ignoredTrialList = (ListView) findViewById(R.id.ignored_trials_list);
         trialDataList = new ArrayList<>();
         ignoredTrialDataList = new ArrayList<>();
-        trialArrayAdapter = new CustomTrialList(this, trialDataList);
-        ignoredTrialArrayAdapter = new CustomTrialList(this, ignoredTrialDataList);
+        trialArrayAdapter = new CustomCountTrialList(this, trialDataList);
+        ignoredTrialArrayAdapter = new CustomCountTrialList(this, ignoredTrialDataList);
 
         trialList.setAdapter(trialArrayAdapter);
         ignoredTrialList.setAdapter(ignoredTrialArrayAdapter);
@@ -175,6 +180,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 }
             }
         });
+
         //get trials
         db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
                 .get()
@@ -277,7 +283,8 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
         subUsersList = (ListView) findViewById(R.id.subscribed_Users_list);
         subUsersDataList = new ArrayList<>();
-        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersDataList);
+        subUsersNameList = new ArrayList<>();
+        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersNameList);
         subUsersList.setAdapter(subUsersArrayAdapter);
         getSubscribedUsers();
 
@@ -307,6 +314,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                     }
                 });
     }
+
     //side menu created from youtube: Android Navigation Drawer Menu Material Design
     // by Coding With Tea
     /**
@@ -438,14 +446,33 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 subUserId = document.getData().get("Subscriber").toString();
                                 subUsersDataList.add(subUserId);
+                                db.collection("UserProfile")
+                                        .whereEqualTo(FieldPath.documentId(),subUserId).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        String userFirstName = document.getData().get("firstName").toString();
+                                                        String userLastName = document.getData().get("lastName").toString();
+                                                        String fullname = userFirstName + " " + userLastName;
+
+                                                        subUsersNameList.add(fullname);
+                                                    }
+                                                    subUsersArrayAdapter.notifyDataSetChanged();
+                                                }
+                                            }
+                                        });
                             }
-                            subUsersArrayAdapter.notifyDataSetChanged();
 
                         }
 
                     }
 
                 });
+
+
+
         subUsersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -511,6 +538,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
         });
     }
+
     /**
      * Launches MapActivity so user can retrieve their device location for experiment. Needs trialId.
      * @param trialId
@@ -521,6 +549,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         sendTrialId.putExtra("trialId", trialId);
         startActivityForResult(sendTrialId, 2);
     }
+
     /**
      * Checks to see if experiment requires location, or if latitude and longitude is provided. Based
      * on this it enables/disables the addTrialDialogButton. So user must get location if required, else
@@ -549,6 +578,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
             }
         }
     }
+
     /**
      * Retrieves and saves location coordinates from MapActivity once user has selected their location.
      * Checks to see if location requirements have been met by calling checkLocationReq.

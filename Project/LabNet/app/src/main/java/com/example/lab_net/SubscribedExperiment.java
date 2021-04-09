@@ -1,5 +1,9 @@
 package com.example.lab_net;
 
+/**
+ * Subscribed Experiment class that contains its attributes, such as
+ * id, title, subscriber, and TrialType
+ */
 public class SubscribedExperiment {
     private String id;
     private String title;

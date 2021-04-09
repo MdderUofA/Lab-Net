@@ -2,6 +2,9 @@ package com.example.lab_net;
 
 import java.util.ArrayList;
 
+/**
+ * The experiment class with all its attributes.
+ */
 public class Experiment {
     String experimentId;
     String title;

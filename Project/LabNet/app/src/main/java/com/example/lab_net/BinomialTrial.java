@@ -1,5 +1,8 @@
 package com.example.lab_net;
 
+/**
+ * Defining the Binomial trial
+ */
 public class BinomialTrial extends Trial{
     private String result;
 
