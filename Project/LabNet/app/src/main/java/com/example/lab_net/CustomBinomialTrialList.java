@@ -20,12 +20,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class CustomBinomialTrialList extends ArrayAdapter<Trial> {
-    private ArrayList<Trial> trials;
+public class CustomBinomialTrialList extends ArrayAdapter<BinomialTrial> {
+    private ArrayList<BinomialTrial> trials;
     private Context context;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public CustomBinomialTrialList(Context context, ArrayList<Trial> trials){
+    public CustomBinomialTrialList(Context context, ArrayList<BinomialTrial> trials){
         super(context,0, trials);
         this.trials = trials;
         this.context = context;
@@ -42,7 +42,7 @@ public class CustomBinomialTrialList extends ArrayAdapter<Trial> {
             view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
         }
 
-        BinomialTrial trial = (BinomialTrial) trials.get(position);
+        BinomialTrial trial = trials.get(position);
         TextView titleText = view.findViewById(R.id.title_text);
         TextView resultText = view.findViewById(R.id.result_text);
         ImageView trialLocationIcon = view.findViewById(R.id.trialLocationIcon);

@@ -50,8 +50,8 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
 
 
     // Count adapters and lists
-    private ArrayAdapter<Trial> trialArrayAdapter;
-    private ArrayList<Trial> trialDataList;
+    private ArrayAdapter<MeasurementTrial> trialArrayAdapter;
+    private ArrayList<MeasurementTrial> trialDataList;
     private FirebaseFirestore db;
 
     // experiment
@@ -83,8 +83,8 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
     private ArrayList<String> subUsersDataList;
     private ArrayAdapter<String> subUsersArrayAdapter;
 
-    private ArrayAdapter<Trial> ignoredTrialArrayAdapter;
-    private ArrayList<Trial> ignoredTrialDataList;
+    private ArrayAdapter<MeasurementTrial> ignoredTrialArrayAdapter;
+    private ArrayList<MeasurementTrial> ignoredTrialDataList;
 
     Date date;
     String formattedDate;
@@ -170,10 +170,10 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                                 getDate = (String) document.getData().get("Date");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted){
-                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, getDate, Double.valueOf(result)));
+                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
                                 }
                                 else {
-                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, getDate, Double.valueOf(result)));
+                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
                                 }
                                 dates.add(getDate);
 
@@ -595,7 +595,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                trialDataList.add(new MeasurementTrial(trialId, title, formattedDate, Double.valueOf(result)));
+                                trialDataList.add(new MeasurementTrial(trialId, title, Double.valueOf(result)));
                                 trialArrayAdapter.notifyDataSetChanged();
                                 Toast.makeText(MeasurementExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
                                 setDialog.dismiss();
@@ -662,7 +662,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
      * @param position
      */
     public void moveToUnlisted(int position) {
-        MeasurementTrial trial = (MeasurementTrial) trialDataList.get(position);
+        MeasurementTrial trial = trialDataList.get(position);
         ignoredTrialDataList.add(trialDataList.get(position));
         ignoredTrialArrayAdapter.notifyDataSetChanged();
         trialDataList.remove(position);
@@ -699,10 +699,10 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                                 result = (String) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, getDate, Double.valueOf(result)));
+                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
                                 }
                                 else{
-                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, getDate, Double.valueOf(result)));
+                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
                                 }
                                 dates.add(getDate);
                             }
@@ -719,7 +719,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
      * @param position
      */
     private void moveTrial(int position) {
-        MeasurementTrial trial = (MeasurementTrial) ignoredTrialDataList.get(position);
+        MeasurementTrial trial = ignoredTrialDataList.get(position);
         //isUnlisted = true;
         //trialDataList.remove(position);
         //trialDataList.get(position).setB
@@ -760,11 +760,11 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                                 result = (String) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, getDate, Double.valueOf(result)));
+                                    ignoredTrialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
 
                                 }
                                 else{
-                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, getDate, Double.valueOf(result)));
+                                    trialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(result)));
 
                                 }
                                 dates.add(getDate);

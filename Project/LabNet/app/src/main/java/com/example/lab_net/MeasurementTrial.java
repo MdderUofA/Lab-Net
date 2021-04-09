@@ -1,13 +1,11 @@
 package com.example.lab_net;
 
-import java.util.Date;
-
-public class MeasurementTrial extends Trial {
+public class MeasurementTrial extends Trial{
     private double measurement;
 
 
-    public MeasurementTrial(String id, String title, String date, double measurement) {
-        super(id, title, date);
+    public MeasurementTrial(String id, String title, double measurement) {
+        super(id, title);
         this.measurement = measurement;
     }
 

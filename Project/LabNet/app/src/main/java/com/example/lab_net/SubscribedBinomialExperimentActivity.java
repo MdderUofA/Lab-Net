@@ -54,8 +54,8 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
 
     private ListView trialList;
     // Count adapters and lists
-    private ArrayAdapter<Trial> trialArrayAdapter;
-    private ArrayList<Trial> trialDataList;
+    private ArrayAdapter<BinomialTrial> trialArrayAdapter;
+    private ArrayList<BinomialTrial> trialDataList;
     private CustomTrialList customTrialList;
     private ArrayList<String> dates;
 
@@ -175,7 +175,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                                 getDate = (String) document.getData().get("Date");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(!isUnlisted){
-                                    trialDataList.add(new BinomialTrial(trialId, trialTitle, getDate, resultLong));
+                                    trialDataList.add(new BinomialTrial(trialId, trialTitle, resultLong));
                                 }
                                 dates.add(getDate);
 
@@ -535,7 +535,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                trialDataList.add(new BinomialTrial(trialId, title, formattedDate, result));
+                                trialDataList.add(new BinomialTrial(trialId, title, result));
                                 trialArrayAdapter.notifyDataSetChanged();
                                 Toast.makeText(SubscribedBinomialExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
                                 setDialog.dismiss();

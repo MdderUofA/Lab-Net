@@ -1,17 +1,15 @@
 package com.example.lab_net;
 
-import java.util.Date;
-
-public class CountTrial extends Trial {
-    private long count;
+public class CountTrial extends Trial{
+    private Long count;
 
 
-    public CountTrial(String id, String title, String date, Long count) {
-        super(id, title, date);
+    public CountTrial(String id, String title, Long count) {
+        super(id, title);
         this.count = count;
     }
 
-    public long getCount() {
+    public Long getCount() {
         return count;
     }
 }

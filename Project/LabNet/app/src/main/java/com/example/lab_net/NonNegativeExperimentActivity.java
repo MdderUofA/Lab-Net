@@ -50,8 +50,8 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
 
 
     // Count adapters and lists
-    private ArrayAdapter<Trial> trialArrayAdapter;
-    private ArrayList<Trial> trialDataList;
+    private ArrayAdapter<NonNegativeIntegerTrial> trialArrayAdapter;
+    private ArrayList<NonNegativeIntegerTrial> trialDataList;
     private FirebaseFirestore db;
 
     // experiment
@@ -85,8 +85,8 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
     private ArrayList<String> subUsersDataList;
     private ArrayAdapter<String> subUsersArrayAdapter;
 
-    private ArrayAdapter<Trial> ignoredTrialArrayAdapter;
-    private ArrayList<Trial> ignoredTrialDataList;
+    private ArrayAdapter<NonNegativeIntegerTrial> ignoredTrialArrayAdapter;
+    private ArrayList<NonNegativeIntegerTrial> ignoredTrialDataList;
 
     Date date;
     String formattedDate;
@@ -175,10 +175,10 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
                                 getDate = (String) document.getData().get("Date");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted){
-                                    ignoredTrialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, getDate, Long.valueOf(result)));
+                                    ignoredTrialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, Long.valueOf(result)));
                                 }
                                 else {
-                                    trialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, getDate, Long.valueOf(result)));
+                                    trialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, Long.valueOf(result)));
                                 }
                                 dates.add(getDate);
 
@@ -601,7 +601,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                trialDataList.add(new NonNegativeIntegerTrial(trialId, title, getDate, Long.valueOf(result)));
+                                trialDataList.add(new NonNegativeIntegerTrial(trialId, title, Long.valueOf(result)));
                                 trialArrayAdapter.notifyDataSetChanged();
                                 Toast.makeText(NonNegativeExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
                                 setDialog.dismiss();
@@ -624,7 +624,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
      * @param position
      */
     public void moveToUnlisted(int position) {
-        NonNegativeIntegerTrial trial = (NonNegativeIntegerTrial) trialDataList.get(position);
+        NonNegativeIntegerTrial trial = trialDataList.get(position);
         //isUnlisted = true;
         //trialDataList.remove(position);
         //trialDataList.get(position).setB
@@ -665,10 +665,10 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
                                 result = (String) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, getDate, Long.valueOf(result)));
+                                    ignoredTrialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, Long.valueOf(result)));
                                 }
                                 else{
-                                    trialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, getDate, Long.valueOf(result)));
+                                    trialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, Long.valueOf(result)));
                                 }
                                 dates.add(getDate);
                             }
@@ -684,7 +684,7 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
      * @param position
      */
     private void moveTrial(int position) {
-        NonNegativeIntegerTrial trial = (NonNegativeIntegerTrial) ignoredTrialDataList.get(position);
+        NonNegativeIntegerTrial trial = ignoredTrialDataList.get(position);
         //isUnlisted = true;
         //trialDataList.remove(position);
         //trialDataList.get(position).setB
@@ -725,11 +725,11 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
                                 result = (String) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, getDate, Long.valueOf(result)));
+                                    ignoredTrialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, Long.valueOf(result)));
 
                                 }
                                 else{
-                                    trialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, getDate, Long.valueOf(result)));
+                                    trialDataList.add(new NonNegativeIntegerTrial(trialId, trialTitle, Long.valueOf(result)));
 
                                 }
                                 dates.add(getDate);

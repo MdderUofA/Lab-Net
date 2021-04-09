@@ -52,10 +52,10 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
 
     // Count adapters and lists
-    private ArrayAdapter<Trial> trialArrayAdapter;
-    private ArrayList<Trial> trialDataList;
-    private ArrayAdapter<Trial> ignoredTrialArrayAdapter;
-    private ArrayList<Trial> ignoredTrialDataList;
+    private ArrayAdapter<CountTrial> trialArrayAdapter;
+    private ArrayList<CountTrial> trialDataList;
+    private ArrayAdapter<CountTrial> ignoredTrialArrayAdapter;
+    private ArrayList<CountTrial> ignoredTrialDataList;
     private FirebaseFirestore db;
 
     // experiment
@@ -186,10 +186,10 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                 getDate = document.getData().get("Date").toString();
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted){
-                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, getDate, getResult));
+                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, getResult));
                                 }
                                 else {
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, getDate, getResult));
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, getResult));
                                 }
                                 dates.add(getDate);
                             }
@@ -611,7 +611,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                trialDataList.add(new CountTrial(trialId, title, formattedDate, result));
+                                trialDataList.add(new CountTrial(trialId, title, result));
                                 trialArrayAdapter.notifyDataSetChanged();
                                 Toast.makeText(CountExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
                                 setDialog.dismiss();
@@ -675,7 +675,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
      * @param position
      */
     public void moveToUnlisted(int position) {
-        CountTrial trial = (CountTrial) trialDataList.get(position);
+        CountTrial trial = trialDataList.get(position);
         //isUnlisted = true;
         //trialDataList.remove(position);
         //trialDataList.get(position).setB
@@ -730,11 +730,11 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                 result = (Long) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, getDate, Long.valueOf(result)));
+                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
 
                                 }
                                 else{
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, getDate, Long.valueOf(result)));
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
 
                                 }
                                 dates.add(getDate);
@@ -752,7 +752,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
      * @param position
      */
     private void moveTrial(int position) {
-        CountTrial trial = (CountTrial) ignoredTrialDataList.get(position);
+        CountTrial trial = ignoredTrialDataList.get(position);
         //isUnlisted = true;
         //trialDataList.remove(position);
         //trialDataList.get(position).setB
@@ -794,11 +794,11 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                 result = (Long) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, getDate, Long.valueOf(result)));
+                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
 
                                 }
                                 else{
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, getDate, Long.valueOf(result)));
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
 
                                 }
                                 dates.add(getDate);

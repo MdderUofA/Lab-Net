@@ -1,17 +1,15 @@
 package com.example.lab_net;
 
-import java.util.Date;
-
 public class NonNegativeIntegerTrial extends Trial{
-    private long nonNegativeCount;
+    private Long nonNegativeCount;
 
 
-    public NonNegativeIntegerTrial(String id, String title, String date, long nonNegativeCount) {
-        super(id, title, date);
+    public NonNegativeIntegerTrial(String id, String title, Long nonNegativeCount) {
+        super(id, title);
         this.nonNegativeCount = nonNegativeCount;
     }
 
-    public long getNonNegativeCount() {
+    public Long getNonNegativeCount() {
         return nonNegativeCount;
     }
 
