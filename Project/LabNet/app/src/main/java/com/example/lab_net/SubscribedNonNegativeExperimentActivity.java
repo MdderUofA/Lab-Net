@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -509,10 +508,6 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
 
     }
 
-    private void scanQR() {
-        Intent qr = new Intent(this, QRScanner.class);
-        startActivityForResult(qr, 3);
-    }
 
     /**
      * enables adding trials for experiments
