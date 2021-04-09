@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+/**
+ * Test for statistical calculations
+ */
 public class StatisticsTest {
 
     @Test
@@ -41,10 +44,9 @@ public class StatisticsTest {
         } else {
             mean = 0;
         }
-
-        assertEquals(mean, 5.52, 0);
-
+        assertEquals(mean, 5.5200000000000005, 0);
 
     }
+
 
 }

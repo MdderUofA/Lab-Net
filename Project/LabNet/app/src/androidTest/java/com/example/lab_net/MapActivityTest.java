@@ -4,10 +4,9 @@ import android.content.pm.PackageManager;
 
 import androidx.core.content.ContextCompat;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.ActivityTestRule;
 
 import com.robotium.solo.Solo;
-
-import androidx.test.rule.ActivityTestRule;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,12 +15,13 @@ import org.junit.Test;
 
 import java.util.Objects;
 
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Testing Map activity
+ */
 public class MapActivityTest {
 
     private Solo solo;
