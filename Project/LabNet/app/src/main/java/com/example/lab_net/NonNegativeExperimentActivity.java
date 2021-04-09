@@ -552,7 +552,15 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
-        Toast.makeText(NonNegativeExperimentActivity.this, "Enter a non-negative Integer", Toast.LENGTH_LONG).show();
+        if (isLocationEnabled.equalsIgnoreCase("No")){
+            Toast.makeText(NonNegativeExperimentActivity.this,
+                    "Enter a non-negative Integer. Location not required.",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(NonNegativeExperimentActivity.this,
+                    "Enter a non-negative Integer. Location required.",
+                    Toast.LENGTH_LONG).show();
+        }
         if (!trialButtonEnabled){
             addTrialDialogButton.setEnabled(false);
         }

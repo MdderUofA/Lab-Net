@@ -554,7 +554,15 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
-        Toast.makeText(BinomialExperimentActivity.this, "Enter pass or fail", Toast.LENGTH_LONG).show();
+        if (isLocationEnabled.equalsIgnoreCase("No")){
+            Toast.makeText(BinomialExperimentActivity.this,
+                    "Enter pass or fail. Location not required.",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(BinomialExperimentActivity.this,
+                    "Enter pass or fail. Location required.",
+                    Toast.LENGTH_LONG).show();
+        }
         if (!trialButtonEnabled){
             addTrialDialogButton.setEnabled(false);
         }

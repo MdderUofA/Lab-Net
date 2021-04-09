@@ -562,7 +562,15 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
-        Toast.makeText(CountExperimentActivity.this, "Enter any integer", Toast.LENGTH_LONG).show();
+        if (isLocationEnabled.equalsIgnoreCase("No")){
+            Toast.makeText(CountExperimentActivity.this,
+                    "Enter any integer. Location not required.",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(CountExperimentActivity.this,
+                    "Enter any integer. Location required.",
+                    Toast.LENGTH_LONG).show();
+        }
         if (!trialButtonEnabled){
             addTrialDialogButton.setEnabled(false);
         }
