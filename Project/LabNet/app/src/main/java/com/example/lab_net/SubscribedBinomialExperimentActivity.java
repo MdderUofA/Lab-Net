@@ -310,6 +310,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                 } else {
                     Intent intent = new Intent(getApplicationContext(), Histogram.class);
                     intent.putExtra("trialDataList", (Serializable) trialDataList);
+                    intent.putExtra("dateDataList", (Serializable) dates);
                     intent.putExtra("ExperimentId", experimentId);
                     intent.putExtra("check", 2);
                     startActivity(intent);
@@ -602,6 +603,12 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
 
         }
     };
+    /**
+     * Disables going back using androids back button
+     */
+    @Override
+    public void onBackPressed() { }
+
 
 }
 

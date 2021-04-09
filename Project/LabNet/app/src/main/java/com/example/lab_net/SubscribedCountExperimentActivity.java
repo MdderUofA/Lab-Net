@@ -608,6 +608,13 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         }
     };
 
+    /**
+     * Disables going back using androids back button
+     */
+    @Override
+    public void onBackPressed() { }
+
+
 
 }
 

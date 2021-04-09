@@ -305,6 +305,7 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                     Intent intent = new Intent(getApplicationContext(), Histogram.class);
                     intent.putExtra("trialDataList", (Serializable) trialDataList);
                     intent.putExtra("ExperimentId", experimentId);
+                    intent.putExtra("dateDataList", (Serializable) dates);
                     intent.putExtra("check", 3);
                     startActivity(intent);
                 }
@@ -593,6 +594,12 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
 
         }
     };
+    /**
+     * Disables going back using androids back button
+     */
+    @Override
+    public void onBackPressed() { }
+
 
 }
 
