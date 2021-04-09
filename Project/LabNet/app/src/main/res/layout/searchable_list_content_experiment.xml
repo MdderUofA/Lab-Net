@@ -12,7 +12,8 @@
         android:padding="10dp"
         >
         <ImageView
-            android:background="@drawable/teal_back"
+            android:id="@+id/sr_experiment_icon"
+            android:background="@color/sand"
             android:layout_width="64dp"
             android:layout_height="match_parent"
             android:layout_gravity="left|center_vertical"
@@ -22,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:showDividers="beginning|end"
             >
 
             <RelativeLayout
@@ -37,32 +37,16 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="2dp"
 
                     android:text="TITLE"
-                    android:textColor="@color/app_teal"
                     android:textSize="30sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/sr_experiment_owner_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginStart="-112dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_toRightOf="@+id/sr_experiment_name"
-                    android:gravity="right"
-                    android:text="OWNER ID"
-                    android:textColor="@color/app_teal"
-                    android:textSize="10sp" />
-
-                <TextView
                     android:id="@+id/sr_experiment_description"
                     android:layout_width="wrap_content"
-                    android:layout_height="32dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/sr_experiment_name"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
@@ -77,21 +61,35 @@
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/sr_experiment_status"
+                    android:id="@+id/sr_experiment_owner_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="0dp"
                     android:layout_below="@+id/sr_experiment_description"
+                    android:gravity="right"
+                    android:text="OWNER ID"
+                    android:textColor="@color/app_teal"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/sr_experiment_status"
+                    android:layout_below="@+id/sr_experiment_owner_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="0dp"
+                    android:layout_marginBottom="2dp"
                     android:text="STATUS"
                     android:textColor="@color/app_teal"
                     android:textSize="12sp" />
                 <TextView
                     android:id="@+id/sr_experiment_subscribe"
-                    android:layout_below="@+id/sr_experiment_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -101,6 +99,9 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="0dp"
                     android:text="SUBSCRIBE?"
+                    android:layout_alignBottom="@+id/sr_experiment_name"
+                    android:layout_alignTop="@+id/sr_experiment_name"
+                    android:gravity="center_vertical"
                     android:textColor="@color/app_teal"
                     android:textSize="12sp" />
 

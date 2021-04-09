@@ -199,16 +199,7 @@
         android:background="@color/white"
         app:srcCompat="@drawable/ic_edit_note" />
 
-    <Button
-        android:id="@+id/qrButton"
-        android:layout_width="357dp"
-        android:layout_height="46dp"
-        android:layout_marginBottom="60dp"
-        android:text="QR Code"
-        app:backgroundTint="#009688"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
 
     <Button
         android:id="@+id/browseButton"
@@ -263,7 +254,7 @@
         android:id="@+id/myExpScrollView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/divider5"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider4">
@@ -276,7 +267,7 @@
             <ListView
                 android:id="@+id/myExpListView"
                 android:layout_width="match_parent"
-                android:layout_height="150dp" />
+                android:layout_height="260dp" />
         </LinearLayout>
     </ScrollView>
 

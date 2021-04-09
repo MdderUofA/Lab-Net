@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -475,6 +476,7 @@ public class SearchableList {
          */
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
             View view = convertView;
             if(view==null) {
                 view = LayoutInflater.from(this.adapter.getContext()).inflate(
@@ -489,6 +491,7 @@ public class SearchableList {
             TextView ownerId = view.findViewById(R.id.sr_experiment_owner_id);
             TextView status = view.findViewById(R.id.sr_experiment_status);
             TextView subscribed = view.findViewById(R.id.sr_experiment_subscribe);
+            ImageView icon = view.findViewById(R.id.sr_experiment_icon);
 
             //check if subscribed to experiment
             db.collection("SubscribedExperiments")
@@ -503,6 +506,7 @@ public class SearchableList {
                                     if (subscriber.equals(userId)) {
                                         subscribed.setText("SUBSCRIBED");
                                     }
+
                                 }
 
                             }
@@ -521,6 +525,20 @@ public class SearchableList {
                                     String owner = document.getData().get("Owner").toString();
                                     if (owner.equals(userId)) {
                                         subscribed.setText("OWNED");
+                                    }
+
+                                    String type = document.getData().get("TrialType").toString();
+                                    if (type.equals("Count-based")){
+                                        icon.setImageResource(R.drawable.ic_count);
+                                    }
+                                    else if (type.equals("NonNegativeInteger")){
+                                        icon.setImageResource(R.drawable.ic_nonnegative);
+                                    }
+                                    else if (type.equals("Binomial")){
+                                        icon.setImageResource(R.drawable.ic_binomial);
+                                    }
+                                    else if (type.equals("Measurement")){
+                                        icon.setImageResource(R.drawable.ic_measurement);
                                     }
                                 }
 

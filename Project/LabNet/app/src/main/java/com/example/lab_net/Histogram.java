@@ -22,7 +22,6 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
@@ -32,6 +31,7 @@ import java.util.Locale;
 public class Histogram extends AppCompatActivity {
 
     TextView xAxisTitle, yAxisTitle;
+    TextView barChartTitle;
 
     BarChart barChart;
     ArrayList<BarEntry> barEntries;
@@ -57,7 +57,8 @@ public class Histogram extends AppCompatActivity {
         setContentView(R.layout.activity_histogram);
 
          xAxisTitle = (TextView)findViewById(R.id.xAxisTitle);
-         yAxisTitle = (TextView)findViewById(R.id.tyAxisTitle);
+         yAxisTitle = (TextView)findViewById(R.id.yAxisTitle);
+         barChartTitle = (TextView)findViewById(R.id.barChartTitle);
 
         Intent intent = getIntent();
         checkActivity = intent.getExtras().getInt("check");
@@ -75,6 +76,9 @@ public class Histogram extends AppCompatActivity {
         }
     }
 
+    /**
+     * called for Non-Negative trials
+     */
     public void nonNegative() {
 
         //bar chart
@@ -97,6 +101,7 @@ public class Histogram extends AppCompatActivity {
 
         xAxisTitle.setText("Trials");
         yAxisTitle.setText("Results");
+        barChartTitle.setText("Record of the Trial Values");
 
         //add values to bar entries
         barEntries = new ArrayList<>();
@@ -141,9 +146,6 @@ public class Histogram extends AppCompatActivity {
 
         //get data
         entries = new ArrayList<>();
-//        for(i = 0; i < results.size(); i++){
-//            entries.add(new Entry(i,Float.valueOf(String.valueOf(results.get(i)))));
-//        }
         dateDataList = new ArrayList<>();
         dateDataList = (ArrayList<String>) intent.getSerializableExtra("dateDataList");
         for(i = 0; i < dateDataList.size(); i++){
@@ -174,6 +176,9 @@ public class Histogram extends AppCompatActivity {
 
     }
 
+    /**
+     * called for count trials
+     */
     public void count() {
         //bar chart
         barChart = (BarChart) findViewById(R.id.barGraph);
@@ -195,6 +200,8 @@ public class Histogram extends AppCompatActivity {
 
         xAxisTitle.setText("Trials");
         yAxisTitle.setText("Results");
+        barChartTitle.setText("Record of the Trial Values");
+
 
         //add values to bar entries
         barEntries = new ArrayList<>();
@@ -236,13 +243,8 @@ public class Histogram extends AppCompatActivity {
         //line chart
         lineChart = (LineChart) findViewById(R.id.lineChart);
 
-
-
         //get data
         entries = new ArrayList<>();
-//        for(i = 0; i < results.size(); i++){
-//            entries.add(new Entry(i,Float.valueOf(String.valueOf(results.get(i)))));
-//        }
         dateDataList = new ArrayList<>();
         dateDataList = (ArrayList<String>) intent.getSerializableExtra("dateDataList");
         for(i = 0; i < dateDataList.size(); i++){
@@ -278,8 +280,8 @@ public class Histogram extends AppCompatActivity {
         //set color of line
         lineDataSet.setColor(Color.rgb(132, 180, 200));
 
-/*        XAxis lxAxis = lineChart.getXAxis();
-        lxAxis.setPosition(XAxis.XAxisPosition.BOTTOM);*/
+       XAxis lxAxis = lineChart.getXAxis();
+        lxAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         lineChart.getAxisRight().setEnabled(false);
         lineChart.getLegend().setEnabled(false);
         lineChart.getDescription().setEnabled(false);
@@ -291,6 +293,9 @@ public class Histogram extends AppCompatActivity {
 
     }
 
+    /**
+     * called for binomial trials
+     */
     private void binomial() {
         //bar chart
         barChart = (BarChart) findViewById(R.id.barGraph);
@@ -326,6 +331,8 @@ public class Histogram extends AppCompatActivity {
 
         xAxisTitle.setText("Results");
         yAxisTitle.setText("Frequency");
+        barChartTitle.setText("Record of the Trial Values");
+
 
         barEntries = new ArrayList<>();
         barEntries.add(new BarEntry(0f, passFrequency));
@@ -362,55 +369,157 @@ public class Histogram extends AppCompatActivity {
         barChart.setTouchEnabled(true);
         barChart.setDragEnabled(true);
         barChart.setScaleEnabled(true);
-    }
 
-    private void measurement() {
-        barChart = (BarChart) findViewById(R.id.barGraph);
-
-        Intent intent = getIntent();
-        results = new ArrayList<>();
-
-        measurementTrials = new ArrayList<>();
-        measurementTrials = (ArrayList<MeasurementTrial>) intent.getSerializableExtra("trialDataList");
-        for (i = 0; i < measurementTrials.size(); i++) {
-            results.add(Double.valueOf(measurementTrials.get(i).getMeasurement()));
-        }
-        barEntries = new ArrayList<>();
-
-        /*for (i = 0; i < results.size(); i++) {
-            frequency.add()
-        }*/
-        Collections.sort(results);
-        for (i = 0; i < results.size(); i++) {
-            barEntries.add(new BarEntry(Float.valueOf(String.valueOf(results.get(i))), Collections.frequency(results, results.get(i))));
-        }
-        BarDataSet barDataSet = new BarDataSet(barEntries, "results");
-
-        BarData barData = new BarData(barDataSet);
-        barChart.setData(barData);
-
-        barChart.setTouchEnabled(true);
-        barChart.setDragEnabled(true);
-        barChart.setScaleEnabled(true);
-
+        //line chart
         lineChart = (LineChart) findViewById(R.id.lineChart);
+
+        //get data
         entries = new ArrayList<>();
         dateDataList = new ArrayList<>();
         dateDataList = (ArrayList<String>) intent.getSerializableExtra("dateDataList");
         for(i = 0; i < dateDataList.size(); i++){
             entries.add(new Entry(Float.valueOf(dateDataList.get(i)),i));
         }
-        LineDataSet lineDataSet = new LineDataSet(entries, "dateDataList");
 
+        //set data
+        LineDataSet lineDataSet = new LineDataSet(entries, null);
         iLineDataSets = new ArrayList<>();
         iLineDataSets.add(lineDataSet);
-
         LineData lineData = new LineData(iLineDataSets);
         lineChart.setData(lineData);
+
+        ArrayList<String> values = new ArrayList<>();
+        for(i = 0; i < dateDataList.size(); i++){
+            values.add(dateDataList.get(i));
+        }
+        XAxis xAxis1 = lineChart.getXAxis();
+
+        xAxis1.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getAxisLabel(float value, AxisBase axis) {
+                Date date = new Date((long)value);
+                //Specify the format you'd like
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY", Locale.getDefault());
+                return sdf.format(date);
+            }
+        });
+
+        xAxis1.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+
+        //set color of line
+        lineDataSet.setColor(Color.rgb(132, 180, 200));
+
+        XAxis lxAxis = lineChart.getXAxis();
+        lxAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        lineChart.getAxisRight().setEnabled(false);
+        lineChart.getLegend().setEnabled(false);
+        lineChart.getDescription().setEnabled(false);
+        lineChart.setExtraBottomOffset(10);
 
         lineChart.setTouchEnabled(true);
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
+
+    }
+
+    /**
+     * called for measurement Trials
+     */
+    private void measurement() {
+        //bar chart
+        barChart = (BarChart) findViewById(R.id.barGraph);
+        //y-axis
+        trialTitles = new ArrayList<>();
+        //x-axis
+        results = new ArrayList<>();
+
+        //get values
+        Intent intent = getIntent();
+        measurementTrials = new ArrayList<>();
+        measurementTrials = (ArrayList<MeasurementTrial>) intent.getSerializableExtra("trialDataList");
+        for (i = 0; i < measurementTrials.size(); i++) {
+            results.add(Double.valueOf(measurementTrials.get(i).getMeasurement()));
+        }
+        for (i = 0; i < nonNegativeTrials.size(); i++) {
+            trialTitles.add(nonNegativeTrials.get(i).getTitle());
+        }
+
+        xAxisTitle.setText("Trials");
+        yAxisTitle.setText("Results");
+        barChartTitle.setText("Record of the Trial Values");
+
+        //add values to bar entries
+        barEntries = new ArrayList<>();
+        for (i = 0; i < results.size(); i++) {
+            barEntries.add(new BarEntry(i, Float.valueOf(String.valueOf(results.get(i)))));
+        }
+        BarDataSet barDataSet = new BarDataSet(barEntries, null);
+
+        //set color of the bars
+        barDataSet.setColors(new int[] {Color.rgb(132, 180, 200),
+                Color.rgb(244, 220, 214)});
+
+        //set data to chart
+        BarData barData = new BarData(barDataSet);
+        barChart.setData(barData);
+
+        //set x-axis to trial titles
+        ValueFormatter formatter = new ValueFormatter() {
+            @Override
+            public String getAxisLabel(float value, AxisBase axis) {
+                return trialTitles.get((int) value);
+            }
+        };
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+        xAxis.setValueFormatter(formatter);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(5);
+
+        barChart.getAxisRight().setEnabled(false);
+        barChart.getLegend().setEnabled(false);
+        barChart.getDescription().setEnabled(false);
+        barChart.setExtraBottomOffset(10);
+
+        barChart.setTouchEnabled(true);
+        barChart.setDragEnabled(true);
+        barChart.setScaleEnabled(true);
+
+        //line chart
+        lineChart = (LineChart) findViewById(R.id.lineChart);
+
+        //get data
+        entries = new ArrayList<>();
+        dateDataList = new ArrayList<>();
+        dateDataList = (ArrayList<String>) intent.getSerializableExtra("dateDataList");
+        for(i = 0; i < dateDataList.size(); i++){
+            entries.add(new Entry(Float.valueOf(dateDataList.get(i)),i));
+        }
+
+        //set data
+        LineDataSet lineDataSet = new LineDataSet(entries, null);
+        iLineDataSets = new ArrayList<>();
+        iLineDataSets.add(lineDataSet);
+        LineData lineData = new LineData(iLineDataSets);
+        lineChart.setData(lineData);
+
+        //set color of line
+        lineDataSet.setColor(Color.rgb(132, 180, 200));
+
+        XAxis lxAxis = lineChart.getXAxis();
+        lxAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        lineChart.getAxisRight().setEnabled(false);
+        lineChart.getLegend().setEnabled(false);
+        lineChart.getDescription().setEnabled(false);
+        lineChart.setExtraBottomOffset(10);
+
+        lineChart.setTouchEnabled(true);
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleEnabled(true);
+
 
     }
 }
