@@ -51,11 +51,11 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
 
 
     // Count adapters and lists
-    private ArrayAdapter<BinomialTrial> trialArrayAdapter;
-    private ArrayList<BinomialTrial> trialDataList;
+    private ArrayAdapter<Trial> trialArrayAdapter;
+    private ArrayList<Trial> trialDataList;
 
-    private ArrayAdapter<BinomialTrial> ignoredTrialArrayAdapter;
-    private ArrayList<BinomialTrial> ignoredTrialDataList;
+    private ArrayAdapter<Trial> ignoredTrialArrayAdapter;
+    private ArrayList<Trial> ignoredTrialDataList;
 
     private CustomBinomialTrialList customTrialList;
     private FirebaseFirestore db;
@@ -177,10 +177,10 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                                 getDate = (String) document.getData().get("Date");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted){
-                                    ignoredTrialDataList.add(new BinomialTrial(trialId, trialTitle, result));
+                                    ignoredTrialDataList.add(new BinomialTrial(trialId, trialTitle, getDate, result));
                                 }
                                 else {
-                                    trialDataList.add(new BinomialTrial(trialId, trialTitle, result));
+                                    trialDataList.add(new BinomialTrial(trialId, trialTitle, getDate, result));
                                 }
                                 dates.add(getDate);
 
@@ -604,7 +604,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                trialDataList.add(new BinomialTrial(trialId, title, result));
+                                trialDataList.add(new BinomialTrial(trialId, title, getDate, result));
                                 trialArrayAdapter.notifyDataSetChanged();
                                 Toast.makeText(BinomialExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
                                 setDialog.dismiss();
@@ -627,7 +627,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
      * @param position
      */
     public void moveToUnlisted(int position) {
-        BinomialTrial trial = trialDataList.get(position);
+        BinomialTrial trial = (BinomialTrial) trialDataList.get(position);
         ignoredTrialDataList.add(trialDataList.get(position));
         ignoredTrialArrayAdapter.notifyDataSetChanged();
         trialDataList.remove(position);
@@ -664,10 +664,10 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                                 result = (String) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new BinomialTrial(trialId, trialTitle, result));
+                                    ignoredTrialDataList.add(new BinomialTrial(trialId, trialTitle, getDate, result));
                                 }
                                 else{
-                                    trialDataList.add(new BinomialTrial(trialId, trialTitle, result));
+                                    trialDataList.add(new BinomialTrial(trialId, trialTitle, getDate, result));
                                 }
                                 dates.add(getDate);
                             }
@@ -683,7 +683,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
      * @param position
      */
     private void moveTrial(int position) {
-        BinomialTrial trial = ignoredTrialDataList.get(position);
+        BinomialTrial trial = (BinomialTrial) ignoredTrialDataList.get(position);
         //isUnlisted = true;
         //trialDataList.remove(position);
         //trialDataList.get(position).setB
@@ -724,11 +724,11 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                                 result = (String) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new BinomialTrial(trialId, trialTitle, result));
+                                    ignoredTrialDataList.add(new BinomialTrial(trialId, trialTitle, getDate, result));
 
                                 }
                                 else{
-                                    trialDataList.add(new BinomialTrial(trialId, trialTitle, result));
+                                    trialDataList.add(new BinomialTrial(trialId, trialTitle, getDate, result));
 
                                 }
                                 dates.add(getDate);

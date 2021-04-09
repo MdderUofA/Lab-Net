@@ -20,14 +20,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-class CustomNonNegativeTrialList extends ArrayAdapter<NonNegativeIntegerTrial> {
+class CustomNonNegativeTrialList extends ArrayAdapter<Trial> {
 
-    private ArrayList<NonNegativeIntegerTrial> trials;
+    private ArrayList<Trial> trials;
     private Context context;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
-    public CustomNonNegativeTrialList(Context context, ArrayList<NonNegativeIntegerTrial> trials){
+    public CustomNonNegativeTrialList(Context context, ArrayList<Trial> trials){
         super(context,0, trials);
         this.trials = trials;
         this.context = context;

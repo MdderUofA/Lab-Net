@@ -20,14 +20,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class CustomTrialList extends ArrayAdapter<CountTrial> {
+public class CustomTrialList extends ArrayAdapter<Trial> {
 
-    private ArrayList<CountTrial> trials;
+    private ArrayList<Trial> trials;
     private Context context;
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public CustomTrialList(Context context, ArrayList<CountTrial> trials){
+    public CustomTrialList(Context context, ArrayList<Trial> trials){
         super(context,0, trials);
         this.trials = trials;
         this.context = context;

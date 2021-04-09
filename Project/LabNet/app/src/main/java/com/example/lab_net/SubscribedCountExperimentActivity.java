@@ -56,8 +56,8 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
     private ListView trialList;
     // Count adapters and lists
-    private ArrayAdapter<CountTrial> trialArrayAdapter;
-    private ArrayList<CountTrial> trialDataList;
+    private ArrayAdapter<Trial> trialArrayAdapter;
+    private ArrayList<Trial> trialDataList;
     private CustomTrialList customTrialList;
     private ArrayList<String> dates;
 
@@ -178,7 +178,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                                 getDate = document.getData().get("Date").toString();
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(!isUnlisted){
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, resultLong));
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, getDate, resultLong));
                                 }
                                 dates.add(getDate);
 
@@ -539,7 +539,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                trialDataList.add(new CountTrial(trialId, title, result));
+                                trialDataList.add(new CountTrial(trialId, title, formattedDate, result));
                                 trialArrayAdapter.notifyDataSetChanged();
                                 Toast.makeText(SubscribedCountExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
                                 setDialog.dismiss();

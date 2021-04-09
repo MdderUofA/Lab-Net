@@ -4,11 +4,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -27,7 +27,7 @@ public class Utils {
      * @param collection The Enum collection type.
      * @return The collection
      */
-    public static Query collection(DatabaseCollections collection) {
+    public static CollectionReference collection(DatabaseCollections collection) {
         return db.collection(collection.value());
     }
 
@@ -65,7 +65,10 @@ public class Utils {
     }
 
     /**
-     * Attempts to find the specified entry from a database query using the supplied methods.
+     * Creates an OnCompleteListener which attempts to find the specified entry from a Query.
+     * If the result is found, onFound will be called with the document that matched
+     * as it's argument. This method stops once the first matching element is found.
+     *
      * This method is an alias for find if you don't care about if the result was not found.
      *
      * @param tester The test function to call if the query matches
@@ -78,7 +81,9 @@ public class Utils {
     }
 
     /**
-     * Attempts to find the specified entry from a database query using the supplied methods.
+     * Creates an OnCompleteListener which attempts to find the specified entry from a Query.
+     * If the result is found, onFound will be called with the document that matched
+     * as it's argument. This method stops once the first matching element is found.
      * @param tester The test function to call if the query matches
      * @param onFound The Consumer to call if the tester returned true
      * @param onNotFound The Runnable to call if the tester failed to find any, or the query failed
@@ -120,6 +125,24 @@ public class Utils {
         };
 
         return val;
+    }
+
+    /**
+     * Blocks execution until all tasks have completed.
+     * @param tasks N tasks to await.
+     */
+    public static void awaitAll(Task<?>... tasks) {
+        CountDownLatch count = new CountDownLatch(tasks.length);
+
+        for(Task<?> t : tasks) {
+            t.addOnCompleteListener((o) -> {
+                count.countDown();
+            });
+        }
+
+        try {
+            count.await();
+        } catch (InterruptedException e) {};
     }
 
     /**

@@ -7,7 +7,8 @@ public enum DatabaseCollections {
     KEYWORDS ("Keywords"),
     QUESTIONS ("Questions"),
     TRIALS ("Trials"),
-    USER_PROFILE ("UserProfile");
+    USER_PROFILE ("UserProfile"),
+    SUBSCRIBED_EXPERIMENTS ("SubscribedExperiments");
 
     private final String mappedValue;
 

@@ -560,11 +560,15 @@ public class SearchableList {
         /**
          * Finds the class associated with the experiment to subscribe to.
          *
+         * @see ExperimentTypes
          * @param type The string type of the subscribed experiment.
          * @throws IllegalArgumentException if the supplied string does not match to a valid class
          * @return The SubscribedExperiment class represented by the String experimentType
          */
         private Class<? extends AppCompatActivity> getActivityFromType(String type) {
+            // I CANNOT use an enum here. The rest of the app uses hard coded values and so
+            // I must also use hard coded values so that the code will compile correctly and
+            // work with the database.
             switch (type) {
                 case("Count-based"):
                     return SubscribedCountExperimentActivity.class;
