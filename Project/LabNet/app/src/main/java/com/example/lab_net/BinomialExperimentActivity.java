@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -595,8 +596,12 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
      */
     private void addTrial() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(BinomialExperimentActivity.this);
-        View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
+        View settingsView = getLayoutInflater().inflate(R.layout.add_binomial_trial_dialog, null);
 
+        String resultTypes[] = {"pass", "fail"};
+
+
+        Spinner dropdown = (Spinner) settingsView.findViewById(R.id.dropdownPassFail);
 
         settingsBuilder.setView(settingsView);
         AlertDialog setDialog = settingsBuilder.create();
@@ -605,7 +610,12 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
 
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
-        addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, resultTypes);
+        dropdown.setAdapter(adapter);
+
+
         if (isLocationEnabled.equalsIgnoreCase("No")){
             Toast.makeText(BinomialExperimentActivity.this,
                     "Enter pass or fail. Location not required.",
@@ -620,7 +630,6 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         }
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
-        addTrialResult.addTextChangedListener(addTextWatcher);
 
         final CollectionReference collectionReference = db.collection("Trials");
         String trialId = collectionReference.document().getId();
@@ -642,12 +651,12 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         addTrialDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String result = addTrialResult.getText().toString();
+                String resultType = dropdown.getSelectedItem().toString();
                 String title = addTrialTitle.getText().toString();
                 // add to firebase
                 HashMap<String, Object> data = new HashMap<>();
                 data.put("Title", title);
-                data.put("Result", result);
+                data.put("Result", resultType);
                 data.put("ExperimentId", experimentId);
                 data.put("Date", formattedDate);
                 data.put("isUnlisted", false);
@@ -876,11 +885,10 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String checkResult = addTrialResult.getText().toString();
             String checkTitle = addTrialTitle.getText().toString();
             checkLocationReq();
             if(trialButtonEnabled){
-                addTrialDialogButton.setEnabled(checkResult.toLowerCase().equals("pass") || checkResult.toLowerCase().equals("fail") && !checkTitle.isEmpty());
+                addTrialDialogButton.setEnabled(!checkTitle.isEmpty());
             }
 
         }
