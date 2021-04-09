@@ -362,7 +362,6 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 subUserId = document.getData().get("Subscriber").toString();
-                                subUsersDataList.add(subUserId);
 
                                 db.collection("UserProfile")
                                         .whereEqualTo(FieldPath.documentId(),subUserId).get()
@@ -371,11 +370,13 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                 if (task.isSuccessful()) {
                                                     for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        String userId = document.getId();
                                                         String userFirstName = document.getData().get("firstName").toString();
                                                         String userLastName = document.getData().get("lastName").toString();
                                                         String fullname = userFirstName + " " + userLastName;
 
                                                         subUsersNameList.add(fullname);
+                                                        subUsersDataList.add(userId);
                                                     }
                                                     subUsersArrayAdapter.notifyDataSetChanged();
                                                 }
@@ -594,12 +595,6 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
 
         }
     };
-    /**
-     * Disables going back using androids back button
-     */
-    @Override
-    public void onBackPressed() { }
-
 
 }
 

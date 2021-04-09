@@ -441,6 +441,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        subUsersDataList.clear();
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 subUserId = document.getData().get("Subscriber").toString();

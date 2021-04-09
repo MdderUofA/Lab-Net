@@ -434,7 +434,6 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 subUserId = document.getData().get("Subscriber").toString();
-                                subUsersDataList.add(subUserId);
 
                                 db.collection("UserProfile")
                                         .whereEqualTo(FieldPath.documentId(),subUserId).get()
@@ -443,11 +442,13 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                 if (task.isSuccessful()) {
                                                     for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        String userId = document.getId();
                                                         String userFirstName = document.getData().get("firstName").toString();
                                                         String userLastName = document.getData().get("lastName").toString();
                                                         String fullname = userFirstName + " " + userLastName;
 
                                                         subUsersNameList.add(fullname);
+                                                        subUsersDataList.add(userId);
                                                     }
                                                     subUsersArrayAdapter.notifyDataSetChanged();
                                                 }
