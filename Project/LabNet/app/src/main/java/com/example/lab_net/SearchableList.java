@@ -491,6 +491,7 @@ public class SearchableList {
             TextView ownerId = view.findViewById(R.id.sr_experiment_owner_id);
             TextView status = view.findViewById(R.id.sr_experiment_status);
             TextView subscribed = view.findViewById(R.id.sr_experiment_subscribe);
+            subscribed.setText("SUBSCRIBE?");
             ImageView icon = view.findViewById(R.id.sr_experiment_icon);
 
             //check if subscribed to experiment
@@ -523,6 +524,9 @@ public class SearchableList {
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     String owner = document.getData().get("Owner").toString();
+                                    System.out.println(userId);
+                                    System.out.println("own " + owner);
+                                    System.out.println(owner.equals(userId));
                                     if (owner.equals(userId)) {
                                         subscribed.setText("OWNED");
                                     }
