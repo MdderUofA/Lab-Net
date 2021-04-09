@@ -9,6 +9,9 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Formatter for the Line chart
+ */
 public class LineChartXAxisValueFormatter extends IndexAxisValueFormatter {
 
     @Override

@@ -1,5 +1,8 @@
 package com.example.lab_net;
 
+/**
+ * collection of all the query parameters used for Firestore database
+ */
 public enum DatabaseCollections {
     ANSWERS ("Answers"),
     BINOMIAL_TRIAL ("BinomialTrial"),

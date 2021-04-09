@@ -472,7 +472,6 @@ public class SearchableList {
          * @param position The position in the data.
          * @param convertView The view to set
          * @param parent The parent ViewGroup
-         * @return
          */
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

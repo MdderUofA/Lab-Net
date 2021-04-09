@@ -15,7 +15,6 @@ public interface CoordinateListener {
      * Gets coordinates. Implementation in MapActivity.
      * @param latitude
      * @param longitude
-     * @return void
      */
     void getCoordinates(double latitude, double longitude);
 }
