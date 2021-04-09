@@ -23,7 +23,7 @@ public class StatisticsTest {
             median = (list.get(mid - 1) + list.get(mid)) / 2.0;
         }
 
-        assertEquals(median, 5.6, 0;
+        assertEquals(median, 5.6, 0);
 
     }
 
@@ -42,7 +42,7 @@ public class StatisticsTest {
             mean = 0;
         }
 
-        assertEquals(mean, 5.52);
+        assertEquals(mean, 5.52, 0);
 
 
     }
