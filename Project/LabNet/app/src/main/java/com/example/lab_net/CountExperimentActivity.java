@@ -143,10 +143,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         trialList.setAdapter(trialArrayAdapter);
         ignoredTrialList.setAdapter(ignoredTrialArrayAdapter);
         db = FirebaseFirestore.getInstance();
-        add_new_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
-        edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
-
-        checkExperimentEnded();
         // get experiment info
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
@@ -248,6 +244,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
             }
         });
 
+        edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
         edit_experiment_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -255,6 +252,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
             }
         });
 
+        add_new_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
         add_new_trial_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -284,31 +282,9 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         Toast.makeText(this, "Long hold to list or un-list trials", Toast.LENGTH_LONG).show();
     }
 
-    /**
-     * checks to see if the experiment has already ended
-     */
-    private void checkExperimentEnded() {
-        db.collection("Experiments").document(experimentId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            if (documentSnapshot.exists()) {
-                                status = documentSnapshot.getData().get("Status").toString();
-                                if ("closed".equals(status)) {
-                                    add_new_trial_button.setEnabled(false);
-                                    edit_experiment_button.setEnabled(false);
-                                    Toast.makeText(CountExperimentActivity.this, "Experiment has Ended", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        }
-                    }
-                });
-    }
     //side menu created from youtube: Android Navigation Drawer Menu Material Design
     // by Coding With Tea
+
     /**
      * set side menu on owner experiment activity
      */
@@ -403,8 +379,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
                                 }
                             });
-                            add_new_trial_button.setEnabled(false);
-                            edit_experiment_button.setEnabled(false);
                             dialog.dismiss();
                         }
                     });
@@ -689,7 +663,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                             }
                         });
                 dialog.dismiss();
-                deleteSubscribedExperiment();
                 Intent intent = new Intent(getApplicationContext(), UserProfile.class);
                 intent.putExtra(UserProfile.USER_ID_EXTRA, owner);
                 startActivity(intent);
@@ -705,25 +678,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         alert.show();
     }
 
-    /**
-     * deletes subscribed experiments when an experiment is deleted by the owner
-     */
-    private void deleteSubscribedExperiment() {
-        CollectionReference collectionReference = db.collection("SubscribedExperiments");
-        collectionReference.whereEqualTo("ExperimentId",experimentId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String deleteId = document.getId();
-                                collectionReference.document(deleteId).delete();
-                            }
-                        }
-                    }
-                });
-    }
     /**
      * method responsible for un-listing trials.
      * @param position

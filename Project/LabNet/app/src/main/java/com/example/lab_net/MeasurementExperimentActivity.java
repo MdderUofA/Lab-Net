@@ -125,10 +125,6 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         ignoredTrialDataList = new ArrayList<>();
         ignoredTrialArrayAdapter = new CustomMeasurementTrialList(this, ignoredTrialDataList);
         ignoredTrialList.setAdapter(ignoredTrialArrayAdapter);
-        add_new_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
-        edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
-
-        checkExperimentEnded();
         // get experiment info
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
@@ -234,6 +230,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             }
         });
 
+        edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
         edit_experiment_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,6 +238,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             }
         });
 
+        add_new_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
         add_new_trial_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -271,29 +269,6 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
 
     }
 
-    /**
-     * checks to see if the experiment has already ended
-     */
-    private void checkExperimentEnded() {
-        db.collection("Experiments").document(experimentId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            if (documentSnapshot.exists()) {
-                                status = documentSnapshot.getData().get("Status").toString();
-                                if ("closed".equals(status)) {
-                                    add_new_trial_button.setEnabled(false);
-                                    edit_experiment_button.setEnabled(false);
-                                    Toast.makeText(MeasurementExperimentActivity.this, "Experiment has Ended", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        }
-                    }
-                });
-    }
     //side menu created from youtube: Android Navigation Drawer Menu Material Design
     // by Coding With Tea
     /**
@@ -350,7 +325,6 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                 } else {
                     Intent intent = new Intent(getApplicationContext(), Histogram.class);
                     intent.putExtra("trialDataList", (Serializable) trialDataList);
-                    intent.putExtra("dateDataList", (Serializable) dates);
                     intent.putExtra("ExperimentId", experimentId);
                     intent.putExtra("check", 3);
                     startActivity(intent);
@@ -389,8 +363,6 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
 
                                 }
                             });
-                            add_new_trial_button.setEnabled(false);
-                            edit_experiment_button.setEnabled(false);
                             dialog.dismiss();
                         }
                     });
@@ -676,7 +648,6 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                             }
                         });
                 dialog.dismiss();
-                deleteSubscribedExperiment();
                 // change to UserProfile
                 Intent intent = new Intent(getApplicationContext(), UserProfile.class);
                 intent.putExtra(UserProfile.USER_ID_EXTRA, owner);
@@ -692,26 +663,6 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         });
         alert.show();
 
-    }
-
-    /**
-     * deletes subscribed experiments when an experiment is deleted by the owner
-     */
-    private void deleteSubscribedExperiment() {
-        CollectionReference collectionReference = db.collection("SubscribedExperiments");
-        collectionReference.whereEqualTo("ExperimentId",experimentId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String deleteId = document.getId();
-                                collectionReference.document(deleteId).delete();
-                            }
-                        }
-                    }
-                });
     }
 
     /**
