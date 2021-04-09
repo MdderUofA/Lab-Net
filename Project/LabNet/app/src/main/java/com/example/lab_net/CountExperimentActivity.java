@@ -171,7 +171,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 }
             }
         });
-
         //get trials
         db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
                 .get()
@@ -186,7 +185,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                 getResult = (Long) document.getData().get("Result");
                                 getDate = document.getData().get("Date").toString();
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
-
                                 if(isUnlisted){
                                     ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, getResult));
                                 }
@@ -194,33 +192,55 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                     trialDataList.add(new CountTrial(trialId, trialTitle, getResult));
                                 }
                                 dates.add(getDate);
-
                             }
                             ignoredTrialArrayAdapter.notifyDataSetChanged();
                             trialArrayAdapter.notifyDataSetChanged();
-
-
                         }
-
                     }
-
                 });
 
-
-        //delete trials
-
-        trialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        trialList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                moveToUnlisted(position);
-                return true;
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(CountExperimentActivity.this);
+                alert.setTitle("Alert");
+                alert.setMessage("Confirm un-list Trial?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        moveToUnlisted(position);
+                        dialog.dismiss();
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alert.show();
             }
         });
-        ignoredTrialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        ignoredTrialList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                moveTrial(position);
-                return true;
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(CountExperimentActivity.this);
+                alert.setTitle("Alert");
+                alert.setMessage("Confirm move to listed?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        moveTrial(position);
+                        dialog.dismiss();
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alert.show();
             }
         });
 
@@ -527,7 +547,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
     }
 
     /**
-     * enables adding trials for experiments
+     * enables adding trials for experiments, also calls TextWatcher to validate user input
      */
     private void addTrial() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(CountExperimentActivity.this);
@@ -603,14 +623,13 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                 Toast.makeText(CountExperimentActivity.this, "Trial not added", Toast.LENGTH_LONG).show();
                             }
                         });
-
                 setDialog.dismiss();
             }
         });
     }
 
     /**
-     * allows owner of experiment to permanently delete experiment from the app and firebase
+     * Allows owner to permanently delete an experiment they own from the app and firebase
      */
     private void deleteExperiment() {
         final CollectionReference collectionReference = db.collection("Experiments");
@@ -649,12 +668,10 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
             }
         });
         alert.show();
-
     }
 
-
     /**
-     * method responsible for un-listing trials
+     * method responsible for un-listing trials.
      * @param position
      */
     public void moveToUnlisted(int position) {

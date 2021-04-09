@@ -192,19 +192,48 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                     }
                 });
 
-        //delete trial
-        trialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        trialList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                moveToUnlisted(position);
-                return true;
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(BinomialExperimentActivity.this);
+                alert.setTitle("Alert");
+                alert.setMessage("Confirm un-list Trial?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        moveToUnlisted(position);
+                        dialog.dismiss();
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alert.show();
             }
         });
-        ignoredTrialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        ignoredTrialList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                moveTrial(position);
-                return true;
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(BinomialExperimentActivity.this);
+                alert.setTitle("Alert");
+                alert.setMessage("Confirm move to listed?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        moveTrial(position);
+                        dialog.dismiss();
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alert.show();
             }
         });
 
