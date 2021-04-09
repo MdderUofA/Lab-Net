@@ -62,7 +62,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     private ImageButton editUser;
     private Button browse, addExp, qrCode;
-    private ListView subExpListView, myExpListView;
+    ListView subExpListView, myExpListView;
     private ArrayList<Experiment> myExperimentsDataList;
     private ArrayList<SubscribedExperiment> subscribedExperimentsDataList;
     private ArrayAdapter<Experiment> myExperimentAdapter;
