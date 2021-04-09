@@ -509,7 +509,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                     return;
                 String s1 = result.remove(0);
                 String s2 = result.remove(0);
-                if(!s2.equals("COUNT_TRIAL"))
+                if(!s2.equals("BINOMIAL_TRIAL"))
                     return;
                 if(s1.equals("CREATE_TRIAL")) {
                     createTrialFromCommands(result);
@@ -638,7 +638,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
         List<String> l = new ArrayList<>();
 
         l.add("CREATE_TRIAL"); // check
-        l.add("COUNT_TRIAL_ADD");
+        l.add("BINOMIAL_TRIAL");
 
         l.add(data.get("Title").toString());
         l.add(data.get("Date").toString());

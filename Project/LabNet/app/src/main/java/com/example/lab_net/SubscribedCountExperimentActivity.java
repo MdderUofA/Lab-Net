@@ -611,7 +611,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         List<String> l = new ArrayList<>();
 
         l.add("CREATE_TRIAL"); // check
-        l.add("COUNT_TRIAL_ADD");
+        l.add("COUNT_TRIAL");
 
         l.add(data.get("Title").toString());
         l.add(data.get("Date").toString());

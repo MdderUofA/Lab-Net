@@ -500,7 +500,7 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                     return;
                 String s1 = result.remove(0);
                 String s2 = result.remove(0);
-                if(!s2.equals("COUNT_TRIAL"))
+                if(!s2.equals("MEASUREMENT_TRIAL"))
                     return;
                 if(s1.equals("CREATE_TRIAL")) {
                     createTrialFromCommands(result);
@@ -523,11 +523,14 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
         setDialog.show();
 
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
+        saveTrialDialogButton = (ImageButton) settingsView.findViewById(R.id.saveTrialQR);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         Toast.makeText(SubscribedMeasurementExperimentActivity.this, "Enter a double type", Toast.LENGTH_LONG).show();
         if (!trialButtonEnabled){
             addTrialDialogButton.setEnabled(false);
+            saveTrialDialogButton.setEnabled(false);
+            saveTrialDialogButton.setImageAlpha(64);
         }
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
@@ -609,7 +612,7 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
         List<String> l = new ArrayList<>();
 
         l.add("CREATE_TRIAL"); // check
-        l.add("COUNT_TRIAL_ADD");
+        l.add("MEASUREMENT_TRIAL");
 
         l.add(data.get("Title").toString());
         l.add(data.get("Date").toString());
