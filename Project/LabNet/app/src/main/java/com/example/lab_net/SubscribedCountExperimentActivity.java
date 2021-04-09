@@ -515,6 +515,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                 String s1 = result.remove(0);
                 String s2 = result.remove(0);
                 if(!s2.equals("COUNT_TRIAL"))
+                    return;
                 if(s1.equals("CREATE_TRIAL")) {
                     createTrialFromCommands(result);
                 }
