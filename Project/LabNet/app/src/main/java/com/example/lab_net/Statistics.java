@@ -17,7 +17,6 @@ public class Statistics extends AppCompatActivity {
     private TextView meanView, medianView, lowerQuartileView, upperQuartileView, standardDeviationView;
 
     public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
-    public static final String STATISTICS_TYPE_EXTRA = "com.example.lab_net.statistics.type";
 
     private double sum = 0;
     private double mean = 0;
@@ -64,21 +63,21 @@ public class Statistics extends AppCompatActivity {
         lqResults = new ArrayList<>();
         uqResults = new ArrayList<>();
         stdDeviation = new ArrayList<>();
-        String type = intent.getExtras().getString(Statistics.STATISTICS_TYPE_EXTRA);
+        int requestCode = intent.getExtras().getInt("check");
 
-        switch (type) {
-            case(ExperimentTypes.COUNT_STRING):
-                count();
-                break;
-            case(ExperimentTypes.MEASUREMENT_STRING):
-                measurement();
-                break;
-            case(ExperimentTypes.NON_NEGATIVE_NUMBER_STRING):
-                nonNegative();
-                break;
-            case(ExperimentTypes.BINOMIAL_STRING):
-                binomial();
-                break;
+        if (requestCode == 0) {
+            count();
+        }
+        if (requestCode == 1) {
+            measurement();
+        }
+
+        if (requestCode == 2) {
+            nonNegative();
+        }
+
+        if (requestCode == 3) {
+            binomial();
         }
     }
 
@@ -152,7 +151,7 @@ public class Statistics extends AppCompatActivity {
         //go back to experiment
         Class next;
         if (subscribed == true) {
-            next = SubscribedExperimentActivity.class;
+            next = SubscribedBinomialExperimentActivity.class;
         }
         else{
             next = BinomialExperimentActivity.class;
@@ -239,7 +238,7 @@ public class Statistics extends AppCompatActivity {
         //go back to experiment
         Class next;
         if (subscribed == true) {
-            next = SubscribedExperimentActivity.class;
+            next = SubscribedNonNegativeExperimentActivity.class;
         }
         else{
             next = NonNegativeExperimentActivity.class;
@@ -325,7 +324,7 @@ public class Statistics extends AppCompatActivity {
         //go back to experiment
         Class next;
         if (subscribed == true) {
-            next = SubscribedExperimentActivity.class;
+            next = SubscribedMeasurementExperimentActivity.class;
         }
         else{
             next = MeasurementExperimentActivity.class;
@@ -413,7 +412,7 @@ public class Statistics extends AppCompatActivity {
         //go back to experiment
         Class next;
         if (subscribed == true) {
-            next = SubscribedExperimentActivity.class;
+            next = SubscribedCountExperimentActivity.class;
         }
         else{
             next = CountExperimentActivity.class;

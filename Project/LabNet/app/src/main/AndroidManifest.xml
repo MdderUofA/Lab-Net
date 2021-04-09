@@ -15,8 +15,10 @@
         android:roundIcon="@drawable/app_logo"
         android:theme="@style/Theme.LabNet"
         tools:ignore="ExtraText">
-        <activity android:name=".SubscribedExperimentActivity" />
+        <activity android:name=".SubscribedBinomialExperimentActivity"></activity>
+        <activity android:name=".SubscribedNonNegativeExperimentActivity" />
         <activity android:name=".plotLocActivity" />
+        <activity android:name=".SubscribedMeasurementExperimentActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -34,6 +36,7 @@
         <activity android:name=".Statistics" />
         <activity android:name=".Histogram" />
         <activity android:name=".ExperimentActivity" />
+        <activity android:name=".SubscribedCountExperimentActivity" />
         <activity android:name=".SubscribedUserActivity" />
         <activity android:name=".NonNegativeExperimentActivity" />
         <activity android:name=".MeasurementExperimentActivity" />

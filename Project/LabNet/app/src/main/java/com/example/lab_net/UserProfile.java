@@ -396,13 +396,30 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SubscribedExperiment subsExp = subscribedExperimentsDataList.get(position);
-                //String checkType = subsExp.getTrialType();
+                String checkType = subsExp.getTrialType();
                 String expId = subsExp.getId();
+                if(checkType.equals("Binomial")){
+                    Intent intent = new Intent(UserProfile.this, SubscribedBinomialExperimentActivity.class);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
 
-                Intent intent = new Intent(UserProfile.this,
-                        SubscribedExperimentActivity.class);
-                intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
-                startActivity(intent);
+                if(checkType.equals("Count-based")) {
+                    Intent intent = new Intent(UserProfile.this, SubscribedCountExperimentActivity.class);
+                    //intent.putExtra("experimentId",expId);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
+                if(checkType.equals("NonNegativeInteger")) {
+                    Intent intent = new Intent(UserProfile.this, SubscribedNonNegativeExperimentActivity.class);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
+                if(checkType.equals("Measurement")) {
+                    Intent intent = new Intent(UserProfile.this, SubscribedMeasurementExperimentActivity.class);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
             }
         });
     }

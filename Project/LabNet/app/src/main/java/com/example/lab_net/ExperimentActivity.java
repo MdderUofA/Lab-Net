@@ -50,21 +50,21 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
 
     private ListView trialList;
     // Count adapters and lists
-    private ArrayAdapter<Trial> trialArrayAdapter;
-    private ArrayList<Trial> trialDataList;
+    private ArrayAdapter<CountTrial> trialArrayAdapter;
+    private ArrayList<CountTrial> trialDataList;
     private CustomTrialList customTrialList;
 
     // Measurement
-    private ArrayAdapter<Trial> measurementTrialArrayAdapter;
-    private ArrayList<Trial> measurementDataList;
+    private ArrayAdapter<MeasurementTrial> measurementTrialArrayAdapter;
+    private ArrayList<MeasurementTrial> measurementDataList;
 
     // NonNegative
-    private ArrayAdapter<Trial> nonNegativeIntegerTrialArrayAdapter;
-    private ArrayList<Trial> nonNegativeDataList;
+    private ArrayAdapter<NonNegativeIntegerTrial> nonNegativeIntegerTrialArrayAdapter;
+    private ArrayList<NonNegativeIntegerTrial> nonNegativeDataList;
 
     // Binomial
-    private ArrayAdapter<Trial> binomialTrialArrayAdapter;
-    private ArrayList<Trial> binomialDataList;
+    private ArrayAdapter<BinomialTrial> binomialTrialArrayAdapter;
+    private ArrayList<BinomialTrial> binomialDataList;
 
     String trialId, trialTitle;
     Long resultLong;
@@ -515,7 +515,7 @@ public class ExperimentActivity extends AppCompatActivity implements NavigationV
 
 
     public void deleteTrial(int position) {
-        CountTrial trial = (CountTrial) trialDataList.get(position);
+        CountTrial trial = trialDataList.get(position);
         trialDataList.remove(position);
         /*resultList.remove(trial.getCount());*/
         trialArrayAdapter.notifyDataSetChanged();

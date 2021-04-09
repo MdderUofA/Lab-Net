@@ -549,7 +549,7 @@ public class SearchableList {
             AppCompatActivity parentActivity = this.getAdapter()
                     .getSearchableList().getParent();
             Class<? extends AppCompatActivity> target
-                    = SubscribedExperimentActivity.class;
+                    = this.getActivityFromType(experiment.getType());
 
             // go to the activity.
             Intent intent = new Intent(parentActivity, target);
@@ -557,6 +557,31 @@ public class SearchableList {
             parentActivity.startActivity(intent);
         }
 
+        /**
+         * Finds the class associated with the experiment to subscribe to.
+         *
+         * @see ExperimentTypes
+         * @param type The string type of the subscribed experiment.
+         * @throws IllegalArgumentException if the supplied string does not match to a valid class
+         * @return The SubscribedExperiment class represented by the String experimentType
+         */
+        private Class<? extends AppCompatActivity> getActivityFromType(String type) {
+            // I CANNOT use an enum here. The rest of the app uses hard coded values and so
+            // I must also use hard coded values so that the code will compile correctly and
+            // work with the database.
+            switch (type) {
+                case("Count-based"):
+                    return SubscribedCountExperimentActivity.class;
+                case("Binomial"):
+                    return SubscribedBinomialExperimentActivity.class;
+                case("Measurement"):
+                    return SubscribedMeasurementExperimentActivity.class;
+                case("NonNegativeInteger"):
+                    return SubscribedNonNegativeExperimentActivity.class;
+                default:
+                    throw new IllegalArgumentException("Type "+type+" does not match to a valid experiment type.");
+            }
+        }
 
         @Override
         public boolean canHandleClass(Class<? extends Searchable> cl) {

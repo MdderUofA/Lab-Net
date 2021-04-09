@@ -71,7 +71,7 @@ public class CustomTrialList extends ArrayAdapter<Trial> {
 
 
         titleText.setText(trial.getTitle());
-        resultText.setText(""+trial.getCount());
+        resultText.setText(trial.getCount().toString());
 
 
         return view;

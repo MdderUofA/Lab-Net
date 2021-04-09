@@ -39,7 +39,7 @@ public class NonNegativeCustomTrialList extends ArrayAdapter<NonNegativeIntegerT
         TextView resultText = view.findViewById(R.id.result_text);
 
         titleText.setText(trial.getTitle());
-        resultText.setText(""+trial.getNonNegativeCount());
+        resultText.setText(trial.getNonNegativeCount().toString());
 
 
         return view;

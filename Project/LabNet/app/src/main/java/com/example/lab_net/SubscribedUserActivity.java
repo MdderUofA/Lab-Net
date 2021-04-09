@@ -190,12 +190,29 @@ public class SubscribedUserActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SubscribedExperiment subsExp = subscribedExperimentsDataList.get(position);
-                //String checkType = subsExp.getTrialType();
+                String checkType = subsExp.getTrialType();
                 String expId = subsExp.getId();
-                Intent intent = new Intent(SubscribedUserActivity.this,
-                        SubscribedExperimentActivity.class);
-                intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
-                startActivity(intent);
+                if(checkType.equals("Binomial")){
+                    Intent intent = new Intent(SubscribedUserActivity.this, SubscribedBinomialExperimentActivity.class);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
+                if(checkType.equals("Count-based")) {
+                    Intent intent = new Intent(SubscribedUserActivity.this, SubscribedCountExperimentActivity.class);
+                    //intent.putExtra("experimentId",expId);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
+                if(checkType.equals("NonNegativeInteger")) {
+                    Intent intent = new Intent(SubscribedUserActivity.this, SubscribedNonNegativeExperimentActivity.class);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
+                if(checkType.equals("Measurement")) {
+                    Intent intent = new Intent(SubscribedUserActivity.this, SubscribedMeasurementExperimentActivity.class);
+                    intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -209,12 +226,31 @@ public class SubscribedUserActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Experiment experiment = myExperimentsDataList.get(position);
-                    //experimentTrialType = experiment.getTrialType();
+                    experimentTrialType = experiment.getTrialType();
+                    // add condition to check trial type
+                    if(experimentTrialType.equals("Binomial")){
+                        Intent intent = new Intent(SubscribedUserActivity.this, SubscribedBinomialExperimentActivity.class);
+                        intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
+                        startActivity(intent);
+                    }
+                    if(experimentTrialType.equals("Count-based")) {
+                        Intent intent = new Intent(SubscribedUserActivity.this, SubscribedCountExperimentActivity.class);
+                        intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
+                        startActivity(intent);
+                    }
+                    if(experimentTrialType.equals("NonNegativeInteger")) {
+                        Intent intent = new Intent(SubscribedUserActivity.this, SubscribedNonNegativeExperimentActivity.class);
+                        //intent.putExtra("experimentId", experiment.getExperimentId());
+                        intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
+                        startActivity(intent);
+                    }
+                    if(experimentTrialType.equals("Measurement")) {
+                        Intent intent = new Intent(SubscribedUserActivity.this, SubscribedMeasurementExperimentActivity.class);
+                        //intent.putExtra("experimentId", experiment.getExperimentId());
+                        intent.putExtra(EXPERIMENT_ID_EXTRA,experiment.getExperimentId());
+                        startActivity(intent);
+                    }
 
-                    Intent intent = new Intent(SubscribedUserActivity.this,
-                            SubscribedExperimentActivity.class);
-                    intent.putExtra(EXPERIMENT_ID_EXTRA, experiment.getExperimentId());
-                    startActivity(intent);
                 }
             });
         }

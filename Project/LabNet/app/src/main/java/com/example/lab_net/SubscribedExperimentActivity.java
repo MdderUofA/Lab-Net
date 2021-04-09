@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -49,17 +49,17 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
     private ListView trialList;
     // Count adapters and lists
     private ArrayAdapter<Trial> trialArrayAdapter;
-    private ArrayList<Trial> trialDataList = new ArrayList<>();
+    private ArrayList<Trial> trialDataList;
 
     private ExperimentHandler handler = null;
 
 
     private Button addTrialDialogButton;
-    private ImageButton saveTrialDialogButton;
     private TextView experimentTitleView, experimentDescriptionView, experimentRegionView;
     private Button addTrialButton;
 
     //stats
+    private List<Long> resultList = new ArrayList<Long>();
 
     private EditText addTrialTitle;
     private EditText addTrialResult;
@@ -191,7 +191,8 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
      */
     private void createTrialsList() {
         trialList = (ListView) findViewById(R.id.trial_list);
-        trialArrayAdapter = handler.getListAdapter(this, trialDataList);
+        trialDataList = new ArrayList<>();
+        trialArrayAdapter = handler.getListAdaper(this, trialDataList);
         trialList.setAdapter(trialArrayAdapter);
 
         addTrialButton = (Button) findViewById(R.id.addRemoveTrialsButton);
@@ -243,16 +244,12 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         switch (type) {
             case(ExperimentTypes.COUNT_STRING):
                 handler = new CountExperimentHandler();
-                break;
             case(ExperimentTypes.BINOMIAL_STRING):
                 handler = new BinomialExperimentHandler();
-                 break;
             case(ExperimentTypes.MEASUREMENT_STRING):
                 handler = new MeasurementExperimentHandler();
-                 break;
             case(ExperimentTypes.NON_NEGATIVE_NUMBER_STRING):
                 handler = new NonNegativeExperimentHandler();
-                 break;
             default:
                 throw new IllegalArgumentException("Type "+type+" does not" +
                         " match to a valid experiment type.");
@@ -330,7 +327,7 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
                 } else {
                     Intent statsIntent = new Intent(getApplicationContext(), Statistics.class);
                     statsIntent.putExtra("trialDataList", (Serializable) trialDataList);
-                    statsIntent.putExtra(Statistics.STATISTICS_TYPE_EXTRA,handler.getType());
+                    statsIntent.putExtra("check",1);
                     statsIntent.putExtra("expId", handler.getId());
                     statsIntent.putExtra("subscribed", true);
                     startActivity(statsIntent);
@@ -422,8 +419,27 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
      * on this it enables/disables the addTrialDialogButton. So user must get location if required, else
      * not a must.
      */
-    private boolean checkLocationRequirement(){
-        return handler.isLocationEnabled() && ((trialLatitude == null) || (trialLongitude) == null);
+    private void checkLocationRequirement(){
+
+        if (handler.isLocationEnabled()){
+            //add_trial_button.setEnabled(true);
+            trialButtonEnabled = true;
+        } else {
+            if ((trialLatitude == null) || (trialLongitude) == null){
+                trialButtonEnabled = false;
+                addTrialDialogButton.setEnabled(false);
+            } else {
+                String checkResult = addTrialResult.getText().toString();
+                String checkTitle = addTrialTitle.getText().toString();
+                if (checkResult.isEmpty() || checkTitle.isEmpty()){
+                    trialButtonEnabled = false;
+                    addTrialDialogButton.setEnabled(false);
+                } else {
+                    trialButtonEnabled = true;
+                    addTrialDialogButton.setEnabled(true);
+                }
+            }
+        }
     }
     /**
      * Retrieves and saves location coordinates from MapActivity once user has selected their location.
@@ -451,9 +467,8 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
      * enables adding trials for experiments
      */
     private void addTrial() {
-        // first, create the dialog
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(this);
-        View settingsView = getLayoutInflater().inflate(handler.getAddTrialLayout(), null);
+        View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
 
         settingsBuilder.setView(settingsView);
         AlertDialog setDialog = settingsBuilder.create();
@@ -461,14 +476,11 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         setDialog.show();
 
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
-        saveTrialDialogButton = (ImageButton) settingsView.findViewById(R.id.saveTrialQR);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
-        //Toast.makeText(this, "Enter a double type", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Enter a double type", Toast.LENGTH_LONG).show();
         if (!trialButtonEnabled){
             addTrialDialogButton.setEnabled(false);
-            saveTrialDialogButton.setEnabled(false);
-            saveTrialDialogButton.setImageAlpha(64);
         }
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
@@ -477,6 +489,11 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
         final CollectionReference collectionReference = Utils.collection(DatabaseCollections.TRIALS);
         String trialId = collectionReference.document().getId();
 
+        // date
+        date = Calendar.getInstance().getTime();
+        simpleDateFormat = new SimpleDateFormat("ddMMYYYY", Locale.getDefault());
+        formattedDate = simpleDateFormat.format(date);
+
         Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
         getLocationButton.setOnClickListener(v -> getLocation(trialId));
 
@@ -484,63 +501,33 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
             String result = addTrialResult.getText().toString();
             String title = addTrialTitle.getText().toString();
             // add to firebase
-            HashMap<String, Object> data = getSkeletonTrial(title, result);
-
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("Title", title);
+            data.put("Result", result);
+            data.put("ExperimentId", handler.getId());
+            data.put("Date", formattedDate);
+            data.put("isUnlisted", false);
+            if ((trialLatitude != null) && (trialLongitude != null)){
+                if ((trialLatitude != 0) && (trialLongitude != 0)){
+                    data.put("Lat", trialLatitude);
+                    data.put("Long", trialLongitude);
+                }
+            }
             collectionReference
                     .document(trialId)
                     .set(data)
                     .addOnSuccessListener(aVoid -> {
-                        Trial t = handler.trialFromMap(data, trialId);
-                        trialDataList.add(t);
+                        trialDataList.add(new MeasurementTrial(trialId, title, formattedDate, Double.valueOf(result)));
                         trialArrayAdapter.notifyDataSetChanged();
                         Toast.makeText(SubscribedExperimentActivity.this,
-                                "Trial added.", Toast.LENGTH_LONG).show();
+                                "Trial added", Toast.LENGTH_LONG).show();
                         setDialog.dismiss();
                     })
                     .addOnFailureListener(e -> Toast.makeText(SubscribedExperimentActivity.this,
-                            "A network error has occurred.", Toast.LENGTH_LONG).show());
+                            "Trial not added", Toast.LENGTH_LONG).show());
 
             setDialog.dismiss();
         });
-
-        saveTrialDialogButton.setOnClickListener(v -> {
-            String result = addTrialResult.getText().toString();
-            String title = addTrialTitle.getText().toString();
-            // add to firebase
-            HashMap<String, Object> data = getSkeletonTrial(title, result);
-            QRManager.printQRFromString(this, QRManager.toQRString(handler.commandsFromMap(data)));
-        });
-    }
-
-    /**
-     * Creates a skeleton of a Trial for use in the Database.
-     * @param title {Optional} The title of the trial
-     * @param result {Optional} The result of the trial
-     * @return A Map representing the trial as stored in FireBase.
-     */
-    private HashMap<String, Object> getSkeletonTrial(String title, String result) {
-        // date
-        date = Calendar.getInstance().getTime();
-        simpleDateFormat = new SimpleDateFormat("ddMMYYYY", Locale.getDefault());
-        formattedDate = simpleDateFormat.format(date);
-
-        HashMap<String, Object> data = new HashMap<>();
-        if(title!=null) {
-            data.put("Title", title);
-        }
-        if(result!=null) {
-            data.put("Result", result);
-        }
-        data.put("ExperimentId", handler.getId());
-        data.put("Date", formattedDate);
-        data.put("isUnlisted", false);
-        if ((trialLatitude != null) && (trialLongitude != null)){
-            if ((trialLatitude != 0) && (trialLongitude != 0)){
-                data.put("Lat", trialLatitude);
-                data.put("Long", trialLongitude);
-            }
-        }
-        return data;
     }
 
 
@@ -554,10 +541,13 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            trialButtonEnabled = checkRequirements();
-            addTrialDialogButton.setEnabled(trialButtonEnabled);
-            saveTrialDialogButton.setEnabled(trialButtonEnabled);
-            saveTrialDialogButton.setImageAlpha(trialButtonEnabled ? 255 : 64);
+            String checkResult = addTrialResult.getText().toString();
+            String checkTitle = addTrialTitle.getText().toString();
+            checkLocationRequirement();
+            if (trialButtonEnabled){
+                addTrialDialogButton.setEnabled(!checkResult.isEmpty() && !checkTitle.isEmpty());
+            }
+
         }
 
         @Override
@@ -565,16 +555,6 @@ public class SubscribedExperimentActivity extends AppCompatActivity implements
 
         }
     };
-
-    private boolean checkRequirements() {
-        return checkDialog() && checkLocationRequirement();
-    }
-
-    private boolean checkDialog() {
-        String checkTitle = addTrialTitle.getText().toString();
-        return (!checkTitle.isEmpty() && handler.isResultValid(addTrialResult));
-    }
-
     /**
      * Disables going back using androids back button
      */
