@@ -459,8 +459,9 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                 addTrialDialogButton.setEnabled(false);
                 saveTrialDialogButton.setEnabled(false);
             } else {
+                String checkResult = addTrialResult.getText().toString();
                 String checkTitle = addTrialTitle.getText().toString();
-                if (checkTitle.isEmpty()){
+                if (checkResult.isEmpty() || checkTitle.isEmpty()){
                     trialButtonEnabled = false;
                     addTrialDialogButton.setEnabled(false);
                     saveTrialDialogButton.setEnabled(false);

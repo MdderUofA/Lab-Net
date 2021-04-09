@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -86,6 +88,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
     private Long result;
     private Long getResult;
     private Button addTrialDialogButton;
+    private ImageButton saveTrialDialogButton;
     private EditText addTrialTitle;
     private EditText addTrialResult;
 
@@ -549,6 +552,11 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         startActivityForResult(sendTrialId, 2);
     }
 
+    private void scanQR() {
+        Intent qr = new Intent(this, QRScanner.class);
+        startActivityForResult(qr, 3);
+    }
+
     /**
      * Checks to see if experiment requires location, or if latitude and longitude is provided. Based
      * on this it enables/disables the addTrialDialogButton. So user must get location if required, else
@@ -563,14 +571,19 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
             if ((trialLatitude == null) || (trialLongitude) == null){
                 trialButtonEnabled = false;
                 addTrialDialogButton.setEnabled(false);
+                saveTrialDialogButton.setEnabled(false);
             } else {
                 String checkTitle = addTrialTitle.getText().toString();
                 if (checkTitle.isEmpty()){
                     trialButtonEnabled = false;
                     addTrialDialogButton.setEnabled(false);
+                    saveTrialDialogButton.setEnabled(false);
+                    saveTrialDialogButton.setImageAlpha(64);
                 } else {
                     trialButtonEnabled = true;
                     addTrialDialogButton.setEnabled(true);
+                    saveTrialDialogButton.setEnabled(true);
+                    saveTrialDialogButton.setImageAlpha(255);
                 }
             }
         }
@@ -589,13 +602,26 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==2)
         {
-            if (data != null) {
+            if (data != null ) {
                 trialLatitude = data.getDoubleExtra("latitude", 0);
                 trialLongitude = data.getDoubleExtra("longitude", 0);
             }
-
+            checkLocationReq();
+        } else if(requestCode == 3) {
+            if(data!=null) {
+                List<String> result = data.getStringArrayListExtra(QRScanner.QR_RESULT_EXTRA);
+                if(result.size()<1)
+                    return;
+                String s1 = result.remove(0);
+                String s2 = result.remove(0);
+                if(!s2.equals("COUNT_TRIAL"))
+                    return;
+                if(s1.equals("CREATE_TRIAL")) {
+                    createTrialFromCommands(result);
+                }
+            }
         }
-        checkLocationReq();
+
     }
 
     private void scanQR() {
@@ -617,6 +643,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         setDialog.show();
 
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
+        saveTrialDialogButton = (ImageButton) settingsView.findViewById(R.id.saveTrialQR);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         if (isLocationEnabled.equalsIgnoreCase("No")){
             Toast.makeText(CountExperimentActivity.this,
@@ -629,6 +656,8 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         }
         if (!trialButtonEnabled){
             addTrialDialogButton.setEnabled(false);
+            saveTrialDialogButton.setEnabled(false);
+            saveTrialDialogButton.setImageAlpha(64);
         }
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
@@ -686,6 +715,19 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                             }
                         });
                 setDialog.dismiss();
+            }
+        });
+
+        saveTrialDialogButton.setOnClickListener(v -> {
+            if(addTrialDialogButton.isEnabled()) {
+                Long result = Long.valueOf(1);
+                String title = addTrialTitle.getText().toString();
+                // add to firebase
+                HashMap<String, Object> data = getSkeletonTrial(title, result);
+
+
+                QRManager.printQRFromString(this, QRManager.toQRString(createTrialCommandsFromMap(data)));
+
             }
         });
     }
@@ -893,6 +935,87 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
     }
 
+    public List<String> createTrialCommandsFromMap(HashMap<String, Object> data) { // to be written into QR
+        List<String> l = new ArrayList<>();
+
+        l.add("CREATE_TRIAL"); // check
+        l.add("COUNT_TRIAL");
+
+        l.add(data.get("Title").toString());
+        l.add(data.get("Date").toString());
+        l.add(data.get("Result").toString());
+        if(data.get("Lat")!=null && data.get("Long")!=null) {
+            l.add(data.get("Lat").toString());
+            l.add(data.get("Long").toString());
+        }
+        return l;
+    }
+
+    private void createTrialFromCommands(List<String> result) {
+        HashMap<String, Object> data = getSkeletonTrial(result.get(0),Long.parseLong(result.get(2)));
+
+        date = Calendar.getInstance().getTime();
+        simpleDateFormat = new SimpleDateFormat("ddMMYYYY", Locale.getDefault());
+        formattedDate = simpleDateFormat.format(date);
+        data.put("Date",formattedDate);
+
+        if(result.size()>3) { // location data exists.
+            data.put("Lat",Double.parseDouble(result.get(3)));
+            data.put("Long",Double.parseDouble(result.get(4)));
+        }
+        final CollectionReference collectionReference = db.collection("Trials");
+        String trialId = collectionReference.document().getId();
+
+        collectionReference
+                .document(trialId)
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        trialDataList.add(new CountTrial(trialId, result.get(0), Long.parseLong(result.get(2))));
+                        trialArrayAdapter.notifyDataSetChanged();
+                        Toast.makeText(CountExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CountExperimentActivity.this, "Trial not added", Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    /**
+     * Creates a skeleton of a Trial for use in the Database.
+     * @param title {Optional} The title of the trial
+     * @param result {Optional} The result of the trial
+     * @return A Map representing the trial as stored in FireBase.
+     */
+    private HashMap<String, Object> getSkeletonTrial(String title, Object result) {
+        // date
+        date = Calendar.getInstance().getTime();
+        simpleDateFormat = new SimpleDateFormat("ddMMYYYY", Locale.getDefault());
+        formattedDate = simpleDateFormat.format(date);
+
+        HashMap<String, Object> data = new HashMap<>();
+        if(title!=null) {
+            data.put("Title", title);
+        }
+        if(result!=null) {
+            data.put("Result", result);
+        }
+        data.put("ExperimentId", experimentId);
+        data.put("Date", formattedDate);
+        data.put("isUnlisted", false);
+        if ((trialLatitude != null) && (trialLongitude != null)){
+            if ((trialLatitude != 0) && (trialLongitude != 0)){
+                data.put("Lat", trialLatitude);
+                data.put("Long", trialLongitude);
+            }
+        }
+        return data;
+    }
+
     /**
      * Responsible for the validation of values used for adding trial
      */
@@ -907,6 +1030,8 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
             checkLocationReq();
             if(trialButtonEnabled){
                 addTrialDialogButton.setEnabled(!checkTitle.isEmpty());
+                saveTrialDialogButton.setEnabled(addTrialDialogButton.isEnabled());
+                saveTrialDialogButton.setImageAlpha(addTrialDialogButton.isEnabled() ? 255 : 64);
             }
 
         }
