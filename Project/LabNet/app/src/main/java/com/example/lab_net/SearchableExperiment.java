@@ -2,8 +2,6 @@ package com.example.lab_net;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.util.Date;
-
 /**
  * A Searchable which represents an experiment.
  * @author Marcus
@@ -45,7 +43,6 @@ public class SearchableExperiment extends Searchable {
 
     /**
      * Getter for the String type of the Experiment. One of {}
-     * @return
      */
     public String getType() {
         return this.type;

@@ -431,7 +431,6 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
     /**
      * Launches MapActivity so user can retrieve their device location for experiment. Needs trialId.
      * @param trialId
-     * @return void
      */
     private void getLocation(String trialId) {
         Intent sendTrialId = new Intent(this, MapActivity.class);
@@ -448,7 +447,6 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
      * Checks to see if experiment requires location, or if latitude and longitude is provided. Based
      * on this it enables/disables the addTrialDialogButton. So user must get location if required, else
      * not a must.
-     * @return void
      */
     private void checkLocationReq(){
 
@@ -483,7 +481,6 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
      * @param requestCode
      * @param resultCode
      * @param data
-     * @return void
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)

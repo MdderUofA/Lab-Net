@@ -27,7 +27,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -61,8 +60,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private String experimentId;
 
     private ImageButton editUser;
-    private Button browse, addExp, qrCode;
-    ListView subExpListView, myExpListView;
+    private Button browse, addExp;
+    private ListView subExpListView, myExpListView;
     private ArrayList<Experiment> myExperimentsDataList;
     private ArrayList<SubscribedExperiment> subscribedExperimentsDataList;
     private ArrayAdapter<Experiment> myExperimentAdapter;
@@ -120,6 +119,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         myExpView();
         subExpView();
+
     }
 
     //Set buttons

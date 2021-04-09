@@ -22,7 +22,9 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -240,53 +242,93 @@ public class Histogram extends AppCompatActivity {
         barChart.setDragEnabled(true);
         barChart.setScaleEnabled(true);
 
-        //line chart
+        //linechart
         lineChart = (LineChart) findViewById(R.id.lineChart);
-
-        //get data
         entries = new ArrayList<>();
         dateDataList = new ArrayList<>();
         dateDataList = (ArrayList<String>) intent.getSerializableExtra("dateDataList");
-        for(i = 0; i < dateDataList.size(); i++){
-            entries.add(new Entry(Float.valueOf(dateDataList.get(i)),i));
-        }
+        ArrayList<String> xAxisValues = new ArrayList<>();
 
-        //set data
-        LineDataSet lineDataSet = new LineDataSet(entries, null);
+
+        XAxis xaxis = lineChart.getXAxis();
+        lineChart.getXAxis().setGranularityEnabled(true);
+        lineChart.getXAxis().setGranularity(1.0f);
+
+        xaxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+
+                String s = Float.toString(value);
+                s = Double.toString(Double.parseDouble(s));
+                int decIndex = 0;
+                for (int i=0;i<s.length();i++) {
+                    if (s.charAt(i)=='.') {
+                        decIndex = i-1;
+                        break;
+                    }
+                }
+
+                String year = "";
+                for (int i=0;i<=decIndex-4;i++) {
+                    year = year + s.charAt(i) ;
+                }
+                String month = "";
+                for (int i=decIndex-3;i<=decIndex-2;i++) {
+                    month = month + s.charAt(i) ;
+                }
+                String day = "";
+                for (int i=decIndex-1;i<=decIndex;i++) {
+                    day = day + s.charAt(i);
+                }
+                return day+"-"+month+"-"+year;
+            }
+
+        });
+        HashMap<String, Integer> hashmap = new HashMap<String, Integer>();
+
+        for (i=0;i<dateDataList.size();i++) {
+            if (hashmap.containsKey(dateDataList.get(i))) {
+                int temp = hashmap.get(dateDataList.get(i));
+                hashmap.replace(dateDataList.get(i),temp+1);
+            } else {
+                hashmap.put(dateDataList.get(i),1);
+            }
+        }
+        dateDataList = new ArrayList<String>(hashmap.keySet());
+        Collections.sort(dateDataList);
+
+        StringBuffer str = new StringBuffer(dateDataList.get(0));
+        String utilString = "";
+        utilString = utilString + str.toString().substring(0,2);
+        utilString = str.toString().substring(2,4) + utilString;
+        utilString = str.toString().substring(6,8) + utilString;
+
+        int max=0, min=Integer.valueOf(utilString);
+
+        for(i = 0; i < dateDataList.size(); i++){
+            str = new StringBuffer(dateDataList.get(i));
+            utilString = "";
+            utilString = utilString + str.toString().substring(0,2);
+            utilString = str.toString().substring(2,4) + utilString;
+            utilString = str.toString().substring(6,8) + utilString;
+            entries.add(new Entry(Integer.valueOf(utilString),hashmap.get(dateDataList.get(i))));
+            if (Integer.valueOf(utilString)>max) {
+                max = Integer.valueOf(utilString);
+            }
+        }
+        LineDataSet lineDataSet = new LineDataSet(entries, "(XAXIS=date) , (YAXIS=count)");
+
         iLineDataSets = new ArrayList<>();
         iLineDataSets.add(lineDataSet);
+
+
         LineData lineData = new LineData(iLineDataSets);
         lineChart.setData(lineData);
-
-        ArrayList<String> values = new ArrayList<>();
-        for(i = 0; i < dateDataList.size(); i++){
-            values.add(dateDataList.get(i));
-        }
-        XAxis xAxis1 = lineChart.getXAxis();
-
-        xAxis1.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getAxisLabel(float value, AxisBase axis) {
-                Date date = new Date((long)value);
-                //Specify the format you'd like
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY", Locale.getDefault());
-                return sdf.format(date);
-            }
-        });
-
-        xAxis1.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-
-        //set color of line
-        lineDataSet.setColor(Color.rgb(132, 180, 200));
-
-       XAxis lxAxis = lineChart.getXAxis();
-        lxAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        lineChart.getAxisRight().setEnabled(false);
-        lineChart.getLegend().setEnabled(false);
+        //lineChart.getXAxis().setLabelCount(max-min+1, true);
         lineChart.getDescription().setEnabled(false);
-        lineChart.setExtraBottomOffset(10);
-
+        lineChart.getXAxis().setAxisMinimum(min-0.5f);
+        lineChart.getXAxis().setAxisMaximum(max+0.5f);
+        lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         lineChart.setTouchEnabled(true);
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
@@ -441,8 +483,8 @@ public class Histogram extends AppCompatActivity {
         for (i = 0; i < measurementTrials.size(); i++) {
             results.add(Double.valueOf(measurementTrials.get(i).getMeasurement()));
         }
-        for (i = 0; i < nonNegativeTrials.size(); i++) {
-            trialTitles.add(nonNegativeTrials.get(i).getTitle());
+        for (i = 0; i < measurementTrials.size(); i++) {
+            trialTitles.add(measurementTrials.get(i).getTitle());
         }
 
         xAxisTitle.setText("Trials");

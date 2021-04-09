@@ -1,14 +1,10 @@
 package com.example.lab_net;
 
-import androidx.test.rule.ActivityTestRule;
-
-import android.app.Activity;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.ActivityTestRule;
 
 import com.robotium.solo.Solo;
 
@@ -16,10 +12,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Testing the Count Experiment Activity,
+ * which is the same process for other trial type Experiment Activites.
+ */
 public class CountExperimentActivityTest {
 
     private Solo solo;

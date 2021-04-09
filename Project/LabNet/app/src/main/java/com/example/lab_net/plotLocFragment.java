@@ -2,16 +2,15 @@ package com.example.lab_net;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -53,7 +52,6 @@ public class plotLocFragment extends Fragment {
      * @param longitude
      * @param trialName
      * @param googleMap
-     * @return void
      */
     public void putLocationOnMap(double latitude, double longitude, GoogleMap googleMap, String trialName) {
         //Help from 'How to Implement Google Map Inside Fragment in Android Studio | GoogleMap | Android Coding'
@@ -129,7 +127,6 @@ public class plotLocFragment extends Fragment {
             /**
              * Waits 5 seconds before allowing map to work to allow all data from firebase to
              * appropriately be retrieved, in order to avoid any delay errors.
-             * @return void
              */
             @Override
             public void run() {
@@ -140,7 +137,6 @@ public class plotLocFragment extends Fragment {
                         /**
                          * Generates the map. Permission not needed because not getting user's location, just displaying data.
                          * @param googleMap
-                         * @return void
                          */
                         @SuppressLint("MissingPermission")
                         @Override
@@ -165,7 +161,6 @@ public class plotLocFragment extends Fragment {
 
     /**
      * Checks if all latitude and longitude values are null.
-     * @return void
      */
     public void checkIfAllNull(){
         int nullValues = 0;
