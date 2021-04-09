@@ -598,7 +598,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
         saveTrialDialogButton.setOnClickListener(v -> {
             if(addTrialDialogButton.isEnabled()) {
-                Long result = (Long) Long.valueOf(addTrialResult.getText().toString());
+                Long result = Long.valueOf(1);
                 String title = addTrialTitle.getText().toString();
                 // add to firebase
                 HashMap<String, Object> data = getSkeletonTrial(title, result);
@@ -635,8 +635,8 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         data.put("Date",formattedDate);
 
         if(result.size()>3) { // location data exists.
-            data.put("Lat",Long.parseLong(result.get(3)));
-            data.put("Long",Long.parseLong(result.get(4)));
+            data.put("Lat",Double.parseDouble(result.get(3)));
+            data.put("Long",Double.parseDouble(result.get(4)));
         }
         final CollectionReference collectionReference = db.collection("Trials");
         String trialId = collectionReference.document().getId();
@@ -706,6 +706,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
             checkLocationReq();
             if (trialButtonEnabled){
                 addTrialDialogButton.setEnabled(!checkTitle.isEmpty());
+                saveTrialDialogButton.setEnabled(addTrialDialogButton.isEnabled());
                 saveTrialDialogButton.setImageAlpha(addTrialDialogButton.isEnabled() ? 255 : 64);
             }
 

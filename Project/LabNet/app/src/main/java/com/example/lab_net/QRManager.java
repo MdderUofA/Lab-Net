@@ -2,6 +2,7 @@ package com.example.lab_net;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.print.PrintHelper;
