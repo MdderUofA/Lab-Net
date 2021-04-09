@@ -83,6 +83,7 @@ public class QRScanner extends AppCompatActivity {
                         List<DocumentSnapshot> docs = snap.getDocuments();
                         if(docs.size()==0) {
                             Toast.makeText(this, "Unknown QR",Toast.LENGTH_LONG);
+                            return;
                         }
                         String newData = (String) (docs.get(0)).get("Output");
                         handleStringResult(newData);
