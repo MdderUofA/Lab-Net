@@ -291,7 +291,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
                 startActivity(profileIntent);
                 break;
             case R.id.nav_qr:
-                //TODO
+                scanQR();
                 break;
             case R.id.nav_statistics:
                 if (trialArrayAdapter.getCount() == 0) {

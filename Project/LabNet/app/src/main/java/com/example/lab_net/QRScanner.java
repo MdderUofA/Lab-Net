@@ -58,6 +58,7 @@ public class QRScanner extends AppCompatActivity {
             Toast.makeText(this, "Error in reading QR:\n"
                     + e.getClass().getSimpleName(),Toast.LENGTH_LONG);
             setResult(AppCompatActivity.RESULT_CANCELED);
+            finish();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
