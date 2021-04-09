@@ -278,7 +278,6 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
         subUsersList.setAdapter(subUsersArrayAdapter);
         getSubscribedUsers();
 
-        Toast.makeText(this, "Long hold to list or un-list trials", Toast.LENGTH_LONG).show();
 
     }
 

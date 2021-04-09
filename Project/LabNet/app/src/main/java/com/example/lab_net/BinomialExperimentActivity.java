@@ -279,7 +279,6 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         subUsersList.setAdapter(subUsersArrayAdapter);
         getSubscribedUsers();
 
-        Toast.makeText(this, "Long hold to list or un-list trials", Toast.LENGTH_LONG).show();
 
     }
 
