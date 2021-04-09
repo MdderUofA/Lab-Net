@@ -22,9 +22,43 @@ public class TrialTest {
     }
 
     @Test
-    public void setMeasurementResult() {
-        MeasurementTrial measurementTrial = new MeasurementTrial("1234", "new measurement", 2.9);
-        measurementTrial.setMeasurement(2.4);
-        assertEquals(measurementTrial.getMeasurement(), 2.4, 0);
+    public void getMeasurementResult() {
+        MeasurementTrial measurementTrial = new MeasurementTrial("1212", "test1",5.0);
+        assertEquals(measurementTrial.getMeasurement(),5.0,0 );
     }
+
+    @Test
+    public void getNonNegativeResult() {
+        NonNegativeIntegerTrial trial = new NonNegativeIntegerTrial("4545", "test2",Long.valueOf(5));
+        assertEquals(trial.getNonNegativeCount(), Long.valueOf(5));
+    }
+
+    @Test
+    public void setCountResult() {
+        CountTrial countTrial = new CountTrial("1234", "new count", Long.valueOf(5));
+        countTrial.setCount(Long.valueOf(6));
+        assertEquals(countTrial.getCount(), Long.valueOf(6));
+    }
+
+    @Test
+    public void setBinomialResult() {
+        BinomialTrial binomialTrial = new BinomialTrial("4321", "new binomial", "Pass");
+        binomialTrial.setResult("fail");
+        assertEquals(binomialTrial.getResult().toLowerCase(), "fail");
+    }
+
+    @Test
+    public void setMeasurementResult() {
+        MeasurementTrial measurementTrial = new MeasurementTrial("1212", "test1",5.0);
+        measurementTrial.setMeasurement(4.6);
+        assertEquals(measurementTrial.getMeasurement(),4.6,0 );
+    }
+
+    @Test
+    public void setNonNegativeResult() {
+        NonNegativeIntegerTrial trial = new NonNegativeIntegerTrial("4545", "test2",Long.valueOf(5));
+        trial.setNonNegativeCount(Long.valueOf(6));
+        assertEquals(trial.getNonNegativeCount(), Long.valueOf(6));
+    }
+
 }

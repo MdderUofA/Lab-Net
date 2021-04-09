@@ -1,19 +1,16 @@
 package com.example.lab_net;
 
-import android.Manifest;
-import android.annotation.SuppressLint;;
-import android.content.pm.PackageManager;
+import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -25,6 +22,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+;
 
 /**
  * MapFragment that loads up Google Map and generates and stores the device location, and
@@ -51,7 +50,6 @@ public class MapFragment extends Fragment {
      * MainActivity.
      * @param lastKnownLocation
      * @param googleMap
-     * @return void
      */
     public void putLocationOnMap(Location lastKnownLocation, GoogleMap googleMap){
         //Help from 'How to Implement Google Map Inside Fragment in Android Studio | GoogleMap | Android Coding'
@@ -84,7 +82,6 @@ public class MapFragment extends Fragment {
      * in MapActivity, so asking for permission again is not needed.
      * @param fusedLocationProviderClient
      * @param googleMap
-     * @return void
      */
 
     @SuppressLint("MissingPermission")
@@ -133,7 +130,6 @@ public class MapFragment extends Fragment {
              * Generates the map. Permission not needed again because user is already prompted in
              * MapActivity.
              * @param googleMap
-             * @return void
              */
             @SuppressLint("MissingPermission")
             @Override
@@ -172,7 +168,6 @@ public class MapFragment extends Fragment {
     /**
      * Update coordinates in MapActivity.
      * @param coordinates
-     * @return void
      */
     public void sendLocation(double[] coordinates){
         CoordinateListener coordinateListener = (CoordinateListener) getActivity();

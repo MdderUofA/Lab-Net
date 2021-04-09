@@ -81,26 +81,6 @@ public class UserProfileTest {
         solo.assertCurrentActivity("Stay on UserProfile Activity", UserProfile.class);
     }
 
-//    @Test
-//    public void testSubExpView () {
-//        solo.assertCurrentActivity("Start on User Profile Activity", UserProfile.class);
-//        solo.clickOnText("testing title");
-//        solo.assertCurrentActivity("Move to Experiment Activity", ExperimentActivity.class);
-//    }
-//
-    @Test
-    public void testMyExpView () {
-        solo.assertCurrentActivity("Start on User Profile Activity", UserProfile.class);
-        solo.clickOnText("testing title");
-        solo.assertCurrentActivity("Move to Experiment Activity", ExperimentActivity.class);
-    }
-
-//    @Test
-//    public void testQR () {
-//        solo.assertCurrentActivity("Start on User Profile Activity", UserProfile.class);
-//        solo.clickOnText("testing title");
-//        solo.assertCurrentActivity("Move to Experiment Activity", ExperimentActivity.class);
-//    }
 
     @After
     public void tearDown() throws Exception {
