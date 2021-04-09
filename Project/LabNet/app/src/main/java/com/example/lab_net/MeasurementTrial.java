@@ -1,5 +1,8 @@
 package com.example.lab_net;
 
+/**
+ * Defining the Measurement Trial
+ */
 public class MeasurementTrial extends Trial{
     private double measurement;
 

@@ -30,6 +30,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -44,6 +45,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Activity to show the user a Non-negative Experiment they have subscribed to.
+ */
 public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
@@ -54,7 +58,7 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
     // Count adapters and lists
     private ArrayAdapter<NonNegativeIntegerTrial> trialArrayAdapter;
     private ArrayList<NonNegativeIntegerTrial> trialDataList;
-    private CustomTrialList customTrialList;
+    private CustomCountTrialList customCountTrialList;
     private ArrayList<String> dates;
 
 
@@ -94,6 +98,7 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
     Button subscribeButton;
     private String subUserId;
     private ListView subUsersList;
+    private ArrayList<String> subUsersNameList;
     private ArrayList<String> subUsersDataList;
     private ArrayAdapter<String> subUsersArrayAdapter;
 
@@ -154,6 +159,7 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
                 }
             }
         });
+
         // Fills in trialDataList
         //get trials
         db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
@@ -205,7 +211,8 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
 
         subUsersList = (ListView) findViewById(R.id.subscribed_Users_list);
         subUsersDataList = new ArrayList<>();
-        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersDataList);
+        subUsersNameList = new ArrayList<>();
+        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersNameList);
         subUsersList.setAdapter(subUsersArrayAdapter);
         getSubscribedUsers();
 
@@ -243,7 +250,7 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
     //side menu created from youtube: Android Navigation Drawer Menu Material Design
     // by Coding With Tea
     /**
-     * set side menu on owner experiment activity
+     * set side menu for experiment activity
      */
     private void setToolbar(){
         drawerLayout = findViewById(R.id.subscribe_drawer_layout);
@@ -355,14 +362,30 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 subUserId = document.getData().get("Subscriber").toString();
                                 subUsersDataList.add(subUserId);
+
+                                db.collection("UserProfile")
+                                        .whereEqualTo(FieldPath.documentId(),subUserId).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        String userFirstName = document.getData().get("firstName").toString();
+                                                        String userLastName = document.getData().get("lastName").toString();
+                                                        String fullname = userFirstName + " " + userLastName;
+
+                                                        subUsersNameList.add(fullname);
+                                                    }
+                                                    subUsersArrayAdapter.notifyDataSetChanged();
+                                                }
+                                            }
+                                        });
                             }
-                            subUsersArrayAdapter.notifyDataSetChanged();
-
                         }
-
                     }
 
                 });
+
 
         subUsersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -438,6 +461,7 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
             }
         }
     }
+
     /**
      * Retrieves and saves location coordinates from MapActivity once user has selected their location.
      * Checks to see if location requirements have been met by calling checkLocationReq.
@@ -461,8 +485,6 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
         checkLocationReq();
     }
 
-
-    //add new trial
     /**
      * enables adding trials for experiments
      */
@@ -546,8 +568,6 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
         });
     }
 
-
-
     /**
      * Responsible for the validation of values used for adding trial
      */
@@ -572,12 +592,6 @@ public class SubscribedNonNegativeExperimentActivity extends AppCompatActivity i
 
         }
     };
-
-    /**
-     * Disables going back using androids back button
-     */
-    @Override
-    public void onBackPressed() { }
 
     /**
      *  Checks if the input is a positive integer

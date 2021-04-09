@@ -14,6 +14,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * Custom Listview for subscribed Experiments.
+ */
 public class CustomSubscribedExperimentList extends ArrayAdapter<SubscribedExperiment> {
     private ArrayList<SubscribedExperiment> subscribedExperiments;
     private Context context;

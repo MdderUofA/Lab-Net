@@ -1,9 +1,5 @@
 package com.example.lab_net;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,20 +11,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * An activity to display the questions for a given experiment
+ */
 public class QuestionsActivity extends AppCompatActivity {
 
     public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
@@ -59,30 +59,10 @@ public class QuestionsActivity extends AppCompatActivity {
         questionsDataList = new ArrayList<>();
         questionAdapter = new CustomQuestionList(this, questionsDataList);
 
-        // sorting questionDataList
-
 
         questionList.setAdapter(questionAdapter);
 
         CollectionReference collectionReference = db.collection("Questions");
-
-//        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-//                questionsDataList.clear();
-//                for(QueryDocumentSnapshot doc : value){
-//                    String questionId = doc.getId();
-//                    String experimentId = doc.getData().get("experimentID").toString();
-//                    if(experimentId.equals(experimentID)) {
-//                        String questionText = (String) doc.getData().get("questionText");
-//                        questionsDataList.add(new Question(questionId, questionText));
-//                        questionAdapter.notifyDataSetChanged();
-//                    }
-//                }
-//            }
-//        });
-
-
         getQuestions();
 
         addQuestion.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +125,9 @@ public class QuestionsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * get questions from the database
+     */
     public void getQuestions() {
         db.collection("Questions")
                 .whereEqualTo("experimentID", experimentID)

@@ -20,6 +20,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * Custom listview for Non-Negative Trials
+ */
 class CustomNonNegativeTrialList extends ArrayAdapter<NonNegativeIntegerTrial> {
 
     private ArrayList<NonNegativeIntegerTrial> trials;

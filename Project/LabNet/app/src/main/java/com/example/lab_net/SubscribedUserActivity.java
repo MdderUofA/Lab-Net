@@ -22,7 +22,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-
+/**
+ * Activity to show the userProfile of a subscribed user.
+ * This allows the user to someone else's information, subscribed experiments, and owned experiments.
+ */
 public class SubscribedUserActivity extends AppCompatActivity {
 
     public static final String EXPERIMENT_ID_EXTRA = "com.example.lab_net.experiment_activity.id";
@@ -41,7 +44,6 @@ public class SubscribedUserActivity extends AppCompatActivity {
     private ArrayAdapter<SubscribedExperiment> subscribedExperimentsAdapter;
     private TextView usernameTextView, firstNameTextView, lastNameTextView,emailTextView,phoneTextView;
 
-    private String status;
     private String deviceId;
 
     String experimentTrialType;
@@ -82,6 +84,7 @@ public class SubscribedUserActivity extends AppCompatActivity {
         getSubscribedExperiments();
         subExpView();
         myExpView();
+
         deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         //initialize button
@@ -91,17 +94,16 @@ public class SubscribedUserActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent searchIntent = new Intent(SubscribedUserActivity.this,
                         UserProfile.class);
-/*                searchIntent.putExtra(SearchableList.SEARCHABLE_FILTER_EXTRA,
-                        SearchableList.SEARCH_USERS);*/
                 searchIntent.putExtra(USER_ID_EXTRA, deviceId);
                 startActivity(searchIntent);
             }
         });
 
-
-
     }
 
+    /**
+     * Get user's subscribed Experiments
+     */
     public void getSubscribedExperiments() {
         db.collection("SubscribedExperiments")
                 .whereEqualTo("Subscriber", userId)
@@ -126,7 +128,7 @@ public class SubscribedUserActivity extends AppCompatActivity {
     }
 
     /**
-     * Get experiments from the database that were created by the user by matching user ID.
+     * Get user's created Experiments.
      */
     public void getMyExperiments() {
         db.collection("Experiments")
@@ -156,7 +158,6 @@ public class SubscribedUserActivity extends AppCompatActivity {
                 });
     }
 
-
     /**
      * Get user information from the database.
      */
@@ -182,8 +183,9 @@ public class SubscribedUserActivity extends AppCompatActivity {
             }
         });
     }
+
     /**
-     * The view to display subscribed experiments in the User Profile.
+     * Display subscribed experiments in the User Profile.
      */
     private void subExpView() {
         subExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -219,7 +221,7 @@ public class SubscribedUserActivity extends AppCompatActivity {
 
 
     /**
-     * The view to display user created experiments in the User Profile.
+     * Display user created experiments in the User Profile.
      */
     private void myExpView (){
             myExpListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

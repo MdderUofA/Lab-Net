@@ -1,9 +1,5 @@
 package com.example.lab_net;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,6 +28,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Activity to display all the answers for a given question
+ */
 public class AnswersActivity extends AppCompatActivity {
 
     public static final String QUESTION_ID_EXTRA =
@@ -130,6 +133,10 @@ public class AnswersActivity extends AppCompatActivity {
         });
 
     }
+
+    /**
+     * get answers from database
+     */
     public void getAnswers() {
         db.collection("Answers")
                 .whereEqualTo("questionID", questionID)

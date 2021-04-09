@@ -12,6 +12,9 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * Custom List created for Non-Negative Trials
+ */
 public class NonNegativeCustomTrialList extends ArrayAdapter<NonNegativeIntegerTrial> {
 
     private ArrayList<NonNegativeIntegerTrial> trials;

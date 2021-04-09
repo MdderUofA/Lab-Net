@@ -3,6 +3,7 @@ package com.example.lab_net;
 
 /**
  * This class defines the user and its attributes.
+ * @author Vidhi Patel
  */
 public class User {
 

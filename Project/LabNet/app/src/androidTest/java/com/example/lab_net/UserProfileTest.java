@@ -1,15 +1,11 @@
 package com.example.lab_net;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.provider.Settings;
 import android.widget.EditText;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.intercepting.SingleActivityFactory;
 
 import com.robotium.solo.Solo;
 
@@ -18,8 +14,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
+/**
+ * Testing UserProfile Activity.
+ */
 public class UserProfileTest {
 
     private Solo solo;

@@ -20,6 +20,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * Custom listview for Binomial trials
+ */
 public class CustomBinomialTrialList extends ArrayAdapter<BinomialTrial> {
     private ArrayList<BinomialTrial> trials;
     private Context context;

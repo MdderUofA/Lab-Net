@@ -31,6 +31,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -43,6 +44,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+/**
+ * Activity for Experiments with Measurement Trials.
+ */
 public class MeasurementExperimentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView trialList, ignoredTrialList;
@@ -80,6 +84,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
     private Button subscribed_users_button;
     private String subUserId;
     private ListView subUsersList;
+    private ArrayList<String> subUsersNameList;
     private ArrayList<String> subUsersDataList;
     private ArrayAdapter<String> subUsersArrayAdapter;
 
@@ -125,6 +130,10 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         ignoredTrialDataList = new ArrayList<>();
         ignoredTrialArrayAdapter = new CustomMeasurementTrialList(this, ignoredTrialDataList);
         ignoredTrialList.setAdapter(ignoredTrialArrayAdapter);
+        add_new_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
+        edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
+
+        checkExperimentEnded();
         // get experiment info
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
@@ -230,7 +239,6 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             }
         });
 
-        edit_experiment_button = (ImageButton) findViewById(R.id.editExperimentButton);
         edit_experiment_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -238,7 +246,6 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             }
         });
 
-        add_new_trial_button = (Button) findViewById(R.id.addRemoveTrialsButton);
         add_new_trial_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -261,12 +268,37 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
 
         subUsersList = (ListView) findViewById(R.id.subscribed_Users_list);
         subUsersDataList = new ArrayList<>();
-        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersDataList);
+        subUsersNameList = new ArrayList<>();
+        subUsersArrayAdapter = new CustomSubscribedUserList(this, subUsersNameList);
         subUsersList.setAdapter(subUsersArrayAdapter);
         getSubscribedUsers();
 
         Toast.makeText(this, "Long hold to list or un-list trials", Toast.LENGTH_LONG).show();
 
+    }
+
+    /**
+     * checks to see if the experiment has already ended
+     */
+    private void checkExperimentEnded() {
+        db.collection("Experiments").document(experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.exists()) {
+                                status = documentSnapshot.getData().get("Status").toString();
+                                if ("closed".equals(status)) {
+                                    add_new_trial_button.setEnabled(false);
+                                    edit_experiment_button.setEnabled(false);
+                                    Toast.makeText(MeasurementExperimentActivity.this, "Experiment has Ended", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     //side menu created from youtube: Android Navigation Drawer Menu Material Design
@@ -325,6 +357,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                 } else {
                     Intent intent = new Intent(getApplicationContext(), Histogram.class);
                     intent.putExtra("trialDataList", (Serializable) trialDataList);
+                    intent.putExtra("dateDataList", (Serializable) dates);
                     intent.putExtra("ExperimentId", experimentId);
                     intent.putExtra("check", 3);
                     startActivity(intent);
@@ -363,6 +396,8 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
 
                                 }
                             });
+                            add_new_trial_button.setEnabled(false);
+                            edit_experiment_button.setEnabled(false);
                             dialog.dismiss();
                         }
                     });
@@ -395,8 +430,25 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 subUserId = document.getData().get("Subscriber").toString();
                                 subUsersDataList.add(subUserId);
+
+                                db.collection("UserProfile")
+                                        .whereEqualTo(FieldPath.documentId(),subUserId).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        String userFirstName = document.getData().get("firstName").toString();
+                                                        String userLastName = document.getData().get("lastName").toString();
+                                                        String fullname = userFirstName + " " + userLastName;
+
+                                                        subUsersNameList.add(fullname);
+                                                    }
+                                                    subUsersArrayAdapter.notifyDataSetChanged();
+                                                }
+                                            }
+                                        });
                             }
-                            subUsersArrayAdapter.notifyDataSetChanged();
 
                         }
 
@@ -469,6 +521,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
 
         });
     }
+
     /**
      * Launches MapActivity so user can retrieve their device location for experiment. Needs trialId.
      * @param trialId
@@ -479,6 +532,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         sendTrialId.putExtra("trialId", trialId);
         startActivityForResult(sendTrialId, 2);
     }
+
     /**
      * Checks to see if experiment requires location, or if latitude and longitude is provided. Based
      * on this it enables/disables the addTrialDialogButton. So user must get location if required, else
@@ -507,6 +561,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
             }
         }
     }
+
     /**
      * Retrieves and saves location coordinates from MapActivity once user has selected their location.
      * Checks to see if location requirements have been met by calling checkLocationReq.
@@ -546,7 +601,15 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
-        Toast.makeText(MeasurementExperimentActivity.this, "Enter a double type", Toast.LENGTH_LONG).show();
+        if (isLocationEnabled.equalsIgnoreCase("No")){
+            Toast.makeText(MeasurementExperimentActivity.this,
+                    "Enter a double type. Location not required.",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(MeasurementExperimentActivity.this,
+                    "Enter a double type. Location required.",
+                    Toast.LENGTH_LONG).show();
+        }
         if (!trialButtonEnabled){
             addTrialDialogButton.setEnabled(false);
         }
@@ -640,6 +703,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                             }
                         });
                 dialog.dismiss();
+                deleteSubscribedExperiment();
                 // change to UserProfile
                 Intent intent = new Intent(getApplicationContext(), UserProfile.class);
                 intent.putExtra(UserProfile.USER_ID_EXTRA, owner);
@@ -655,6 +719,26 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         });
         alert.show();
 
+    }
+
+    /**
+     * deletes subscribed experiments when an experiment is deleted by the owner
+     */
+    private void deleteSubscribedExperiment() {
+        CollectionReference collectionReference = db.collection("SubscribedExperiments");
+        collectionReference.whereEqualTo("ExperimentId",experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String deleteId = document.getId();
+                                collectionReference.document(deleteId).delete();
+                            }
+                        }
+                    }
+                });
     }
 
     /**

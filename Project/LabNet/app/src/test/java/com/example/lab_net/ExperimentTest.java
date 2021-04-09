@@ -5,9 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Test class for Experiment class.
- *
- * @author Vidhi Patel
+ * Testing Experiment class.
  */
 public class ExperimentTest {
 

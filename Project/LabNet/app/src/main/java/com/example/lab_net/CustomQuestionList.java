@@ -10,13 +10,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.lab_net.BinomialTrial;
-import com.example.lab_net.Question;
-import com.example.lab_net.R;
-
 import java.util.ArrayList;
 
-
+/**
+ * Custom listview for questions
+ */
 public class CustomQuestionList extends ArrayAdapter<Question> {
     private ArrayList<Question> questions;
     private Context context;
