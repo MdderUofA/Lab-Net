@@ -17,11 +17,16 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.Locale;
 
 public class Histogram extends AppCompatActivity {
 
@@ -230,6 +235,8 @@ public class Histogram extends AppCompatActivity {
         //line chart
         lineChart = (LineChart) findViewById(R.id.lineChart);
 
+
+
         //get data
         entries = new ArrayList<>();
 //        for(i = 0; i < results.size(); i++){
@@ -248,11 +255,30 @@ public class Histogram extends AppCompatActivity {
         LineData lineData = new LineData(iLineDataSets);
         lineChart.setData(lineData);
 
+        ArrayList<String> values = new ArrayList<>();
+        for(i = 0; i < dateDataList.size(); i++){
+            values.add(dateDataList.get(i));
+        }
+        XAxis xAxis1 = lineChart.getXAxis();
+
+        xAxis1.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getAxisLabel(float value, AxisBase axis) {
+                Date date = new Date((long)value);
+                //Specify the format you'd like
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY", Locale.getDefault());
+                return sdf.format(date);
+            }
+        });
+
+        xAxis1.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+
         //set color of line
         lineDataSet.setColor(Color.rgb(132, 180, 200));
 
-        XAxis lxAxis = lineChart.getXAxis();
-        lxAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+/*        XAxis lxAxis = lineChart.getXAxis();
+        lxAxis.setPosition(XAxis.XAxisPosition.BOTTOM);*/
         lineChart.getAxisRight().setEnabled(false);
         lineChart.getLegend().setEnabled(false);
         lineChart.getDescription().setEnabled(false);
