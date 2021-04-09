@@ -315,6 +315,7 @@ public class SubscribedBinomialExperimentActivity extends AppCompatActivity impl
                     startActivity(intent);
                 }
                 break;
+
             case R.id.nav_locationPlot:
                 Intent locationIntent = new Intent(getApplicationContext(), plotLocActivity.class);
                 locationIntent.putExtra("ExperimentId", experimentId);
