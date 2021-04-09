@@ -74,7 +74,7 @@ public class CustomCountTrialList extends ArrayAdapter<CountTrial> {
 
 
         titleText.setText(trial.getTitle());
-        resultText.setText(trial.getCount().toString());
+        resultText.setText("1");
 
 
         return view;

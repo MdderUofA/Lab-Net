@@ -10,7 +10,8 @@ public enum DatabaseCollections {
     KEYWORDS ("Keywords"),
     QUESTIONS ("Questions"),
     TRIALS ("Trials"),
-    USER_PROFILE ("UserProfile");
+    USER_PROFILE ("UserProfile"),
+    QR_CODES ("QrCodes");
 
     private final String mappedValue;
 

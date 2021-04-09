@@ -565,9 +565,8 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 trialButtonEnabled = false;
                 addTrialDialogButton.setEnabled(false);
             } else {
-                String checkResult = addTrialResult.getText().toString();
                 String checkTitle = addTrialTitle.getText().toString();
-                if (checkResult.isEmpty() || checkTitle.isEmpty()){
+                if (checkTitle.isEmpty()){
                     trialButtonEnabled = false;
                     addTrialDialogButton.setEnabled(false);
                 } else {
@@ -605,7 +604,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
      */
     private void addTrial() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(CountExperimentActivity.this);
-        View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
+        View settingsView = getLayoutInflater().inflate(R.layout.add_count_trial, null);
 
 
         settingsBuilder.setView(settingsView);
@@ -615,7 +614,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
-        addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         if (isLocationEnabled.equalsIgnoreCase("No")){
             Toast.makeText(CountExperimentActivity.this,
                     "Enter any integer. Location not required.",
@@ -630,7 +628,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         }
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
-        addTrialResult.addTextChangedListener(addTextWatcher);
 
         final CollectionReference collectionReference = db.collection("Trials");
         String trialId = collectionReference.document().getId();
@@ -652,12 +649,11 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         addTrialDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Long result = (Long) Long.valueOf(addTrialResult.getText().toString());
                 String title = addTrialTitle.getText().toString();
                 // add to firebase
                 HashMap<String, Object> data = new HashMap<>();
                 data.put("Title", title);
-                data.put("Result", result);
+                data.put("Result", 1);
                 data.put("ExperimentId", experimentId);
                 data.put("Date", formattedDate);
                 data.put("isUnlisted", false);
@@ -673,7 +669,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                trialDataList.add(new CountTrial(trialId, title, result));
+                                trialDataList.add(new CountTrial(trialId, title, Long.valueOf(1)));
                                 trialArrayAdapter.notifyDataSetChanged();
                                 Toast.makeText(CountExperimentActivity.this, "Trial added", Toast.LENGTH_LONG).show();
                                 setDialog.dismiss();
@@ -812,11 +808,11 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                 result = (Long) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
+                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(1)));
 
                                 }
                                 else{
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(1)));
 
                                 }
                                 dates.add(getDate);
@@ -876,11 +872,11 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                 result = (Long) document.getData().get("Result");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(isUnlisted) {
-                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
+                                    ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(1)));
 
                                 }
                                 else{
-                                    trialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(result)));
+                                    trialDataList.add(new CountTrial(trialId, trialTitle, Long.valueOf(1)));
 
                                 }
                                 dates.add(getDate);
@@ -903,11 +899,10 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String checkResult = addTrialResult.getText().toString();
             String checkTitle = addTrialTitle.getText().toString();
             checkLocationReq();
             if(trialButtonEnabled){
-                addTrialDialogButton.setEnabled((TextUtils.isDigitsOnly(checkResult))  && !checkTitle.isEmpty() && !checkResult.isEmpty());
+                addTrialDialogButton.setEnabled(!checkTitle.isEmpty());
             }
 
         }

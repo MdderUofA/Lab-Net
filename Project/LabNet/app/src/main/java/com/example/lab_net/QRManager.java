@@ -35,9 +35,9 @@ public class QRManager {
      * @return The non null QR version of the list.
      */
     public static String toQRString(List<String> list) {
-        String string = "";
+        String string = QRManager.LAB_NET_PREPEND;
         for(int i =0;i<list.size()-1;i++) {
-            string+=list.get(i)+"/";
+            string+=list.get(i)+QRManager.LAB_NET_JOIN;
         }
         string+=list.get(list.size()-1);
         return string;

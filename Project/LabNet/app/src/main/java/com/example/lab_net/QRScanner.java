@@ -2,14 +2,20 @@ package com.example.lab_net;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 // referenced from https://youtu.be/Fe7F4Jx7rwo
@@ -21,8 +27,7 @@ import java.util.Objects;
 public class QRScanner extends AppCompatActivity {
 
 
-    private static final String QR_RESULT_EXTRA = "com.example.lab_net.qrscanner.result_extra";
-    private boolean resultMode = false;
+    public static final String QR_RESULT_EXTRA = "com.example.lab_net.qrscanner.result_extra";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +58,10 @@ public class QRScanner extends AppCompatActivity {
             Toast.makeText(this, "Error in reading QR:\n"
                     + e.getClass().getSimpleName(),Toast.LENGTH_LONG);
             setResult(AppCompatActivity.RESULT_CANCELED);
+            finish();
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-        finish();
     }
 
     /**
@@ -65,12 +70,35 @@ public class QRScanner extends AppCompatActivity {
      */
     private void handleResult(String r) {
         String data = null;
-        if(r.startsWith(QRManager.LAB_NET_PREPEND)) {
+        if(r.startsWith(QRManager.LAB_NET_PREPEND)) { // locally made QR
             data = r.substring(QRManager.LAB_NET_PREPEND.length());
-        } else {
+            handleStringResult(data);
+        } else { // registered QR, lookup
             data = r;
+            Utils.collection(DatabaseCollections.QR_CODES)
+                    .whereEqualTo("Input",data)
+                    .get()
+                    .addOnCompleteListener((task) -> {
+                        QuerySnapshot snap = task.getResult();
+                        List<DocumentSnapshot> docs = snap.getDocuments();
+                        if(docs.size()==0) {
+                            Toast.makeText(this, "Unknown QR",Toast.LENGTH_LONG);
+                            return;
+                        }
+                        String newData = (String) (docs.get(0)).get("Output");
+                        handleStringResult(newData);
+                    })
+                    .addOnFailureListener((task) -> {
+                        Toast.makeText(this, "Failed to read QR",Toast.LENGTH_LONG);
+                    });
         }
 
+
+        // todo: need support for parsing this raw QR data into a real command that the program
+        // can execute
+    }
+
+    private void handleStringResult(String data) {
         String[] pieces = data.split(QRManager.LAB_NET_JOIN);
 
         Intent resultIntent = new Intent();
@@ -79,8 +107,6 @@ public class QRScanner extends AppCompatActivity {
             returnData.add(s);
         resultIntent.putStringArrayListExtra(QRScanner.QR_RESULT_EXTRA, returnData);
         setResult(AppCompatActivity.RESULT_OK,resultIntent);
-
-        // todo: need support for parsing this raw QR data into a real command that the program
-        // can execute
+        finish();
     }
 }

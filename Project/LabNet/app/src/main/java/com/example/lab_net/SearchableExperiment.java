@@ -20,7 +20,7 @@ public class SearchableExperiment extends Searchable {
         this.reference = new SearchableDocumentReference("Experiments",
                 snapshot.getId());
         this.ownerId = (String)snapshot.get("Owner");
-        this.open=true;
+        this.open = snapshot.get("Status").equals("open");
         this.type = (String)snapshot.get("TrialType");
         return this;
     }
