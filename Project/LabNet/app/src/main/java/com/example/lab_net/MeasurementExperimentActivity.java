@@ -337,7 +337,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
                 startActivity(profileIntent);
                 break;
             case R.id.nav_qr:
-                //TODO
+                scanQR();
                 break;
             case R.id.nav_statistics:
                 if (trialArrayAdapter.getCount() == 0) {
@@ -580,6 +580,11 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
 
         }
         checkLocationReq();
+    }
+
+    private void scanQR() {
+        Intent qr = new Intent(this, QRScanner.class);
+        startActivityForResult(qr, 3);
     }
 
     /**

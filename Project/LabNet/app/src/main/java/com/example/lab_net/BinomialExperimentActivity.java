@@ -344,7 +344,7 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
                 startActivity(profileIntent);
                 break;
             case R.id.nav_qr:
-                //TODO
+                scanQR();
                 break;
             case R.id.nav_statistics:
                 if (trialArrayAdapter.getCount() == 0) {
@@ -587,6 +587,11 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
 
         }
         checkLocationReq();
+    }
+
+    private void scanQR() {
+        Intent qr = new Intent(this, QRScanner.class);
+        startActivityForResult(qr, 3);
     }
 
     /**

@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
@@ -351,7 +350,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 startActivity(profileIntent);
                 break;
             case R.id.nav_qr:
-                //TODO
+                scanQR();
                 break;
             case R.id.nav_statistics:
                 if (trialArrayAdapter.getCount() == 0) {
@@ -597,6 +596,11 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
         }
         checkLocationReq();
+    }
+
+    private void scanQR() {
+        Intent qr = new Intent(this, QRScanner.class);
+        startActivityForResult(qr, 3);
     }
 
     /**

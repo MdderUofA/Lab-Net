@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".plotLocFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <fragment
         android:id="@+id/google_map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
