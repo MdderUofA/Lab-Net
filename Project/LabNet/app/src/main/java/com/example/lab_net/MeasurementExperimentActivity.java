@@ -546,15 +546,7 @@ public class MeasurementExperimentActivity extends AppCompatActivity implements 
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
-        if (isLocationEnabled.equalsIgnoreCase("No")){
-            Toast.makeText(MeasurementExperimentActivity.this,
-                    "Enter a double type. Location not required.",
-                    Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(MeasurementExperimentActivity.this,
-                    "Enter a double type. Location required.",
-                    Toast.LENGTH_LONG).show();
-        }
+        Toast.makeText(MeasurementExperimentActivity.this, "Enter a double type", Toast.LENGTH_LONG).show();
         if (!trialButtonEnabled){
             addTrialDialogButton.setEnabled(false);
         }

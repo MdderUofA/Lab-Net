@@ -489,15 +489,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
         addTrialDialogButton = (Button) settingsView.findViewById(R.id.addTrial);
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
-        if (isLocationEnabled.equalsIgnoreCase("No")){
-            Toast.makeText(SubscribedCountExperimentActivity.this,
-                    "Enter any integer. Location not required.",
-                    Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(SubscribedCountExperimentActivity.this,
-                    "Enter any integer. Location required.",
-                    Toast.LENGTH_LONG).show();
-        }
+        Toast.makeText(SubscribedCountExperimentActivity.this, "Enter any integer", Toast.LENGTH_LONG).show();
         if (!trialButtonEnabled){
             addTrialDialogButton.setEnabled(false);
         }
