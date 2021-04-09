@@ -40,7 +40,6 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
     /**
      * Checks to see if app has location permission, if not prompts user to give permission. Updates
      * permission boolean.
-     * @return void
      */
     private void getLocationPermission() {
         //Permissions implemented with the help from 'Google Services, GPS, and Location Permissions'
@@ -63,7 +62,6 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
      * @param requestCode
      * @param permissions
      * @param grantResults
-     * @return void
      */
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -86,7 +84,6 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
      * Creates MapFragment instance and stores location coordinate in firebase. If permission not
      * given, ends the activity.
      * @param savedInstanceState
-     * @return void
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +114,6 @@ public class MapActivity extends AppCompatActivity implements CoordinateListener
             /**
              * When user clicks on button, location is uploaded on firebase and activity ends.
              * @param v
-             * @return void
              */
             @Override
             public void onClick(View v) {
