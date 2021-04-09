@@ -61,6 +61,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/saveTrialQR"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/getLocationButton"
+        android:layout_alignTop="@+id/addTrial"
+        android:layout_alignEnd="@+id/getLocationButton"
+        android:layout_alignBottom="@+id/addTrial"
+        android:layout_marginStart="290dp"
+        android:layout_marginTop="250dp"
+        android:layout_marginEnd="45dp"
+        android:layout_toEndOf="@+id/addTrial"
+        android:layout_toRightOf="@id/addTrial"
+        android:src="@drawable/ic_qr_white"
+        app:backgroundTint="#009688"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/getLocationButton"
         android:layout_width="142dp"
