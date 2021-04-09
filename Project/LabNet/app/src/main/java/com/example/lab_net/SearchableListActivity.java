@@ -15,11 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
+
 /**
  * An activity which encapsulates a SearchableList and puts it into an independent activity.
  * @author Marcus
  */
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class SearchableListActivity extends AppCompatActivity {
     private EditText searchText;
     private Button searchButton;

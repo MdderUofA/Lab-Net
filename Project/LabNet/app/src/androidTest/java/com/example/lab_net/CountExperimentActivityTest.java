@@ -14,6 +14,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Testing the Count Experiment Activity,
+ * which is the same process for other trial type Experiment Activites.
+ */
 public class CountExperimentActivityTest {
 
     private Solo solo;
