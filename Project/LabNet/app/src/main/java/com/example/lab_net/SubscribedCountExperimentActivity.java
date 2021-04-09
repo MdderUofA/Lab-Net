@@ -570,7 +570,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
             public void onClick(View v) {
                 String title = addTrialTitle.getText().toString();
                 // add to firebase
-                HashMap<String, Object> data = getSkeletonTrial(title, result);
+                HashMap<String, Object> data = getSkeletonTrial(title, Long.valueOf(1));
 
                 collectionReference
                         .document(trialId)
@@ -704,9 +704,7 @@ public class SubscribedCountExperimentActivity extends AppCompatActivity impleme
 
             checkLocationReq();
             if (trialButtonEnabled){
-                addTrialDialogButton.setEnabled((TextUtils.isDigitsOnly(checkResult))
-                    && !checkTitle.isEmpty()
-                    && !checkResult.isEmpty());
+                addTrialDialogButton.setEnabled(!checkTitle.isEmpty());
                 saveTrialDialogButton.setImageAlpha(addTrialDialogButton.isEnabled() ? 255 : 64);
             }
 
