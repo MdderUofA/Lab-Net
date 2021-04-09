@@ -612,11 +612,6 @@ public class NonNegativeExperimentActivity extends AppCompatActivity implements 
 
     }
 
-    private void scanQR() {
-        Intent qr = new Intent(this, QRScanner.class);
-        startActivityForResult(qr, 3);
-    }
-
     /**
      * enables adding trials for experiments
      */

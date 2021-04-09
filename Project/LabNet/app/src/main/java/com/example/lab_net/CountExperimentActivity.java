@@ -624,11 +624,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
     }
 
-    private void scanQR() {
-        Intent qr = new Intent(this, QRScanner.class);
-        startActivityForResult(qr, 3);
-    }
-
     /**
      * enables adding trials for experiments, also calls TextWatcher to validate user input
      */

@@ -613,11 +613,6 @@ public class BinomialExperimentActivity extends AppCompatActivity implements Nav
         }
     }
 
-    private void scanQR() {
-        Intent qr = new Intent(this, QRScanner.class);
-        startActivityForResult(qr, 3);
-    }
-
     /**
      * enables adding trials for experiments
      */
