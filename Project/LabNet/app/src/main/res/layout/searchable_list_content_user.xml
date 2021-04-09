@@ -12,12 +12,11 @@
         android:padding ="10dp"
         >
         <ImageView
-            android:background="@drawable/teal_back"
             android:layout_width="64dp"
             android:layout_height="match_parent"
             android:layout_gravity="left|center_vertical"
             android:src="@drawable/ic_person"
-            android:tint="@color/white"/>
+           />
 
         <LinearLayout
             android:layout_height="wrap_content"
@@ -39,7 +38,6 @@
                     android:layout_marginLeft="8dp"
 
                     android:text="NAME"
-                    android:textColor="@color/app_teal"
                     android:textSize="30sp"
                     android:textStyle="bold" />
 
