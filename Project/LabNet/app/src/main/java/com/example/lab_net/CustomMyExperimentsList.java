@@ -39,11 +39,24 @@ public class CustomMyExperimentsList extends ArrayAdapter<Experiment> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
+        Experiment experiment= experiments.get(position);
+        String type = experiment.getTrialType();
         if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.content_experiment, parent,false);
+            if (type.equals("Binomial")){
+                view = LayoutInflater.from(context).inflate(R.layout.content_binomial_experiment, parent,false);
+            }
+            if (type.equals("Count-based")){
+                view = LayoutInflater.from(context).inflate(R.layout.content_count_experiment, parent,false);
+            }
+            if (type.equals("Measurement")){
+                view = LayoutInflater.from(context).inflate(R.layout.content_measuremnt_experiment, parent,false);
+            }
+            if (type.equals("NonNegativeInteger")){
+                view = LayoutInflater.from(context).inflate(R.layout.content_nonnegative_experiment, parent,false);
+            }
+
         }
 
-        Experiment experiment= experiments.get(position);
         TextView experimentTitleText = view.findViewById(R.id.experiment_title);
 
         experimentTitleText.setText(experiment.getTitle());

@@ -68,7 +68,7 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
 
     // Experiment
     Experiment experiment;
-    String experimentId, experimentTitle, experimentDescription, experimentRegion, trialType;
+    String experimentId, experimentTitle, experimentDescription, experimentRegion, trialType, status;
 
     FirebaseFirestore db;
     Button add_trial_button;
@@ -127,8 +127,8 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
         experiment_description = findViewById(R.id.experimentDescription);
         experiment_region = findViewById(R.id.experimentRegion);
 
-
-        checksubscription();
+        checkExperimentEnded();
+        checkSubscription();
 
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
@@ -145,7 +145,6 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                         //get trialtype to make respective dialog box appear
                         trialType = documentSnapshot.getData().get("TrialType").toString();
                         isLocationEnabled = documentSnapshot.getData().get("EnableLocation").toString();
-
 
                         // set textviews in experiment_owner_activity to experiment details
                         experiment_title.setText(experimentTitle);
@@ -165,10 +164,10 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 trialId = document.getId();
-                                trialTitle = document.getData().get("Title").toString();
-                                trialType = document.getData().get("Title").toString();
+                                trialTitle = document.getData().get("Title").toString();/*
+                                trialType = document.getData().get("Title").toString();*/
                                 resultLong = (String) document.getData().get("Result");
-                                //getDate = (String) document.getData().get("Date");
+                                getDate = (String) document.getData().get("Date");
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
                                 if(!isUnlisted){
                                     trialDataList.add(new MeasurementTrial(trialId, trialTitle, Double.valueOf(resultLong)));
@@ -186,6 +185,8 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
         add_trial_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                trialButtonEnabled = false;
                 addTrial();
             }
         });
@@ -241,6 +242,9 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
 
     //side menu created from youtube: Android Navigation Drawer Menu Material Design
     // by Coding With Tea
+    /**
+     * set side menu on subscriber experiment activity
+     */
     private void setToolbar(){
         drawerLayout = findViewById(R.id.subscribe_drawer_layout);
         navigationView = findViewById(R.id.subscribe_nav_view);
@@ -258,6 +262,11 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     * Handle clicks on the side menu
+     * @param item
+     * @return boolean(true or false)
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -271,7 +280,7 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                 //TODO
                 break;
             case R.id.nav_statistics:
-                if (trialArrayAdapter.getCount() == 0 || trialType.equals("Binomial")) {
+                if (trialArrayAdapter.getCount() == 0) {
                     Toast.makeText(SubscribedMeasurementExperimentActivity.this,
                             "No stats available for this experiment", Toast.LENGTH_LONG).show();
                 } else {
@@ -310,6 +319,33 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
         return true;
     }
 
+    /**
+     * checks if the experiment has ended by the user
+     */
+    private void checkExperimentEnded() {
+        db.collection("Experiments").document(experimentId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.exists()) {
+                                status = documentSnapshot.getData().get("Status").toString();
+                                if ("closed".equals(status)) {
+                                    subscribeButton.setEnabled(false);
+                                    add_trial_button.setEnabled(false);
+                                    Toast.makeText(SubscribedMeasurementExperimentActivity.this, "Experiment has Ended", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+    /**
+     * gets subscribed users from firebase collection called SubscribedExperiments
+     */
     private void getSubscribedUsers(){
         db.collection("SubscribedExperiments").whereEqualTo("ExperimentId", experimentId)
                 .get()
@@ -341,7 +377,10 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
         });
     }
 
-    private void checksubscription() {
+    /**
+     * checks if the user is already a subscriber
+     */
+    private void checkSubscription() {
         db.collection("SubscribedExperiments")
                 .whereEqualTo("ExperimentId",experimentId)
                 .get()
@@ -349,29 +388,33 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            Boolean isSubscriber = false;
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String subscriber = document.getData().get("Subscriber").toString();
                                 if (subscriber.equals(deviceId)) {
-                                    isSubscriber = true;
                                     subscribeButton.setEnabled(false);
                                     subscribeButton.setText("Subscribed");
                                 }
-                            }
-                            if (! isSubscriber) {
-                                add_trial_button.setEnabled(false);
                             }
                         }
                     }
                 });
     }
-
+    /**
+     * Launches MapActivity so user can retrieve their device location for experiment. Needs trialId.
+     * @param trialId
+     * @return void
+     */
     private void getLocation(String trialId) {
         Intent sendTrialId = new Intent(this, MapActivity.class);
         sendTrialId.putExtra("trialId", trialId);
         startActivityForResult(sendTrialId, 2);
     }
-
+    /**
+     * Checks to see if experiment requires location, or if latitude and longitude is provided. Based
+     * on this it enables/disables the addTrialDialogButton. So user must get location if required, else
+     * not a must.
+     * @return void
+     */
     private void checkLocationReq(){
 
         if (isLocationEnabled.equalsIgnoreCase("No")){
@@ -382,20 +425,36 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
                 trialButtonEnabled = false;
                 addTrialDialogButton.setEnabled(false);
             } else {
-                trialButtonEnabled = true;
-                addTrialDialogButton.setEnabled(true);
+                String checkResult = addTrialResult.getText().toString();
+                String checkTitle = addTrialTitle.getText().toString();
+                if (checkResult.isEmpty() || checkTitle.isEmpty()){
+                    trialButtonEnabled = false;
+                    addTrialDialogButton.setEnabled(false);
+                } else {
+                    trialButtonEnabled = true;
+                    addTrialDialogButton.setEnabled(true);
+                }
             }
         }
     }
-
+    /**
+     * Retrieves and saves location coordinates from MapActivity once user has selected their location.
+     * Checks to see if location requirements have been met by calling checkLocationReq.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     * @return void
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==2)
         {
-            trialLatitude = data.getDoubleExtra("latitude", 0);
-            trialLongitude = data.getDoubleExtra("longitude", 0);
+            if (data != null) {
+                trialLatitude = data.getDoubleExtra("latitude", 0);
+                trialLongitude = data.getDoubleExtra("longitude", 0);
+            }
 
         }
         checkLocationReq();
@@ -404,6 +463,9 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
 
 
     //add new trial
+    /**
+     * enables adding trials for experiments
+     */
     private void addTrial() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(SubscribedMeasurementExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
@@ -485,7 +547,9 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
     }
 
 
-
+    /**
+     * Responsible for the validation of values used for adding trial
+     */
     private TextWatcher addTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -507,6 +571,11 @@ public class SubscribedMeasurementExperimentActivity extends AppCompatActivity i
 
         }
     };
+    /**
+     * Disables going back using androids back button
+     */
+    @Override
+    public void onBackPressed() { }
 
 }
 

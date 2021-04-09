@@ -60,15 +60,22 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
     // experiment
     private String experimentId;
-    private String experimentTitle, experimentDescription, experimentRegion, trialType;
+    private String experimentTitle;
+    private String experimentDescription;
+    private String experimentRegion;
+    private String trialType;
     private String owner;
-    Date date;
-    String formattedDate;
-    SimpleDateFormat simpleDateFormat;
-    String getDate;
+
+
+    private Date date;
+    private String formattedDate;
+    private SimpleDateFormat simpleDateFormat;
+    private String getDate;
 
     // TextViews
-    TextView experiment_title, experiment_description, experiment_region;
+    private TextView experiment_title;
+    private TextView experiment_description;
+    private TextView experiment_region;
 
     // Trials
     private String trialId;
@@ -76,7 +83,8 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
     private Long result;
     private Long getResult;
     private Button addTrialDialogButton;
-    private EditText addTrialTitle, addTrialResult;
+    private EditText addTrialTitle;
+    private EditText addTrialResult;
 
     // edit experiment
     private Button add_new_trial_button;
@@ -87,19 +95,22 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
     NavigationView navigationView;
     Toolbar toolbar;
 
-    Button subscribed_users_button;
+    private Button subscribed_users_button;
     private String subUserId;
     private ArrayList<String> subUsersDataList;
     private ArrayAdapter<String> subUsersArrayAdapter;
 
-
     // date
     private ArrayList<String> dates;
-    View previousSelectedItem;
 
-    Boolean isUnlisted;
-
+    private Boolean isUnlisted;
     private String status;
+
+    //location
+    private Double trialLatitude;
+    private Double trialLongitude;
+    private String isLocationEnabled;
+    private Boolean trialButtonEnabled = false;
 
 
     @Override
@@ -132,7 +143,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         trialList.setAdapter(trialArrayAdapter);
         ignoredTrialList.setAdapter(ignoredTrialArrayAdapter);
         db = FirebaseFirestore.getInstance();
-
         // get experiment info
         DocumentReference documentReference = db.collection("Experiments").document(experimentId);
 
@@ -155,11 +165,12 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                         experiment_title.setText(experimentTitle);
                         experiment_description.setText("Description: " + experimentDescription);
                         experiment_region.setText("Region: " + experimentRegion);
+
+                        isLocationEnabled = documentSnapshot.getData().get("EnableLocation").toString();
                     }
                 }
             }
         });
-
         //get trials
         db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
                 .get()
@@ -174,7 +185,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                 getResult = (Long) document.getData().get("Result");
                                 getDate = document.getData().get("Date").toString();
                                 isUnlisted = (Boolean) document.getData().get("isUnlisted");
-
                                 if(isUnlisted){
                                     ignoredTrialDataList.add(new CountTrial(trialId, trialTitle, getResult));
                                 }
@@ -182,33 +192,55 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                     trialDataList.add(new CountTrial(trialId, trialTitle, getResult));
                                 }
                                 dates.add(getDate);
-
                             }
                             ignoredTrialArrayAdapter.notifyDataSetChanged();
                             trialArrayAdapter.notifyDataSetChanged();
-
-
                         }
-
                     }
-
                 });
 
-
-        //delete trials
-
-        trialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        trialList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                deleteTrial(position);
-                return true;
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(CountExperimentActivity.this);
+                alert.setTitle("Alert");
+                alert.setMessage("Confirm un-list Trial?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        moveToUnlisted(position);
+                        dialog.dismiss();
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alert.show();
             }
         });
-        ignoredTrialList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        ignoredTrialList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                moveTrial(position);
-                return true;
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(CountExperimentActivity.this);
+                alert.setTitle("Alert");
+                alert.setMessage("Confirm move to listed?");
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        moveTrial(position);
+                        dialog.dismiss();
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alert.show();
             }
         });
 
@@ -224,6 +256,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         add_new_trial_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                trialButtonEnabled = false;
                 addTrial();
             }
         });
@@ -246,10 +279,15 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         subUsersList.setAdapter(subUsersArrayAdapter);
         getSubscribedUsers();
 
+        Toast.makeText(this, "Long hold to list or un-list trials", Toast.LENGTH_LONG).show();
     }
 
     //side menu created from youtube: Android Navigation Drawer Menu Material Design
     // by Coding With Tea
+
+    /**
+     * set side menu on owner experiment activity
+     */
     private void setToolbar(){
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -267,6 +305,11 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     * Handle clicks on the side menu
+     * @param item
+     * @return boolean(true or false)
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -356,7 +399,9 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         return true;
     }
 
-    //get subscribed users
+    /**
+     * gets subscribed users from firebase collection called SubscribedExperiments
+     */
     private void getSubscribedUsers(){
         db.collection("SubscribedExperiments").whereEqualTo("ExperimentId", experimentId)
                 .get()
@@ -375,7 +420,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                     }
 
                 });
-
         subUsersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -388,7 +432,9 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         });
     }
 
-    //edit experiment info
+    /**
+     * Allows owner to edit experiment details(i.e. name, description, region)
+     */
     private void editExperiment() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(CountExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_experiment_dialog, null);
@@ -439,8 +485,70 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
         });
     }
+    /**
+     * Launches MapActivity so user can retrieve their device location for experiment. Needs trialId.
+     * @param trialId
+     * @return void
+     */
+    private void getLocation(String trialId) {
+        Intent sendTrialId = new Intent(this, MapActivity.class);
+        sendTrialId.putExtra("trialId", trialId);
+        startActivityForResult(sendTrialId, 2);
+    }
+    /**
+     * Checks to see if experiment requires location, or if latitude and longitude is provided. Based
+     * on this it enables/disables the addTrialDialogButton. So user must get location if required, else
+     * not a must.
+     * @return void
+     */
+    private void checkLocationReq(){
 
-    //add new trial
+        if (isLocationEnabled.equalsIgnoreCase("No")){
+            //add_trial_button.setEnabled(true);
+            trialButtonEnabled = true;
+        } else {
+            if ((trialLatitude == null) || (trialLongitude) == null){
+                trialButtonEnabled = false;
+                addTrialDialogButton.setEnabled(false);
+            } else {
+                String checkResult = addTrialResult.getText().toString();
+                String checkTitle = addTrialTitle.getText().toString();
+                if (checkResult.isEmpty() || checkTitle.isEmpty()){
+                    trialButtonEnabled = false;
+                    addTrialDialogButton.setEnabled(false);
+                } else {
+                    trialButtonEnabled = true;
+                    addTrialDialogButton.setEnabled(true);
+                }
+            }
+        }
+    }
+    /**
+     * Retrieves and saves location coordinates from MapActivity once user has selected their location.
+     * Checks to see if location requirements have been met by calling checkLocationReq.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     * @return void
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==2)
+        {
+            if (data != null) {
+                trialLatitude = data.getDoubleExtra("latitude", 0);
+                trialLongitude = data.getDoubleExtra("longitude", 0);
+            }
+
+        }
+        checkLocationReq();
+    }
+
+    /**
+     * enables adding trials for experiments, also calls TextWatcher to validate user input
+     */
     private void addTrial() {
         AlertDialog.Builder settingsBuilder = new AlertDialog.Builder(CountExperimentActivity.this);
         View settingsView = getLayoutInflater().inflate(R.layout.edit_trial_dialog, null);
@@ -455,7 +563,9 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         addTrialTitle = (EditText) settingsView.findViewById(R.id.addTrialTitle);
         addTrialResult = (EditText) settingsView.findViewById(R.id.addTrialResult);
         Toast.makeText(CountExperimentActivity.this, "Enter any integer", Toast.LENGTH_LONG).show();
-        addTrialDialogButton.setEnabled(false);
+        if (!trialButtonEnabled){
+            addTrialDialogButton.setEnabled(false);
+        }
 
         addTrialTitle.addTextChangedListener(addTextWatcher);
         addTrialResult.addTextChangedListener(addTextWatcher);
@@ -463,19 +573,19 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         final CollectionReference collectionReference = db.collection("Trials");
         String trialId = collectionReference.document().getId();
 
-        // date
+        // get date when trial added
         date = Calendar.getInstance().getTime();
         simpleDateFormat = new SimpleDateFormat("ddMMYYYY", Locale.getDefault());
         formattedDate = simpleDateFormat.format(date);
         dates.add(formattedDate);
 
-/*        Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
+        Button getLocationButton = (Button) settingsView.findViewById(R.id.getLocationButton);
         getLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getLocation(trialId);
             }
-        });*/
+        });
 
         addTrialDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -489,6 +599,12 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                 data.put("ExperimentId", experimentId);
                 data.put("Date", formattedDate);
                 data.put("isUnlisted", false);
+                if ((trialLatitude != null) && (trialLongitude != null)){
+                    if ((trialLatitude != 0) && (trialLongitude != 0)){
+                        data.put("Lat", trialLatitude);
+                        data.put("Long", trialLongitude);
+                    }
+                }
                 collectionReference
                         .document(trialId)
                         .set(data)
@@ -507,13 +623,14 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                                 Toast.makeText(CountExperimentActivity.this, "Trial not added", Toast.LENGTH_LONG).show();
                             }
                         });
-
                 setDialog.dismiss();
             }
         });
     }
 
-    // invoked upon delete experiment button click
+    /**
+     * Allows owner to permanently delete an experiment they own from the app and firebase
+     */
     private void deleteExperiment() {
         final CollectionReference collectionReference = db.collection("Experiments");
 
@@ -538,7 +655,6 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
                             }
                         });
                 dialog.dismiss();
-                // change to UserProfile
                 Intent intent = new Intent(getApplicationContext(), UserProfile.class);
                 intent.putExtra(UserProfile.USER_ID_EXTRA, owner);
                 startActivity(intent);
@@ -552,12 +668,13 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
             }
         });
         alert.show();
-
     }
 
-
-    // method responsible for deleting trials
-    public void deleteTrial(int position) {
+    /**
+     * method responsible for un-listing trials.
+     * @param position
+     */
+    public void moveToUnlisted(int position) {
         CountTrial trial = trialDataList.get(position);
         //isUnlisted = true;
         //trialDataList.remove(position);
@@ -573,7 +690,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(CountExperimentActivity.this, "Trial moved", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CountExperimentActivity.this, "Trial unlisted", Toast.LENGTH_LONG).show();
 
 
                 } else {
@@ -630,6 +747,10 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
     }
 
+    /**
+     * method responsible for listing un-listed
+     * @param position
+     */
     private void moveTrial(int position) {
         CountTrial trial = ignoredTrialDataList.get(position);
         //isUnlisted = true;
@@ -646,7 +767,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(CountExperimentActivity.this, "Trial moved", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CountExperimentActivity.this, "Trial listed", Toast.LENGTH_LONG).show();
 
 
                 } else {
@@ -655,20 +776,7 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
             }
         });
-       /* db.collection("Trials").document(trial.getId())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(CountExperimentActivity.this, "Trial Deleted", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(CountExperimentActivity.this, "Trial not deleted", Toast.LENGTH_LONG).show();
-                    }
-                });*/
+
         db.collection("Trials").whereEqualTo("ExperimentId", experimentId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -703,6 +811,9 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
 
     }
 
+    /**
+     * Responsible for the validation of values used for adding trial
+     */
     private TextWatcher addTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -712,7 +823,11 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String checkResult = addTrialResult.getText().toString();
             String checkTitle = addTrialTitle.getText().toString();
-            addTrialDialogButton.setEnabled((TextUtils.isDigitsOnly(checkResult))  && !checkTitle.isEmpty() && !checkResult.isEmpty());
+            checkLocationReq();
+            if(trialButtonEnabled){
+                addTrialDialogButton.setEnabled((TextUtils.isDigitsOnly(checkResult))  && !checkTitle.isEmpty() && !checkResult.isEmpty());
+            }
+
         }
 
         @Override
@@ -721,6 +836,9 @@ public class CountExperimentActivity extends AppCompatActivity implements Naviga
         }
     };
 
+    /**
+     * Disables going back using androids back button
+     */
     @Override
     public void onBackPressed() { }
 

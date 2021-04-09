@@ -3,6 +3,7 @@ package com.example.lab_net;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -321,6 +322,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         Spinner dropdown2 = (Spinner) addView.findViewById(R.id.dropdownLocation);
         create = (Button) addView.findViewById(R.id.createButton);
 
+        expMinTrials.addTextChangedListener(addTextWatcher);
+
         expTitle.addTextChangedListener(addTextWatcher);
         expDescription.addTextChangedListener(addTextWatcher);
         expRegion.addTextChangedListener(addTextWatcher);
@@ -400,6 +403,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     intent.putExtra(EXPERIMENT_ID_EXTRA,expId);
                     startActivity(intent);
                 }
+
                 if(checkType.equals("Count-based")) {
                     Intent intent = new Intent(UserProfile.this, SubscribedCountExperimentActivity.class);
                     //intent.putExtra("experimentId",expId);
@@ -477,26 +481,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             create.setEnabled(!checkTitle.isEmpty()
                     && !checkDescription.isEmpty()
                     && !checkRegion.isEmpty()
-                    && !checkMinTrials.isEmpty());
-
-//            if (checkTitle.isEmpty()) {
-//                expTitle.setError("Experiment Title is required!");
-//                expTitle.requestFocus();
-//            }
-//
-//            else if (checkDescription.isEmpty()) {
-//                expDescription.setError("Description is required!");
-//                expDescription.requestFocus();
-//
-//            }
-//            else if (checkRegion.isEmpty()) {
-//                expRegion.setError("Region is required!");
-//                expRegion.requestFocus();
-//            }
-//            else if (checkMinTrials.isEmpty()) {
-//                expMinTrials.setError("Min Trails is required!");
-//                expMinTrials.requestFocus();
-//            }
+                    && !checkMinTrials.isEmpty()
+                    && isPositive(checkMinTrials));
 
         }
 
@@ -505,4 +491,18 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         }
     };
+    /**
+     *  Checks if the input is a positive integer
+     * @param check
+     * @return Boolean(true or false)
+     *
+     */
+    private boolean isPositive(String check) {
+        try {
+            return Integer.parseInt(check) > 0;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
 }

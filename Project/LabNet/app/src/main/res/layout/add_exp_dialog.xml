@@ -61,7 +61,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="190dp"
         android:ems="10"
-        android:hint="Min number of trials"
+        android:hint="Min number of trials(num.)"
         android:inputType="textPersonName" />
 
     <Spinner
